@@ -1,0 +1,82 @@
+﻿@*@{
+    var cart = ViewBag.CartItems as CartItems;
+}*@
+
+<!-- Shopping Cart Section Start -->
+  @if (ViewBag.CartItems != null)
+{
+    double totalCartPrice = 0; // Add this variable to store the total cart price
+    <div class="section section-padding">
+        <div class="container">
+            <form class="cart-form" action="#">
+                <table class="cart-wishlist-table table">
+                    <thead>
+                        <tr>
+                            <th class="name" colspan="2">Product</th>
+                            <th class="price">Price</th>
+                            <th class="subtotal">Total</th>
+                            <th class="remove">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in ViewBag.CartItems)
+                        {
+
+                            <tr>
+                                <td class="thumbnail"><a href="product-details.html"><img src="~/CategoryImg/@item.Product.ImageUrl" alt="cart-product-1"></a></td>
+                                @{
+                                    double itemPrice;
+                                    if (item.Product.ProductSale > 0)
+                                    {
+                                        itemPrice = (double)(item.Product.ProductPrice - (item.Product.ProductPrice * item.Product.ProductSale / 100));
+                                    }
+                                    else
+                                    {
+                                        itemPrice = (double)item.Product.ProductPrice;
+                                    }
+                                }
+                                <td class="name"> <a href="product-details.html">@itemPrice</a></td>
+
+                                <td class="price"><span>£@item.Product.ProductName</span></td>
+                                <td class="quantity">
+
+                                    <div class="detail-qty border radius  m-auto product-quantity">
+                                        <a class="qty-btn minus" asp-controller="Shopping" asp-action="Cart" asp-route-productId="@item.Product.ProductId" asp-route-change="remove"><i class="ti-minus"></i></a>
+                                        <input type="text" class="input-qty" value="@item.Quantity">
+                                        <a class="qty-btn plus" asp-controller="Shopping" asp-action="Cart" asp-route-productId="@item.Product.ProductId" asp-route-change="add"><i class="ti-plus"></i></a>
+                                    </div>
+                                </td>
+                                @{
+                                    var totalItemPrice = itemPrice * item.Quantity;
+                                    totalCartPrice += totalItemPrice; // Accumulate the subtotal for each item
+                                }
+                                <td class="subtotal"><span>£@totalItemPrice</span></td>
+                                <td class="remove"><a asp-controller="Shopping" asp-action="Cart" asp-route-productId="@item.Product.ProductId" asp-route-change="delete" class="btn">×</a></td>
+                            </tr>
+                        }
+
+                        x                </tbody>
+                </table>
+            </form>
+            <div class="cart-totals mt-5">
+                <h2 class="title">Cart totals</h2>
+                <table>
+                    <tbody>
+                        <tr class="subtotal">
+                            <th>Subtotal</th>
+                            <td><span class="amount">£@totalCartPrice</span></td>
+                        </tr>
+                        <tr class="total">
+                            <th>Total</th>
+                            <td><strong><span class="amount">£@totalCartPrice</span></strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <a asp-action="Checkout" asp-controller="Shopping" class="btn btn-dark btn-outline-hover-dark">Proceed to checkout</a>
+            </div>
+        </div>
+
+    </div>
+}
+<!-- Shopping Cart Section End -->

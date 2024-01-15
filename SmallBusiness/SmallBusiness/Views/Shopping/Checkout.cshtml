@@ -1,0 +1,111 @@
+﻿@{
+     var cart = ViewBag.CartItems as CartItems;
+}
+@model SmallBusiness.ViewModels.PaymentViewModel
+
+<main>
+<div class="row">
+<div class="col-md-6">
+<div class="mb-25">
+    <h4>Billing Details</h4>
+</div>
+<form method="post">
+    <div class="form-group">
+        <input asp-for="CCNum" placeholder="CC Number">
+        <span asp-validation-for="CCNum" class="text-danger"></span>
+
+        <input asp-for="ExpireDate" type="month" placeholder="Expire Date">
+        <span asp-validation-for="ExpireDate" class="text-danger"></span>
+
+        <input asp-for="CVV" placeholder="CVV">
+        <span asp-validation-for="CVV" class="text-danger"></span>
+
+        <input asp-for="Name" placeholder="Name">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <button type="submit" >Place Order</button>
+</form>
+</div>
+<div class="col-md-6">
+    <div class="order_review">
+        <div class="mb-20">
+            <h4>Your Orders</h4>
+        </div>
+        <div class="table-responsive order_table text-center">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th colspan="2">Product</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in
+                    ViewBag.CartItems)
+                {
+                        decimal itemPrice;
+                                if (item.Product.ProductSale > 0)
+                        {
+                                    itemPrice = item.Product.ProductPrice - (item.Product.ProductPrice * item.Product.ProductSale / 100);
+                        }
+                        else
+                        {
+                                    itemPrice = item.Product.ProductPrice;
+                        }
+                    <tr>
+                        <td class="image product-thumbnail">
+                                        <img src="~/ProductImg/@item.Product.ImageUrl" alt="#">
+                        </td>
+                        <td>
+                            <h5>
+                                            <a href="shop-product-full.html">@item.Product.ProductName</a>
+                            </h5> <span class="product-qty">x @item.Quantity</span>
+                        </td>
+                        <td>$@itemPrice</td>
+                    </tr>
+                }
+                </tr>
+                <tr>
+                    <th>SubTotal</th>
+                    @{
+                        decimal subTotal = 0;
+                        foreach (var item in
+                            ViewBag.CartItems)
+                        {
+                                decimal itemPrice;
+                                        if (item.Product.ProductSale > 0)
+                                {
+                                            itemPrice = item.Product.ProductPrice - (item.Product.ProductPrice * item.Product.ProductSale / 100);
+                                }
+                                else
+                                {
+                                            itemPrice = item.Product.ProductPrice;
+                                }
+                            subTotal += itemPrice * item.Quantity;
+                        }
+                    }
+                    <td class="product-subtotal" colspan="2">$@subTotal</td>
+                </tr>
+                <tr>
+                    <th>Shipping</th>
+                    <td colspan="2">
+                        <em>Free Shipping</em>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <td colspan="2" class="product-subtotal">
+                        <span class="font-xl text-brand fw-900">$@subTotal</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+    </div>
+</div>
+</div>
+</main>
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

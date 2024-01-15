@@ -1,0 +1,46 @@
+﻿@model SmallBusiness.ViewModels.LoginViewModel
+
+<div class="section section-padding">
+    <div class="container">
+        <div class="row g-0" style="justify-content:center">
+            <div class="col-lg-6">
+                <div class="user-login-register bg-light">
+                    <div class="login-register-title">
+                        <h2 class="title">Login</h2>
+                        <p class="desc">Great to have you back!</p>
+                    </div>
+                    <div class="login-register-form">
+                        <form method="post" asp-action="Login" asp-controller="Account">
+                            <div class="row learts-mb-n50">
+                                <div class="col-12 learts-mb-50">
+                                    <input asp-for="Email" placeholder="Username or email address" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="col-12 learts-mb-50">
+                                    <input asp-for="Password" type="password" placeholder="Password" class="form-control" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="col-12 text-center learts-mb-50">
+                                    <button type="submit" class="btn btn-dark btn-outline-hover-dark">Login</button>
+                                </div>
+                                <div class="col-12 learts-mb-50">
+                                    <div class="row learts-mb-n20">
+                                        <div class="col-12 learts-mb-20">
+                                            <div class="form-check">
+                                                <input asp-for="RememberMe" class="form-check-input" />
+                                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 learts-mb-20">
+                                            <a asp-action="ForgotPassword" asp-controller="Account" class="fw-400">Lost your password?</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
