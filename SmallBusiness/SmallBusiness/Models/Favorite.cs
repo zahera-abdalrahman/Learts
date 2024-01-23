@@ -16,9 +16,12 @@ namespace SmallBusiness.Models
 
         public Product Product { get; set; }
 
-        public int? ProfileId { get; set; }
+        public bool IsFav { get; set; }
 
-        [ForeignKey(nameof(ProfileId))]
-        public Profile Profile { get; set; }
+
+        //public int? ProfileId { get; set; }
+
+        //[ForeignKey(nameof(ProfileId))]
+        //public Profile Profile { get; set; }
     }
 }

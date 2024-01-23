@@ -27,7 +27,7 @@ namespace SmallBusiness.ViewModels
 
         [Display(Name = "City")]
         public string City { get; set; }
-        public string Image { get; set; } = "user.png";
+        public string Image { get; set; } = "2024.png";
 
     }
 }

@@ -27,7 +27,6 @@
     <Folder Include="wwwroot\CategoryImg\" />
     <Folder Include="wwwroot\Profile\" />
     <Folder Include="wwwroot\Seller\" />
-    <Folder Include="wwwroot\User\" />
   </ItemGroup>
 
 </Project>

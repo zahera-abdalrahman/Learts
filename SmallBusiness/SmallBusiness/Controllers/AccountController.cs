@@ -11,6 +11,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using System.Security.Claims;
 
 namespace Business.Controllers
 {
@@ -27,6 +28,11 @@ namespace Business.Controllers
 
         }
 
+
+        public IActionResult Pricing()
+        {
+            return View();
+        }
 
         #region Register
 
@@ -63,13 +69,12 @@ namespace Business.Controllers
                 if (result.Succeeded)
                 {
 
-
                     var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                     var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
 
                     var message = new MimeMessage();
-                    message.From.Add(new MailboxAddress("LEARTS", "learts2024@gmail.com")); // Set your app name and email
+                    message.From.Add(new MailboxAddress("LEARTS", "learts2024@gmail.com"));
                     message.To.Add(new MailboxAddress($"{user.FirstName} {user.LastName}", user.Email));
                     message.Subject = "Confirm your email";
                     var bodyBuilder = new BodyBuilder();
@@ -172,6 +177,9 @@ namespace Business.Controllers
 
         [HttpPost]
         public async Task<IActionResult> RegisterSeller(RegisterUserViewModel model)
+        
+        
+        
         {
             if (ModelState.IsValid)
             {
@@ -194,7 +202,9 @@ namespace Business.Controllers
                 if (result.Succeeded)
                 {
                     await AssignRole(seller, "Seller");
-                    return RedirectToAction("Index", "Home");
+
+
+                    return RedirectToAction("Profile", "Seller", new { area = "Seller", userId = seller.Id });
                 }
 
                 foreach (var error in result.Errors)
@@ -247,11 +257,11 @@ namespace Business.Controllers
 
                     if (roles.Contains("Admin"))
                     {
-                        return RedirectToAction("Index", "Admin");
+                        return RedirectToAction("Index", "Home", new { area = "Admin" });
                     }
                     else if (roles.Contains("Seller"))
                     {
-                        return RedirectToAction("Index", "Seller");
+                        return RedirectToAction("Index", "Home", new { area = "Seller" });
                     }
                     else
                     {
@@ -265,10 +275,13 @@ namespace Business.Controllers
             return View("Login", model);
         }
 
-
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            if (User.Identity.IsAuthenticated)
+            {
+                await _signInManager.SignOutAsync();
+            }
+
             return RedirectToAction("Index", "Home");
         }
 

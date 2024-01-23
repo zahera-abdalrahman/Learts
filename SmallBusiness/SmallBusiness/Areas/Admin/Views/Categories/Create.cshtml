@@ -1,0 +1,49 @@
+﻿@model SmallBusiness.ViewModels.CategoryViewModel
+<link href="~/EditCSS/btnEdit.css" rel="stylesheet" />
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin">Home</a></li>
+            <li class="breadcrumb-item"><a asp-action="Category" asp-controller="Admin">Category</a></li>
+            <li class="breadcrumb-item" active>Create Category</li>
+
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Vertical Form</h5>
+        <div class="row">
+                <form asp-action="Create" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group col-12">
+                        <label asp-for="CategoryName" class="form-label"></label>
+                        <input asp-for="CategoryName" class="form-control" />
+                        <span asp-validation-for="CategoryName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-12">
+                        <label asp-for="Image"></label>
+                        <input asp-for="File" type="file" name="File" />
+                        <span asp-validation-for="Image" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-brand" />
+                    </div>
+                </form>
+        </div>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</div>
+
+
+
+

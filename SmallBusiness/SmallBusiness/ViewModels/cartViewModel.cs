@@ -6,5 +6,7 @@ namespace SmallBusiness.ViewModels
     {
         public int CartItemsCount { get; set; }
         public List<CartItems> CartItems { get; set; }
+
+
     }
 }

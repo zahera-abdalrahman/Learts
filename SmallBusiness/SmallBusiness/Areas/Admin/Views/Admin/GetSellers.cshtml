@@ -1,0 +1,126 @@
+﻿@using SmallBusiness.List;
+<link href="~/EditCSS/card.css" rel="stylesheet" />
+
+@{
+    var role = ViewBag.Role as string;
+}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .search-box {
+        width: fit-content;
+        height: fit-content;
+        position: relative;
+    }
+
+    .input-search {
+        height: 50px;
+        width: 50px;
+        border-style: none;
+        padding: 10px;
+        font-size: 18px;
+        letter-spacing: 2px;
+        outline: none;
+        border-radius: 25px;
+        transition: all .5s ease-in-out;
+        background-color: #72a499;
+        padding-right: 40px;
+        color: #72a499;
+    }
+
+        .input-search::placeholder {
+            color: black;
+            font-size: 18px;
+            letter-spacing: 2px;
+            font-weight: 100;
+        }
+
+    .btn-search {
+        width: 50px;
+        height: 50px;
+        border-style: none;
+        font-size: 20px;
+        font-weight: bold;
+        outline: none;
+        cursor: pointer;
+        border-radius: 50%;
+        position: absolute;
+        right: 0px;
+        color: #ffffff;
+        background-color: transparent;
+        pointer-events: painted;
+    }
+
+        .btn-search:focus ~ .input-search {
+            width: 300px;
+            border-radius: 0px;
+            background-color: white;
+            border-bottom: 1px solid rgba(255,255,255,.5);
+            transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+        }
+
+    .input-search:focus {
+        width: 300px;
+        border-radius: 0px;
+        background-color: white;
+        border-bottom: 1px solid rgba(255,255,255,.5);
+        transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
+    }
+
+</style>
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin">Home</a></li>
+            <li class="breadcrumb-item" active>Sellers</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+
+<div class="container">
+    <form method="get" action="@Url.Action("GetSellers", "Admin")" class="form-inline">
+        <div class="search-box">
+            <button class="btn-search"><i class="bi bi-search"></i></button>
+            <input type="text" class="input-search form-control" name="searchTerm" placeholder="Search sellers by name" value="@ViewBag.SearchTerm">
+        </div>
+        <button class="btn btn-primary d-none" type="submit">Search</button>
+    </form>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="container">
+                @if (ViewBag.SellersWithProfiles != null)
+                {
+                    foreach (var sellerWithProfile in ViewBag.SellersWithProfiles)
+                    {
+                        <div class="box">
+                            <div class="image">
+                                <img src="~/User/@sellerWithProfile.Seller.Image" alt="">
+                            </div>
+                            <div class="name_job">@sellerWithProfile.Seller.FirstName @sellerWithProfile.Seller.LastName</div>
+                            <p>@sellerWithProfile.Seller.UserName</p>
+                            <div class="btns">
+                                <button class="btn btn-primary" onclick="location.href='@Url.Action("SellerDetails", "Admin", new { sellerId = sellerWithProfile.Seller.Id })'">Details</button>
+                                @if (sellerWithProfile.Seller.IsApproved)
+                                    {
+                                    <a asp-action="ToggleStatus" asp-route-id="@sellerWithProfile.Seller.Id" class="btn btn-sm font-sm rounded btn-success" style="color:white">Active</a>
+                                    }
+                                    else
+                                    {
+                                    <a asp-action="ToggleStatus" asp-route-id="@sellerWithProfile.Seller.Id" class="btn btn-sm font-sm rounded btn-danger">Inactive</a>
+                                    }
+                               
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>

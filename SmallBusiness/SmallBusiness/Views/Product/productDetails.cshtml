@@ -8,6 +8,7 @@
 <!-- Include RateYo JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
 
+
 <!-- Single Products Section Start -->
 <div class="section section-padding border-bottom">
     <div class="container">
@@ -64,7 +65,9 @@
                     </div>
                     <div class="product-buttons">
                         <a href="#" class="btn btn-icon btn-outline-body btn-hover-dark hintT-top" data-hint="Add to Wishlist"><i class="far fa-heart"></i></a>
-                        <a asp-controller="Shopping" asp-action="Cart" asp-route-productId="@ViewBag.product.ProductId" asp-route-change="add" class="btn btn-dark btn-outline-hover-dark"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                        @*  <a asp-controller="Shopping" asp-action="Cart" asp-route-productId="@ViewBag.product.ProductId" asp-route-change="add" class="btn btn-dark btn-outline-hover-dark"><i class="fas fa-shopping-cart"></i> Add to Cart</a>*@
+
+                        <a id="addToCartButton" data-product-id="@ViewBag.product.ProductId" data-change="add" class="btn btn-dark btn-outline-hover-dark"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
 
                     </div>
                     <div class="product-meta">
@@ -162,7 +165,7 @@
                                             {
                                                 <text>Unknown Image</text>
                                             }
-                                            </div>
+                                        </div>
                                         <div class="content">
                                             <div class="ratings">
                                                 <div class="ratings">
@@ -197,7 +200,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 learts-mb-30"><textarea asp-for="ReviewMessage" placeholder="Your Review *"></textarea></div>
-                                    <input type="hidden" name="ProductId" value="@ViewBag.product.ProductId" />
+                                <input type="hidden" name="ProductId" value="@ViewBag.product.ProductId" />
                                 <div class="col-12 text-center learts-mb-30"><button class="btn btn-dark btn-outline-hover-dark">Submit</button></div>
                             </div>
                         </form>
@@ -452,6 +455,73 @@
     </div>
 </div>
 <!-- Recommended Products Section End -->
+@*<script>
+    $(document).ready(function () {
+        // Attach click event to the "Add to Cart" button
+        $("#addToCartButton").click(function () {
+            var productId = $(this).data("product-id");
+            var change = $(this).data("change");
+
+            $.ajax({
+                type: "POST",
+                url: "/Shopping/Cart",
+                data: { productId: productId, change: change },
+                success: function (result) {
+                    // Update the offcanvas cart with the returned HTML
+                    $("#offcanvas-cart .body").html($(result).find(".body").html());
+
+                    // Display the offcanvas cart if it was hidden
+                    $("#offcanvas-cart").addClass("show");
+                },
+                error: function (error) {
+                    console.log("Error fetching partial view:", error);
+                    // Handle the error, show an alert, or log the error as needed
+                }
+            });
+        });
+
+        // Attach click event to the offcanvas close button
+        $(".offcanvas-close").click(function () {
+            $("#offcanvas-cart").removeClass("show");
+        });
+    });
+</script>
+*@
 
 
-           
+
+<script>
+    $(document).ready(function () {
+        // Attach click event to the "Add to Cart" button
+        $("#addToCartButton").click(function () {
+            var productId = $(this).data("product-id");
+            var change = $(this).data("change");
+
+            $.ajax({
+                type: "POST",
+                url: "/Shopping/Cart",
+                data: { productId: productId, change: change },
+                success: function (result) {
+                    // Update the offcanvas cart with the returned HTML
+                    $("#offcanvas-cart .body").html($(result).find(".body").html());
+
+                    // Display the offcanvas cart if it was hidden
+                    $("#offcanvas-cart").addClass("show");
+                },
+                error: function (error) {
+                    console.log("Error fetching partial view:", error);
+                    // Handle the error, show an alert, or log the error as needed
+                }
+            });
+        });
+
+        // Attach click event to the offcanvas close button
+        $(".offcanvas-close").click(function () {
+            $("#offcanvas-cart").removeClass("show");
+            // Reload the page after closing the offcanvas
+            location.reload(true); // Force a reload from the server
+        });
+    });
+
+
+</script>

@@ -70,10 +70,39 @@ namespace SmallBusiness.Controllers
                 .Take(8)
                 .ToListAsync();
 
+            #region cart
+            User user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
+
+            #region Fav
+            var favoriteProducts = _context.Favorite.Include(c => c.Product).Where(p => p.IsFav).ToList();
+
+            ViewBag.Fav = favoriteProducts;
+            #endregion
+
+
             ViewBag.Reviews = reviews;
 
 
             ViewBag.categoryList = _context.Category.ToList();
+
+
             ViewBag.NewProducts = newProducts;
             ViewBag.MostRatedProducts = mostRatedProducts;
             ViewBag.DiscountedProducts = discountedProducts;
@@ -82,7 +111,25 @@ namespace SmallBusiness.Controllers
         }
 
 
-       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Testimonial(Testimonial model)
@@ -110,9 +157,38 @@ namespace SmallBusiness.Controllers
 
 
         #region About
-        public IActionResult About()
+        public async Task<IActionResult> AboutAsync()
         {
+
+            //#region Fav
+            //var favoriteProducts = _context.Product.Where(p => p.IsFav).ToList();
+
+            //ViewBag.Fav = favoriteProducts;
+            //#endregion
+
+
+            #region cart
+            User user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
+
             return View();
+
         }
 
         #endregion

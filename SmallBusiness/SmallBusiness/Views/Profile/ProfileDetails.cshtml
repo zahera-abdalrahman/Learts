@@ -1,4 +1,5 @@
-﻿@{
+﻿@model SmallBusiness.ViewModels.ContactProfileViewModel
+@{
     string profileDetailsUrl = Url.Action("ProfileDetails", "Profile", new { profileId = ViewBag.ProfileDetails.Profile.ProfileId }, protocol: ViewContext.HttpContext.Request.Scheme);
 }
 <!-- Portfolio Section Start -->
@@ -18,7 +19,7 @@
                        
                     </div>
                     <ul class="meta">
-                        <li>
+                        @*<li>
                             <span class="name">Date:</span>
                             <span class="value">02:27 AM - November 22, 2018</span>
                         </li>
@@ -34,25 +35,19 @@
                             <span class="value tags">
                                 <a href="#">trending</a>
                             </span>
+                        </li>*@
+                        <li>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#contactModal">Contact Seller</button>
+
                         </li>
                         <li>
                             <span class="name">Links:</span>
                             <span class="value">
 
                                 <p>Share this link with your friends:</p>
-                                <button onclick="copyToClipboard('@profileDetailsUrl')">Copy Link</button>
+                                <button onclick="copyToClipboard('@profileDetailsUrl')" class="btn btn-primary">Copy Link</button>
                             </span>
                         </li>
-                       @* <li>
-                            <span class="name">Share:</span>
-                            <span class="value social">
-                                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                                <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                                <a href="#"><i class="far fa-envelope"></i></a>
-                            </span>
-                        </li>*@
                     </ul>
                 </div>
             </div>
@@ -68,7 +63,7 @@
     <div class="container">
         <!-- Section Title Start -->
         <div class="section-title2 text-center">
-            <h2 class="title">Products</h2>
+            <h2 class="title">Products by @ViewBag.ProfileDetails.Profile.ShopName</h2>
         </div>
         <!-- Section Title End -->
 
@@ -92,7 +87,6 @@
                         <div class="product-buttons">
                             <a href="#quickViewModal" data-bs-toggle="modal" class="product-button hintT-top" data-hint="Quick View"><i class="fas fa-search"></i></a>
                             <a href="#" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
-                            <a href="#" class="product-button hintT-top" data-hint="Compare"><i class="fas fa-random"></i></a>
                         </div>
                     </div>
                 </div>
@@ -103,6 +97,45 @@
     </div>
 </div>
 <!-- Product Style One Section End -->
+
+
+
+<!--Contact Modal-->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactModalLabel">Contact Seller</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Your contact form with hidden field for profileId -->
+                <form action="@Url.Action("SendMessage", "Profile")" method="post">
+                    <!-- Hidden field for profileId -->
+                    <input type="hidden" name="profileId" value="@ViewBag.ProfileDetails.Profile.ProfileId">
+
+                    <!-- Include fields for user to enter name, email, and message -->
+                    <div class="mb-3">
+                        <label for="contactName" class="form-label">Your Name</label>
+                        <input type="text" asp-for="Name" class="form-control" id="contactName" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactEmail" class="form-label">Your Email</label>
+                        <input type="email" asp-for="Email" class="form-control" id="contactEmail" name="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactMessage" class="form-label">Your Message</label>
+                        <textarea class="form-control" asp-for="Message" id="contactMessage" name="Message" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script>
     function copyToClipboard(link) {
         var input = document.createElement('input');

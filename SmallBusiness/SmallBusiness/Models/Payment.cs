@@ -11,8 +11,6 @@ namespace SmallBusiness.Models
         [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than 0")]
         public decimal Amount { get; set; }
 
-        public string BuyerID { get; set; }
-        public User Buyer { get; set; }
         public string Status { get; set; }
 
         [Required(ErrorMessage = "Transaction date is required")]

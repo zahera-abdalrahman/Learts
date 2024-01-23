@@ -1,0 +1,28 @@
+﻿@model SmallBusiness.ViewModels.SubscriptionViewModel
+<link href="~/EditCSS/CreditCard.css" rel="stylesheet"/>
+<h2>Create Subscription</h2>
+
+<form asp-action="CreateSubscription" method="post">
+    <input type="hidden" asp-for="SellerId" />
+
+    <div class="form-group">
+        <label for="CreditCardNumber">Credit Card Number:</label>
+        <input type="text" id="CreditCardNumber" class="form-control" placeholder="Enter credit card number" />
+        <span asp-validation-for="CreditCardNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="CreditCardExpiry">Expiry Date:</label>
+        <input type="date" id="CreditCardExpiry" name="CreditCardExpiry" class="form-control" placeholder="MM/YY" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+        <span asp-validation-for="CreditCardExpiry" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="CreditCardCvc">CVC:</label>
+        <input type="text" id="CreditCardCvc" class="form-control" placeholder="Enter CVC" />
+        <span asp-validation-for="CreditCardCvc" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Subscription</button>
+</form>
+<script src="~/EditJS/CreditCard.js"></script>

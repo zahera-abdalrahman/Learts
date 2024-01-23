@@ -13,5 +13,7 @@ namespace SmallBusiness.ViewModels
         public string Image { get; set; }
 
         public IFormFile File { get; set; }
+
+
     }
 }

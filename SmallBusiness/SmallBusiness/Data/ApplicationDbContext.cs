@@ -36,6 +36,7 @@ namespace SmallBusiness.Data
         public DbSet<Favorite> Favorite { get; set; }
 
         public DbSet<Subscription> Subscription { get; set; }
+        public DbSet<Payment> Payment { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

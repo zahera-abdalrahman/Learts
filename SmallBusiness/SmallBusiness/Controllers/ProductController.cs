@@ -29,15 +29,124 @@ namespace SmallBusiness.Controllers
             _context = context;
         }
 
-        public IActionResult products()
+        //public async Task<IActionResult> products()
+        //{
+        //    var products = _context.Product
+        //.Include(p => p.Category)
+        //.Include(p => p.profile)
+        //.ToList();
+        //    #region cart
+        //    User user = await _userManager.GetUserAsync(User);
+
+        //    if (user != null)
+        //    {
+        //        Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+        //        if (cart != null)
+        //        {
+        //            var cartItemsModified = _context
+        //                .CartItems
+        //                .Include(ci => ci.Product)
+        //                .Where(ci => ci.CartId == cart.CartId)
+        //                .ToList();
+
+        //            ViewBag.CartItems = cartItemsModified;
+        //        }
+        //    }
+        //    #endregion
+
+        //    return View(products);
+        //}
+
+
+
+        public IActionResult ProductSale()
         {
-            var products = _context.Product
-                .Include(p => p.Category) 
-                .Include(p => p.profile)  
+            var productsWithDiscount = _context
+                .Product
+                .Include(p => p.Category)
+                .Where(p => p.ProductSale > 0)
                 .ToList();
 
-            return View(products);
+            var discountedProducts = productsWithDiscount
+                .Select(
+                    p =>
+                        new
+                        {
+                            ProductId = p.ProductId,
+                            ProductName = p.ProductName,
+                            Description = p.ProductDescription,
+                            Price = p.ProductPrice,
+                            QuantityInStock = p.ProductQuantityStock,
+                            CategoryId = p.CategoryId,
+                            Category = p.Category,
+                            DiscountPercent = p.ProductSale,
+                            ImageUrl = p.ImageUrl,
+                            DiscountedPrice = p.ProductPrice - (p.ProductPrice * p.ProductSale / 100)
+                        }
+                )
+                .ToList();
+
+            ViewBag.productList = discountedProducts;
+            return View();
         }
+
+
+
+
+        public IActionResult products(string categoryName)
+        {
+            List<Product> categoryProducts;
+
+            if (string.IsNullOrEmpty(categoryName))
+            {
+                categoryName = "All";
+            }
+
+            if (categoryName.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                categoryProducts = _context.Product.Include(p => p.Category).ToList();
+            }
+            else
+            {
+                categoryProducts = _context
+                    .Product
+                    .Include(p => p.Category)
+                    .Where(p => p.Category != null && p.Category.CategoryName == categoryName)
+                    .ToList();
+            }
+
+            var discountedProducts = categoryProducts
+                .Select(
+                    p =>
+                        new
+                        {
+                            ProductId = p.ProductId,
+                            ProductName = p.ProductName,
+                            Description = p.ProductDescription,
+                            Price = p.ProductPrice,
+                            QuantityInStock = p.ProductQuantityStock,
+                            CategoryId = p.CategoryId,
+                            Category = p.Category,
+                            DiscountPercent = p.ProductSale,
+                            ImageUrl = p.ImageUrl,
+                            DiscountedPrice = p.ProductPrice - (p.ProductPrice * p.ProductSale / 100)
+                        }
+                )
+                .ToList();
+
+            ViewBag.productList = discountedProducts;
+            ViewBag.categoryList = _context.Category;
+            ViewBag.categoryCount = discountedProducts.Count;
+            ViewBag.ALL = categoryProducts.Count;
+
+
+            return View();
+        }
+
+
+
+
 
         public async Task<IActionResult> productDetails(int productId)
         {
@@ -76,6 +185,27 @@ namespace SmallBusiness.Controllers
             };
 
             ViewBag.Reviews = reviews;
+
+
+            #region cart
+            User user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
 
 
 
@@ -124,8 +254,7 @@ namespace SmallBusiness.Controllers
             }
             catch (DbUpdateException ex)
             {
-                // Handle specific database update exceptions here
-                // You can log the exception or provide a meaningful error message
+               
                 return BadRequest($"Error adding review: {ex.Message}");
             }
 

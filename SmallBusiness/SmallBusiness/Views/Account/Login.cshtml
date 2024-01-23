@@ -19,12 +19,14 @@
                                 <div class="col-12 learts-mb-50">
                                     <input asp-for="Password" type="password" placeholder="Password" class="form-control" />
                                     <span asp-validation-for="Password" class="text-danger"></span>
+
                                 </div>
                                 <div class="col-12 text-center learts-mb-50">
                                     <button type="submit" class="btn btn-dark btn-outline-hover-dark">Login</button>
                                 </div>
                                 <div class="col-12 learts-mb-50">
                                     <div class="row learts-mb-n20">
+                                       
                                         <div class="col-12 learts-mb-20">
                                             <div class="form-check">
                                                 <input asp-for="RememberMe" class="form-check-input" />
@@ -33,6 +35,10 @@
                                         </div>
                                         <div class="col-12 learts-mb-20">
                                             <a asp-action="ForgotPassword" asp-controller="Account" class="fw-400">Lost your password?</a>
+                                        </div>
+
+                                        <div class="col-12 learts-mb-20">
+                                            <a asp-action="RegisterUser" asp-controller="Account" class="fw-400">Don't have an account <span>Register</span></a>
                                         </div>
                                     </div>
                                 </div>

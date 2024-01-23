@@ -1,0 +1,31 @@
+﻿@model List<SmallBusiness.Models.OrderItems>
+
+@{
+    ViewData["Title"] = "Order Items";
+}
+
+<h1>Order Items</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Product Price</th>
+            <th>Product Image</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var orderItem in Model)
+        {
+            <tr>
+                <td>@orderItem.Product.ProductName</td>
+                <td>@orderItem.ProductQuantity</td>
+                <td>@orderItem.Product.ProductPrice</td>
+                <td>
+                    <img src="~/CategoryImg/@orderItem.Product.ImageUrl" style="width:90px">
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

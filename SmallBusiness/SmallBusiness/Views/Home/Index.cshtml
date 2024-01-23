@@ -1,7 +1,25 @@
-﻿@model SmallBusiness.Models.Testimonial
+﻿@using System.Security.Claims;
+@model SmallBusiness.Models.Testimonial
 @{
     ViewData["Title"] = "Home Page";
 }
+<style>
+    .circle{
+        width: 48px;
+        height: 48px;
+        margin: 0 5px;
+        text-align: center;
+        color: #fff;
+        border-radius: 50%;
+        background-color: #333;
+    }
+    
+    .icon{
+        font-size: 16px;
+        line-height: 48px;
+    }
+    
+</style>
 <!-- Slider main container Start -->
 <div class="home1-slider swiper-container">
     <div class="swiper-wrapper">
@@ -9,73 +27,72 @@
             <div class="home1-slide1-content">
                 <span class="bg"></span>
                 <span class="slide-border"></span>
-                <span class="icon"><img src="assets/images/slider/home1/slide-1-1.webp" alt="Slide Icon"></span>
+                <span class="icon"><img src="~/assets/images/slider/home1/slide-1-1.webp" alt="Slide Icon"></span>
                 <h2 class="title">Handicraft Shop</h2>
                 <h3 class="sub-title">Just for you</h3>
-                <div class="link"><a href="shop.html">shop now</a></div>
+                <div class="link"><a asp-action="products" asp-controller="Product">shop now</a></div>
             </div>
         </div>
         <div class="home1-slide-item swiper-slide" data-swiper-autoplay="5000" data-bg-image="https://htmldemo.net/learts/learts/assets/images/slider/home1/slide-1.webp">
             <div class="home1-slide2-content">
-                <span class="bg" data-bg-image="assets/images/slider/home1/slide-2-1.webp"></span>
+                <span class="bg" data-bg-image="~/assets/images/slider/home1/slide-2-1.webp"></span>
                 <span class="slide-border"></span>
                 <span class="icon">
-                    <img src="assets/images/slider/home1/slide-2-2.webp" alt="Slide Icon">
-                    <img src="assets/images/slider/home1/slide-2-3.webp" alt="Slide Icon">
+                    <img src="~/assets/images/slider/home1/slide-2-2.webp" alt="Slide Icon">
+                    <img src="~/assets/images/slider/home1/slide-2-3.webp" alt="Slide Icon">
                 </span>
                 <h2 class="title">Newly arrived</h2>
                 <h3 class="sub-title">Sale up to <br>10%</h3>
-                <div class="link"><a href="shop.html">shop now</a></div>
+                <div class="link"><a asp-action="ProductSale" asp-controller="Product">shop now</a></div>
             </div>
         </div>
-        <div class="home1-slide-item swiper-slide" data-swiper-autoplay="5000" data-bg-image="https://htmldemo.net/learts/learts/assets/images/slider/home1/slide-3.webp">
-            <div class="home1-slide3-content">
-                <h2 class="title">Affectious gifts</h2>
-                <h3 class="sub-title">
-                    <img class="left-icon " src="assets/images/slider/home1/slide-2-2.webp" alt="Slide Icon">
-                    For friends & family
-                    <img class="right-icon " src="assets/images/slider/home1/slide-2-3.webp" alt="Slide Icon">
-                </h3>
-                <div class="link"><a href="shop.html">shop now</a></div>
-            </div>
-        </div>
+      
     </div>
     <div class="home1-slider-prev swiper-button-prev"><i class="ti-angle-left"></i></div>
     <div class="home1-slider-next swiper-button-next"><i class="ti-angle-right"></i></div>
 </div>
 <!-- Slider main container End -->
-<!-- Shop By Category Section Start -->
-<div class="section section-fluid section-padding bg-white">
+
+
+<!-- Category Banner Style Four Section Start -->
+<div class="section section-padding pt-0 mt-5">
     <div class="container">
 
         <!-- Section Title Start -->
-        <div class="section-title text-center">
+        <div class="section-title2 text-center">
             <h3 class="sub-title">Shop by categories</h3>
-            <h2 class="title title-icon-both">Making & crafting</h2>
+            <p>Browse a wide range of distinctive pieces of arts you could never find elsewhere.</p>
         </div>
         <!-- Section Title End -->
 
-        <div class="row row-cols-xl-5 row-cols-lg-3 row-cols-sm-2 row-cols-1 learts-mb-n40">
-            @foreach (var category in ViewBag.categoryList)
+        <div class="row row-cols-lg-4 row-cols-sm-2 row-cols-1 learts-mb-n40">
+               @foreach (var category in ViewBag.categoryList)
             {
-                <div class="col learts-mb-40">
-                    <div class="category-banner5">
-                        <a href="shop.html" class="inner">
+              
+            <div class="col learts-mb-40">
+                <div class="category-banner4">
+                        <a asp-action="products" asp-controller="Product" asp-route-CategoryName="@category.CategoryName" class="inner">
                             <div class="image"><img src="~/CategoryImg/@category.Image" alt=""></div>
-                            <div class="content">
+                        <div class="content" data-bg-color="#f4ede7">
                                 <h3 class="title">@category.CategoryName</h3>
-                                <span class="number">16 Items</span>
-                            </div>
-                        </a>
-                    </div>
+                        </div>
+                    </a>
                 </div>
+            </div>
 
-            }
+         }
+
         </div>
 
     </div>
 </div>
-<!-- Shop By Category Section End -->
+<!-- Category Banner Style Four Section End -->
+
+
+
+
+
+
 <!-- Product Section Start -->
 <div class="section section-padding border-bottom">
     <div class="container">
@@ -96,6 +113,17 @@
                     <div class="tab-pane fade show active" id="tab-new-sale">
                         <!-- Products Start -->
                         <div class="products row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1">
+                            @functions {
+                                bool IsProductInUserFavorites(List<Favorite> favorites, int productId, string userId)
+                                {
+                                    return favorites != null && favorites.Any(f => f.ProductId == productId && f.UserId == userId);
+                                }
+                            }
+
+                            @{
+                                // Get the current user ID
+                                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                            }
 
                             @foreach (var newProduct in ViewBag.NewProducts)
                             {
@@ -106,25 +134,23 @@
                                                 <img src="~/CategoryImg/@newProduct.ImageUrl" alt="Product Image">
                                                 <img class="image-hover " src="~/CategoryImg/@newProduct.ImageUrl" alt="Product Image">
                                             </a>
-                                            <a href="wishlist.html" class="add-to-wishlist hintT-left" data-hint="Add to wishlist"><i class="far fa-heart"></i></a>
+                                            <button type="button" class="add-to-wishlist " data-product-id="@newProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
+                                                <i class="@(IsProductInUserFavorites(ViewBag.Fav, newProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, newProduct.ProductId, currentUserId)"></i>
+                                            </button>
                                         </div>
                                         <div class="product-info">
                                             <h6 class="title"><a href="product-details.html">@newProduct.ProductName</a></h6>
-                                            <span class="price">
-                                                $@newProduct.ProductPrice
-                                            </span>
+                                            <span class="price">$@newProduct.ProductPrice</span>
                                             <div class="product-buttons">
-                                                <a href="#quickViewModal" data-bs-toggle="modal" class="product-button hintT-top" data-hint="Quick View"><i class="fas fa-search"></i></a>
-                                                <a href="#" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
-                                                <a href="#" class="product-button hintT-top" data-hint="Compare"><i class="fas fa-random"></i></a>
+                                                <a href="#" class="product-button hintT-top" data-hint="Quick View" onclick="showProductDetails(@newProduct.ProductId)">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                                <a class="addToCartButton circle" data-product-id="@newProduct.ProductId" data-change="add" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart icon"></i></a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             }
-
-
 
                         </div>
                         <!-- Products End -->
@@ -139,12 +165,14 @@
                                         <div class="product-thumb">
                                             <a href="product-details.html" class="image">
                                                 <span class="product-badges">
-                                                    <span class="onsale">-@discountedProduct.DiscountPercent%</span>
+                                                    <span class="onsale">-@discountedProduct.DiscountPercent.ToString("0.")%</span>
                                                 </span>
                                                 <img src="~/CategoryImg/@discountedProduct.ImageUrl" alt="Product Image">
                                                 <img class="image-hover " src="~/CategoryImg/@discountedProduct.ImageUrl" alt="Product Image">
                                             </a>
-                                            <a href="wishlist.html" class="add-to-wishlist hintT-left" data-hint="Add to wishlist"><i class="far fa-heart"></i></a>
+                                            <button type="button" class="add-to-wishlist " data-product-id="@discountedProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
+                                                <i class="@(IsProductInUserFavorites(ViewBag.Fav, discountedProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, discountedProduct.ProductId, currentUserId)"></i>
+                                            </button>
                                         </div>
                                         <div class="product-info">
                                             <h6 class="title"><a href="product-details.html">@discountedProduct.ProductName</a></h6>
@@ -154,8 +182,7 @@
                                             </span>
                                             <div class="product-buttons">
                                                 <a href="#quickViewModal" data-bs-toggle="modal" class="product-button hintT-top" data-hint="Quick View"><i class="fas fa-search"></i></a>
-                                                <a href="#" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
-                                                <a href="#" class="product-button hintT-top" data-hint="Compare"><i class="fas fa-random"></i></a>
+                                                <a class="addToCartButton" data-product-id="@discountedProduct.ProductId" data-change="add" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -173,11 +200,16 @@
                                 <div class="col">
                                     <div class="product">
                                         <div class="product-thumb">
+                                            <span class="product-badges">
+                                                <span class="hot">hot</span>
+                                            </span>
                                             <a href="product-details.html" class="image">
                                                 <img src="~/CategoryImg/@rateProduct.ImageUrl" alt="Product Image">
                                                 <img class="image-hover " src="~/CategoryImg/@rateProduct.ImageUrl" alt="Product Image">
                                             </a>
-                                            <a href="wishlist.html" class="add-to-wishlist hintT-left" data-hint="Add to wishlist"><i class="far fa-heart"></i></a>
+                                            <button type="button" class="add-to-wishlist " data-product-id="@rateProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
+                                                <i class="@(IsProductInUserFavorites(ViewBag.Fav, rateProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, rateProduct.ProductId, currentUserId)"></i>
+                                            </button>
                                         </div>
                                         <div class="product-info">
                                             <h6 class="title"><a href="product-details.html">@rateProduct.ProductName</a></h6>
@@ -186,8 +218,7 @@
                                             </span>
                                             <div class="product-buttons">
                                                 <a href="#quickViewModal" data-bs-toggle="modal" class="product-button hintT-top" data-hint="Quick View"><i class="fas fa-search"></i></a>
-                                                <a href="#" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
-                                                <a href="#" class="product-button hintT-top" data-hint="Compare"><i class="fas fa-random"></i></a>
+                                                <a class="addToCartButton" data-product-id="@rateProduct.ProductId" data-change="add" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart" style="font-size: 16px;line-height: 48px;"></i></a>
                                             </div>
                                         </div>
                                     </div>
@@ -202,13 +233,16 @@
             </div>
         </div>
         <!-- Product Tab End -->
-        <div class="row g-0 justify-content-center learts-mt-50">
+       @* <div class="row g-0 justify-content-center learts-mt-50">
             <a href="#" class="btn p-0"><i class="ti-plus"></i> load more ...</a>
-        </div>
+        </div>*@
 
     </div>
 </div>
 <!-- Product Section End -->
+
+
+
 <!-- Testimonial Section Start -->
 <div class="section section-padding">
     <div class="container">
@@ -288,140 +322,111 @@
 </div>
 
 
-<div class="quickViewModal modal fade" id="quickViewModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <button class="close" data-bs-dismiss="modal">&times;</button>
-            <div class="row learts-mb-n30">
 
-                <!-- Product Images Start -->
-                <div class="col-lg-6 col-12 learts-mb-30">
-                    <div class="product-images">
-                        <div class="product-gallery-slider-quickview">
-                            <div class="product-zoom" data-image="assets/images/product/single/1/product-zoom-1.webp">
-                                <img src="assets/images/product/single/1/product-1.webp" alt="">
-                            </div>
-                            <div class="product-zoom" data-image="assets/images/product/single/1/product-zoom-2.webp">
-                                <img src="assets/images/product/single/1/product-2.webp" alt="">
-                            </div>
-                            <div class="product-zoom" data-image="assets/images/product/single/1/product-zoom-3.webp">
-                                <img src="assets/images/product/single/1/product-3.webp" alt="">
-                            </div>
-                            <div class="product-zoom" data-image="assets/images/product/single/1/product-zoom-4.webp">
-                                <img src="assets/images/product/single/1/product-4.webp" alt="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Images End -->
-                <!-- Product Summery Start -->
-                <div class="col-lg-6 col-12 overflow-hidden position-relative learts-mb-30">
-                    <div class="product-summery customScroll">
-                        <div class="product-ratings">
-                            <span class="star-rating">
-                                <span class="rating-active" style="width: 100%;">ratings</span>
-                            </span>
-                            <a href="#reviews" class="review-link">(<span class="count">3</span> customer reviews)</a>
-                        </div>
-                        <h3 class="product-title">Cleaning Dustpan & Brush</h3>
-                        <div class="product-price">£38.00 – £50.00</div>
-                        <div class="product-description">
-                            <p>Easy clip-on handle – Hold the brush and dustpan together for storage; the dustpan edge is serrated to allow easy scraping off the hair without entanglement. High-quality bristles – no burr damage, no scratches, thick and durable, comfortable to remove dust and smaller particles.</p>
-                        </div>
-                        <div class="product-variations">
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td class="label"><span>Size</span></td>
-                                        <td class="value">
-                                            <div class="product-sizes">
-                                                <a href="#">Large</a>
-                                                <a href="#">Medium</a>
-                                                <a href="#">Small</a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label"><span>Color</span></td>
-                                        <td class="value">
-                                            <div class="product-colors">
-                                                <a href="#" data-bg-color="#000000"></a>
-                                                <a href="#" data-bg-color="#ffffff"></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label"><span>Quantity</span></td>
-                                        <td class="value">
-                                            <div class="product-quantity">
-                                                <span class="qty-btn minus"><i class="ti-minus"></i></span>
-                                                <input type="text" class="input-qty" value="1">
-                                                <span class="qty-btn plus"><i class="ti-plus"></i></span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="product-buttons">
-                            <a href="#" class="btn btn-icon btn-outline-body btn-hover-dark"><i class="far fa-heart"></i></a>
-                            <a href="#" class="btn btn-dark btn-outline-hover-dark"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
-                            <a href="#" class="btn btn-icon btn-outline-body btn-hover-dark"><i class="fas fa-random"></i></a>
-                        </div>
-                        <div class="product-brands">
-                            <span class="title">Brands</span>
-                            <div class="brands">
-                                <a href="#"><img src="assets/images/brands/brand-3.webp" alt=""></a>
-                                <a href="#"><img src="assets/images/brands/brand-8.webp" alt=""></a>
-                            </div>
-                        </div>
-                        <div class="product-meta mb-0">
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td class="label"><span>SKU</span></td>
-                                        <td class="value">0404019</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label"><span>Category</span></td>
-                                        <td class="value">
-                                            <ul class="product-category">
-                                                <li><a href="#">Kitchen</a></li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label"><span>Tags</span></td>
-                                        <td class="value">
-                                            <ul class="product-tags">
-                                                <li><a href="#">handmade</a></li>
-                                                <li><a href="#">learts</a></li>
-                                                <li><a href="#">mug</a></li>
-                                                <li><a href="#">product</a></li>
-                                                <li><a href="#">learts</a></li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label"><span>Share on</span></td>
-                                        <td class="va">
-                                            <div class="product-share">
-                                                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                                <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                                                <a href="#"><i class="fab fa-pinterest"></i></a>
-                                                <a href="#"><i class="far fa-envelope"></i></a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- Product Summery End -->
 
-            </div>
-        </div>
-    </div>
-</div>
+@section scripts {
+    <script>
+        function toggleFavorite(button) {
+            var productId = $(button).data('product-id');
+            var heartIcon = $(button).find('i');
+            var initialFavState = $(heartIcon).data('fav');
+
+            $.ajax({
+                url: '@Url.Action("ToggleFavorite", "Favorite")',
+                type: 'POST',
+                data: { productId: productId },
+                success: function (data) {
+                    if (data.isFav) {
+                        heartIcon.removeClass('far').addClass('fas');
+                    } else {
+                        heartIcon.removeClass('fas').addClass('far');
+                    }
+
+                    $(heartIcon).data('fav', data.isFav);
+
+                    // Reload the page
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error during AJAX request:', error);
+                    // Handle error as needed
+                }
+            });
+        }
+    </script>
+}
+
+
+@*<script>
+    $(document).ready(function () {
+        // Attach click event to the "Add to Cart" button
+        $("#addToCartButton").click(function () {
+            var productId = $(this).data("product-id");
+            var change = $(this).data("change");
+
+            $.ajax({
+                type: "POST",
+                url: "/Shopping/Cart",
+                data: { productId: productId, change: change },
+                success: function (result) {
+                    // Update the offcanvas cart with the returned HTML
+                    $("#offcanvas-cart .body").html($(result).find(".body").html());
+
+                    // Display the offcanvas cart if it was hidden
+                    $("#offcanvas-cart").addClass("show");
+                },
+                error: function (error) {
+                    console.log("Error fetching partial view:", error);
+                    // Handle the error, show an alert, or log the error as needed
+                }
+            });
+        });
+
+        // Attach click event to the offcanvas close button
+        $(".offcanvas-close").click(function () {
+            $("#offcanvas-cart").removeClass("show");
+            // Reload the page after closing the offcanvas
+            location.reload(true); // Force a reload from the server
+        });
+    });
+
+
+</script>*@
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        // Attach click event to the "Add to Cart" button with class addToCartButton
+        $(".addToCartButton").click(function () {
+            var productId = $(this).data("product-id");
+            var change = $(this).data("change");
+
+            $.ajax({
+                type: "POST",
+                url: "/Shopping/Cart",
+                data: { productId: productId, change: change },
+                success: function (result) {
+                    // Update the offcanvas cart with the returned HTML
+                    $("#offcanvas-cart .body").html($(result).find(".body").html());
+
+                    // Display the offcanvas cart if it was hidden
+                    $("#offcanvas-cart").addClass("show");
+                },
+                error: function (error) {
+                    console.log("Error fetching partial view:", error);
+                    // Handle the error, show an alert, or log the error as needed
+                }
+            });
+        });
+
+        // Attach click event to the offcanvas close button
+        $(".offcanvas-close").click(function () {
+            $("#offcanvas-cart").removeClass("show");
+            // Reload the page after closing the offcanvas
+            location.reload(true); // Force a reload from the server
+        });
+    });
+</script>

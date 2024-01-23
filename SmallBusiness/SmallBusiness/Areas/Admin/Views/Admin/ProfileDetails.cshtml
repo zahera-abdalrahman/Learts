@@ -1,0 +1,35 @@
+﻿@model SmallBusiness.Models.Profile
+
+@{
+    ViewData["Title"] = "Profile Details";
+}
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin">Home</a></li>
+            <li class="breadcrumb-item">Tables</li>
+            <li class="breadcrumb-item active">Profile Details</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <dl class="row">
+                <dt class="col-sm-4">Profile Image:</dt>
+                <dd class="col-sm-8"><img src="~/Profile/@Model.ProfileImage" style="width:70px" /></dd>
+
+                <dt class="col-sm-4">Shop Name:</dt>
+                <dd class="col-sm-8">@Model.ShopName</dd>
+
+                <dt class="col-sm-4">Description:</dt>
+                <dd class="col-sm-8">@Model.Description</dd>
+
+                <dt class="col-sm-4">Approval Status:</dt>
+                <dd class="col-sm-8">@Model.IsApproved</dd>
+            </dl>
+        </div>
+    </div>
+</section>

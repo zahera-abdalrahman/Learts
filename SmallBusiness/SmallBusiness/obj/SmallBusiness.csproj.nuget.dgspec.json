@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Orange Coding School\\Final project for orange coding school\\The Project\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj": {}
+    "F:\\Orange Coding School\\Final project for orange coding school\\github copy\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj": {}
   },
   "projects": {
-    "F:\\Orange Coding School\\Final project for orange coding school\\The Project\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj": {
+    "F:\\Orange Coding School\\Final project for orange coding school\\github copy\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Orange Coding School\\Final project for orange coding school\\The Project\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj",
+        "projectUniqueName": "F:\\Orange Coding School\\Final project for orange coding school\\github copy\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj",
         "projectName": "SmallBusiness",
-        "projectPath": "F:\\Orange Coding School\\Final project for orange coding school\\The Project\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj",
+        "projectPath": "F:\\Orange Coding School\\Final project for orange coding school\\github copy\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "F:\\Orange Coding School\\Final project for orange coding school\\The Project\\SmallBusiness\\SmallBusiness\\obj\\",
+        "outputPath": "F:\\Orange Coding School\\Final project for orange coding school\\github copy\\SmallBusiness\\SmallBusiness\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",

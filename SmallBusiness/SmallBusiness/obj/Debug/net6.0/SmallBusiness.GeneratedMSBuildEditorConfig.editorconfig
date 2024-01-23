@@ -9,149 +9,301 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = SmallBusiness
 build_property.RootNamespace = SmallBusiness
-build_property.ProjectDir = F:\Orange Coding School\Final project for orange coding school\The Project\SmallBusiness\SmallBusiness\
+build_property.ProjectDir = F:\Orange Coding School\Final project for orange coding school\github copy\SmallBusiness\SmallBusiness\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = F:\Orange Coding School\Final project for orange coding school\The Project\SmallBusiness\SmallBusiness
+build_property.MSBuildProjectDirectory = F:\Orange Coding School\Final project for orange coding school\github copy\SmallBusiness\SmallBusiness
 build_property._RazorSourceGeneratorDebug = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Account/ConfirmationMessage.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Admin/GetSellers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWRtaW5cR2V0U2VsbGVycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Admin/GetUsers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWRtaW5cR2V0VXNlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Admin/ProfileDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWRtaW5cUHJvZmlsZURldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Admin/SellerDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWRtaW5cU2VsbGVyRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Admin/UserDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQWRtaW5cVXNlckRldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Categories/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Categories/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Categories/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Categories/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Categories/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcQ2F0ZWdvcmllc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Order/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Order/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Order/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Order/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Order/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Order/OrderItems.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcT3JkZXJcT3JkZXJJdGVtcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Review/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmV2aWV3XENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Review/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmV2aWV3XERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Review/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmV2aWV3XERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Review/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmV2aWV3XEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Review/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcUmV2aWV3XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Shared/_AdminLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Testimonial/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVGVzdGltb25pYWxcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Testimonial/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVGVzdGltb25pYWxcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Testimonial/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVGVzdGltb25pYWxcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Testimonial/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVGVzdGltb25pYWxcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/Testimonial/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcVGVzdGltb25pYWxcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Admin/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQWRtaW5cVmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXEhvbWVcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Product/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFByb2R1Y3RcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Product/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFByb2R1Y3RcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Product/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFByb2R1Y3RcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Product/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFByb2R1Y3RcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Product/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFByb2R1Y3RcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Seller/CreateProduct.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFNlbGxlclxDcmVhdGVQcm9kdWN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Seller/EditProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFNlbGxlclxFZGl0UHJvZmlsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Seller/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFNlbGxlclxQcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/Shared/_SellerLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXFNoYXJlZFxfU2VsbGVyTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXF9WaWV3SW1wb3J0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Areas/Seller/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcU2VsbGVyXFZpZXdzXF9WaWV3U3RhcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Account/ConfirmationMessage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDb25maXJtYXRpb25NZXNzYWdlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Account/ForgotPassword.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Account/ForgotPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Account/Login.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Account/RegisterSeller.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Account/Pricing.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxQcmljaW5nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Account/RegisterSeller.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3RlclNlbGxlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Account/RegisterUser.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Account/RegisterUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3RlclVzZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Account/ResetPassword.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Account/ResetPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Admin/Category.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ2F0ZWdvcnkuY3NodG1s
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Contact/Contact.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29udGFjdFxDb250YWN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Admin/CreateCategory.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlQ2F0ZWdvcnkuY3NodG1s
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Favorite/FavoriteList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF2b3JpdGVcRmF2b3JpdGVMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Admin/GetSellers.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cR2V0U2VsbGVycy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Admin/GetUsers.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cR2V0VXNlcnMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Admin/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Admin/ProfileDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUHJvZmlsZURldGFpbHMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Admin/SellerDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU2VsbGVyRGV0YWlscy5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Admin/UserDetails.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlckRldGFpbHMuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Home/About.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Home/About.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBYm91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Home/Index.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Home/Privacy.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Product/productDetails.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Product/productDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxwcm9kdWN0RGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Product/products.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Product/products.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxwcm9kdWN0cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Profile/AllSellers.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Product/ProductSale.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdFxQcm9kdWN0U2FsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Profile/AllSellers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxBbGxTZWxsZXJzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Profile/ProfileDetails.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Profile/ProfileDetails.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxQcm9maWxlRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Seller/CreateProduct.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VsbGVyXENyZWF0ZVByb2R1Y3QuY3NodG1s
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shared/Components/CartQuantity/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ2FydFF1YW50aXR5XERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Seller/EditProfile.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VsbGVyXEVkaXRQcm9maWxlLmNzaHRtbA==
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shared/Components/FavoriteQuantity/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRmF2b3JpdGVRdWFudGl0eVxEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Seller/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VsbGVyXEluZGV4LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Seller/Profile.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VsbGVyXFByb2ZpbGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Shared/Error.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Shared/_AdminLayout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shared/_CartPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9DYXJ0UGFydGlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Shared/_LoginPartial.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shared/_LoginPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Shared/_SellerLayout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TZWxsZXJMYXlvdXQuY3NodG1s
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shared/_SearchPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TZWFyY2hQYXJ0aWFsLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Shared/_ValidationScriptsPartial.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Shopping/Cart.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shopping/Cart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hvcHBpbmdcQ2FydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Shopping/Checkout.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shopping/Checkout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hvcHBpbmdcQ2hlY2tvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/_ViewImports.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Subscription/CreateSubscription.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3Vic2NyaXB0aW9uXENyZWF0ZVN1YnNjcmlwdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/UserDetails/UserDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlckRldGFpbHNcVXNlckRldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/_ViewStart.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/Orange Coding School/Final project for orange coding school/The Project/SmallBusiness/SmallBusiness/Views/Shared/_Layout.cshtml]
+[F:/Orange Coding School/Final project for orange coding school/github copy/SmallBusiness/SmallBusiness/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-one6f2l4d6

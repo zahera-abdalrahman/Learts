@@ -46,5 +46,7 @@ namespace SmallBusiness.Models
 
         public List<Review> Reviews { get; set; } // Add this property to hold the reviews for the product
 
+        //public bool IsFav { get; set; }
+
     }
 }

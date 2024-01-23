@@ -11,6 +11,9 @@ namespace SmallBusiness.Models
         
         [Required]
         public string Image { get; set; }
-      
+
+        public List<Product> Products { get; set; }
+
+
     }
 }

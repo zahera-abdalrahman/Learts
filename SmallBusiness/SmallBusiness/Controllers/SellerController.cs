@@ -1,209 +1,210 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using SmallBusiness.Data;
-using SmallBusiness.Models;
-using SmallBusiness.ViewModels;
+﻿//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Identity;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.AspNetCore.Mvc.Rendering;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.Extensions.Hosting;
+//using SmallBusiness.Data;
+//using SmallBusiness.Models;
+//using SmallBusiness.ViewModels;
 
-namespace SmallBusiness.Controllers
-{
-    public class SellerController : Controller
-    {
-
-
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<User> _userManager;
-
-        public SellerController(ApplicationDbContext context, UserManager<User> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-
-        }
+//namespace SmallBusiness.Controllers
+//{
+//    public class SellerController : Controller
+//    {
 
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+//        private readonly ApplicationDbContext _context;
+//        private readonly UserManager<User> _userManager;
+
+//        public SellerController(ApplicationDbContext context, UserManager<User> userManager)
+//        {
+//            _context = context;
+//            _userManager = userManager;
+
+//        }
+
+
+//        public IActionResult Index()
+//        {
+
+//            return View();
+//        }
 
 
 
-        /////////////////////////////////////
+//        /////////////////////////////////////
 
-        #region Profile
-        public IActionResult Profile()
-        {
-            var user = _userManager.GetUserAsync(User).Result;
+//        #region Profile
+//        public IActionResult Profile()
+//        {
+//            var user = _userManager.GetUserAsync(User).Result;
 
-            var existingProfile = _context.Profile.FirstOrDefault(p => p.SellerId == user.Id);
+//            var existingProfile = _context.Profile.FirstOrDefault(p => p.SellerId == user.Id);
 
-            if (existingProfile != null)
-            {
-                return RedirectToAction("EditProfile", new { profileId = existingProfile.ProfileId });
-            }
-            else
-            {
-                return View(); // Render the "Profile" view instead of redirecting
-            }
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Profile(ProfileViewModel viewModel, [FromServices] IWebHostEnvironment host)
-        {
-            string ImageName = "";
-            if (viewModel.File != null)
-            {
-                string PathImage = Path.Combine(host.WebRootPath, "Profile");
-                FileInfo fi = new FileInfo(viewModel.File.FileName);
-                ImageName = "Image" + DateTime.UtcNow.ToString().Replace("/", "").Replace(":", "").Replace("-", "").Replace(" ", "") + fi.Extension;
-
-                string FullPath = Path.Combine(PathImage, ImageName);
-                viewModel.File.CopyTo(new FileStream(FullPath, FileMode.Create));
-            }
+//            if (existingProfile != null)
+//            {
+//                return RedirectToAction("EditProfile", new { profileId = existingProfile.ProfileId });
+//            }
+//            else
+//            {
+//                return View(); // Render the "Profile" view instead of redirecting
+//            }
+//        }
 
 
-            var user = await _userManager.GetUserAsync(User);
-            var existingProfile = _context.Profile.FirstOrDefault(p => p.SellerId == user.Id);
+//        [HttpPost]
+//        public async Task<IActionResult> Profile(ProfileViewModel viewModel, [FromServices] IWebHostEnvironment host)
+//        {
+//            string ImageName = "";
+//            if (viewModel.File != null)
+//            {
+//                string PathImage = Path.Combine(host.WebRootPath, "Profile");
+//                FileInfo fi = new FileInfo(viewModel.File.FileName);
+//                ImageName = "Image" + DateTime.UtcNow.ToString().Replace("/", "").Replace(":", "").Replace("-", "").Replace(" ", "") + fi.Extension;
 
-            if (existingProfile != null)
-            {
-                return RedirectToAction("EditProfile", new { profileId = existingProfile.ProfileId });
-            }
-            else
-            {
-                var profile = new Profile
-                {
-                    ProfileImage = ImageName,
-                    ShopName = viewModel.ShopName,
-                    Description = viewModel.Description,
-                    IsApproved = viewModel.IsApproved,
-                    SellerId = user.Id,
+//                string FullPath = Path.Combine(PathImage, ImageName);
+//                viewModel.File.CopyTo(new FileStream(FullPath, FileMode.Create));
+//            }
 
-                };
 
-                _context.Profile.Add(profile);
-                _context.SaveChanges();
+//            var user = await _userManager.GetUserAsync(User);
+//            var existingProfile = _context.Profile.FirstOrDefault(p => p.SellerId == user.Id);
 
-            }
+//            if (existingProfile != null)
+//            {
+//                return RedirectToAction("EditProfile", new { profileId = existingProfile.ProfileId });
+//            }
+//            else
+//            {
+//                var profile = new Profile
+//                {
+//                    ProfileImage = ImageName,
+//                    ShopName = viewModel.ShopName,
+//                    Description = viewModel.Description,
+//                    IsApproved = viewModel.IsApproved,
+//                    SellerId = user.Id,
 
-            return View(viewModel);
-        }
+//                };
 
-        public IActionResult EditProfile(int profileId)
-        {
-            var profile = _context.Profile.FirstOrDefault(p => p.ProfileId == profileId);
+//                _context.Profile.Add(profile);
+//                _context.SaveChanges();
 
-            if (profile == null || profile.SellerId != GetCurrentUserId())
-            {
-                return RedirectToAction("Profile");
-            }
+//            }
 
-            var viewModel = new ProfileViewModel
-            {
-                ProfileId = profile.ProfileId,
-                ProfileImage = profile.ProfileImage,
-                ShopName = profile.ShopName,
-                Description = profile.Description,
-                IsApproved = profile.IsApproved
-            };
+//            return View(viewModel);
+//        }
 
-            return View(viewModel);
-        }
+//        public IActionResult EditProfile(int profileId)
+//        {
+//            var profile = _context.Profile.FirstOrDefault(p => p.ProfileId == profileId);
+
+//            if (profile == null || profile.SellerId != GetCurrentUserId())
+//            {
+//                return RedirectToAction("Profile");
+//            }
+
+//            var viewModel = new ProfileViewModel
+//            {
+//                ProfileId = profile.ProfileId,
+//                ProfileImage = profile.ProfileImage,
+//                ShopName = profile.ShopName,
+//                Description = profile.Description,
+//                IsApproved = profile.IsApproved
+//            };
+
+//            return View(viewModel);
+//        }
 
       
-        [HttpPost]
-        public IActionResult EditProfile(int profileId, ProfileViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var profile = _context.Profile.FirstOrDefault(p => p.ProfileId == profileId);
+//        [HttpPost]
+//        public IActionResult EditProfile(int profileId, ProfileViewModel viewModel)
+//        {
+//            if (ModelState.IsValid)
+//            {
+//                var profile = _context.Profile.FirstOrDefault(p => p.ProfileId == profileId);
 
-                if (profile == null || profile.SellerId != GetCurrentUserId())
-                {
-                    return RedirectToAction("Profile");
-                }
+//                if (profile == null || profile.SellerId != GetCurrentUserId())
+//                {
+//                    return RedirectToAction("Profile");
+//                }
 
-                profile.ProfileImage = viewModel.ProfileImage;
-                profile.ShopName = viewModel.ShopName;
-                profile.Description = viewModel.Description;
-                profile.IsApproved = viewModel.IsApproved;
+//                profile.ProfileImage = viewModel.ProfileImage;
+//                profile.ShopName = viewModel.ShopName;
+//                profile.Description = viewModel.Description;
+//                profile.IsApproved = viewModel.IsApproved;
 
-                _context.Profile.Update(profile);
-                _context.SaveChanges();
+//                _context.Profile.Update(profile);
+//                _context.SaveChanges();
 
-                return RedirectToAction("Profile");
-            }
+//                return RedirectToAction("Profile");
+//            }
 
-            return View(viewModel);
-        }
+//            return View(viewModel);
+//        }
 
-        private string GetCurrentUserId()
-        {
-            return _userManager.GetUserId(User);
-        }
-        #endregion
+//        private string GetCurrentUserId()
+//        {
+//            return _userManager.GetUserId(User);
+//        }
+//        #endregion
 
-        /////////////////////////////////////
+//        /////////////////////////////////////
 
-        #region AddProduct
-        public IActionResult CreateProduct()
-        {
-            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName");
-            return View();
-        }
+//        #region AddProduct
+//        public IActionResult CreateProduct()
+//        {
+//            ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName");
+//            return View();
+//        }
 
-        [HttpPost]
-        public IActionResult CreateProduct(ProductViewModel viewModel, [FromServices] IWebHostEnvironment host)
-        {
-
-
-            string ImageName = "";
-            if (viewModel.File != null)
-            {
-                string PathImage = Path.Combine(host.WebRootPath, "CategoryImg");
-                FileInfo fi = new FileInfo(viewModel.File.FileName);
-                ImageName = "Image" + DateTime.UtcNow.ToString().Replace("/", "").Replace(":", "").Replace("-", "").Replace(" ", "") + fi.Extension;
-
-                string FullPath = Path.Combine(PathImage, ImageName);
-                viewModel.File.CopyTo(new FileStream(FullPath, FileMode.Create));
-            }
+//        [HttpPost]
+//        public IActionResult CreateProduct(ProductViewModel viewModel, [FromServices] IWebHostEnvironment host)
+//        {
 
 
-                var sellerId = GetCurrentUserId();
-                var profile = _context.Profile.FirstOrDefault(p => p.SellerId == sellerId);
+//            string ImageName = "";
+//            if (viewModel.File != null)
+//            {
+//                string PathImage = Path.Combine(host.WebRootPath, "CategoryImg");
+//                FileInfo fi = new FileInfo(viewModel.File.FileName);
+//                ImageName = "Image" + DateTime.UtcNow.ToString().Replace("/", "").Replace(":", "").Replace("-", "").Replace(" ", "") + fi.Extension;
 
-                if (profile == null)
-                {
-                    return RedirectToAction("Profile");
-                }
-
-
-                var product = new Product
-                {
-                    ProductName = viewModel.ProductName,
-                    ProductDescription = viewModel.ProductDescription,
-                    ProductPrice = viewModel.ProductPrice,
-                    ProductQuantityStock = viewModel.ProductQuantityStock,
-                    ProductSale = viewModel.ProductSale,
-                    ImageUrl = ImageName,
-                    CategoryId = viewModel.CategoryId,
-                    ProfileId = profile.ProfileId,
-                    CreateAt= DateTime.UtcNow,
-                    ReviewRate=viewModel.ReviewRate,
-                };
-
-                _context.Product.Add(product);
-                _context.SaveChanges();
-
-                return RedirectToAction("Profile");
-        }
+//                string FullPath = Path.Combine(PathImage, ImageName);
+//                viewModel.File.CopyTo(new FileStream(FullPath, FileMode.Create));
+//            }
 
 
-        #endregion
-    }
-}
+//                var sellerId = GetCurrentUserId();
+//                var profile = _context.Profile.FirstOrDefault(p => p.SellerId == sellerId);
+
+//                if (profile == null)
+//                {
+//                    return RedirectToAction("Profile");
+//                }
+
+
+//                var product = new Product
+//                {
+//                    ProductName = viewModel.ProductName,
+//                    ProductDescription = viewModel.ProductDescription,
+//                    ProductPrice = viewModel.ProductPrice,
+//                    ProductQuantityStock = viewModel.ProductQuantityStock,
+//                    ProductSale = viewModel.ProductSale,
+//                    ImageUrl = ImageName,
+//                    CategoryId = viewModel.CategoryId,
+//                    ProfileId = profile.ProfileId,
+//                    CreateAt= DateTime.UtcNow,
+//                    ReviewRate=viewModel.ReviewRate,
+//                };
+
+//                _context.Product.Add(product);
+//                _context.SaveChanges();
+
+//                return RedirectToAction("Profile");
+//        }
+
+
+//        #endregion
+//    }
+//}

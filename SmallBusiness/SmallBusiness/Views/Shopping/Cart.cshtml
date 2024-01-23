@@ -36,9 +36,9 @@
                                         itemPrice = (double)item.Product.ProductPrice;
                                     }
                                 }
-                                <td class="name"> <a href="product-details.html">@itemPrice</a></td>
+                                <td class="name"> <a href="product-details.html">@item.Product.ProductName</a></td>
 
-                                <td class="price"><span>£@item.Product.ProductName</span></td>
+                                <td class="price"><span>£@itemPrice</span></td>
                                 <td class="quantity">
 
                                     <div class="detail-qty border radius  m-auto product-quantity">

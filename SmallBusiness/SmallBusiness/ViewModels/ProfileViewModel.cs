@@ -6,6 +6,10 @@ namespace SmallBusiness.ViewModels
 {
     public class ProfileViewModel
     {
+        public string UserId { get; set; }
+
+
+
         [Key]
         public int ProfileId { get; set; }
 

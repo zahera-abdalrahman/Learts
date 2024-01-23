@@ -235,11 +235,10 @@ namespace SmallBusiness.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FavoriteId"), 1L, 1);
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsFav")
+                        .HasColumnType("bit");
 
-                    b.Property<int?>("ProfileId")
-                        .IsRequired()
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -249,8 +248,6 @@ namespace SmallBusiness.Migrations
                     b.HasKey("FavoriteId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProfileId");
 
                     b.HasIndex("UserId");
 
@@ -315,6 +312,34 @@ namespace SmallBusiness.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("SmallBusiness.Models.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("SmallBusiness.Models.Product", b =>
@@ -695,12 +720,6 @@ namespace SmallBusiness.Migrations
                         .WithMany()
                         .HasForeignKey("ProductId");
 
-                    b.HasOne("SmallBusiness.Models.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SmallBusiness.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -708,8 +727,6 @@ namespace SmallBusiness.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-
-                    b.Navigation("Profile");
 
                     b.Navigation("User");
                 });
@@ -750,10 +767,21 @@ namespace SmallBusiness.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("SmallBusiness.Models.Payment", b =>
+                {
+                    b.HasOne("SmallBusiness.Models.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("SmallBusiness.Models.Product", b =>
                 {
                     b.HasOne("SmallBusiness.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -835,6 +863,11 @@ namespace SmallBusiness.Migrations
                     b.Navigation("CartItems");
 
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("SmallBusiness.Models.Category", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("SmallBusiness.Models.Product", b =>

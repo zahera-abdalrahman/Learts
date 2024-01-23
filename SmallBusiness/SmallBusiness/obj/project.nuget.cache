@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oVxpEjBk6n9sVn1znVTDmzDaKBI+ARF9t5S0PJkl0RnTvQeYDYhvusU6a/5meXh8+7kmVegA1IikB+th/7Fw7A==",
+  "dgSpecHash": "M4uVfl5fXOnOIY7vBiz8Fsofb1LJrsfsPzk+Jz53ko+3id8Vn99e9DApSn6GaUcXxZyDZWIpvYLu518LfEQWfQ==",
   "success": true,
-  "projectFilePath": "F:\\Orange Coding School\\Final project for orange coding school\\The Project\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj",
+  "projectFilePath": "F:\\Orange Coding School\\Final project for orange coding school\\github copy\\SmallBusiness\\SmallBusiness\\SmallBusiness.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\bouncycastle.cryptography\\2.2.1\\bouncycastle.cryptography.2.2.1.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",

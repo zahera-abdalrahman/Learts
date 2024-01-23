@@ -1,0 +1,68 @@
+﻿@model SmallBusiness.ViewModels.ProfileViewModel
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Seller">Home</a></li>
+            <li class="breadcrumb-item"><a asp-action="EditProfile" asp-controller="Seller">Category</a></li>
+            <li class="breadcrumb-item" active>Create Category</li>
+
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Vertical Form</h5>
+        <div class="row">
+            <img id="previewImage" src="~/2024.png" style="width:300px;height:300px;border-radius:50%;margin:auto" class="mb-3" />
+            <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="form-group">
+                        <input type="file" name="File" id="fileInput" onchange="previewImage(this)" />
+                        <span asp-validation-for="ProfileImage" class="text-danger"></span>
+                        <input type="hidden" asp-for="ProfileImage" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ShopName"></label>
+                    <input asp-for="ShopName" class="form-control" />
+                    <span asp-validation-for="ShopName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description"></label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-brand mt-3">Save Changes</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Add this script to your Razor Page or in a separate JavaScript file -->
+<script>
+    function previewImage(input) {
+        var preview = document.getElementById('previewImage');
+        var file = input.files[0];
+
+        if (file) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Attach the previewImage function to the change event of the file input
+    document.getElementById('fileInput').addEventListener('change', function () {
+        previewImage(this);
+    });
+</script>

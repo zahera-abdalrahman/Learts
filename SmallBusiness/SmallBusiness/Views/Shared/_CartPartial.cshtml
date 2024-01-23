@@ -1,0 +1,56 @@
+﻿  <!-- OffCanvas Cart Start -->
+<div id="offcanvas-cart" class="offcanvas offcanvas-cart">
+    <div class="inner">
+        <div class="head">
+            <span class="title">Cart</span>
+            <button class="offcanvas-close">×</button>
+        </div>
+        <div class="body customScroll">
+            <ul class="minicart-product-list">
+                @if (ViewBag.CartItems != null)
+                {
+                    @foreach (var cartItem in ViewBag.CartItems)
+                    {
+                        <li>
+                            <a href="product-details.html" class="image"><img src="~/CategoryImg/@cartItem.Product.ImageUrl" alt="Cart product Image"></a>
+                            <div class="content">
+                                <a href="product-details.html" class="title">@cartItem.Product.ProductName</a>
+                                @{
+                                    double itemPrice;
+                                    if (cartItem.Product.ProductSale > 0)
+                                    {
+                                        itemPrice = (double)(cartItem.Product.ProductPrice - (cartItem.Product.ProductPrice * cartItem.Product.ProductSale / 100));
+                                    }
+                                    else
+                                    {
+                                        itemPrice = (double)cartItem.Product.ProductPrice;
+                                    }
+                                }
+                                <span class="quantity-price">@cartItem.Quantity x <span class="amount">$@itemPrice</span></span>
+                              @*  <a asp-controller="Shopping" asp-action="Cart" asp-route-productId="@cartItem.Product.ProductId" asp-route-change="delete" class="remove">×</a>*@
+
+                             
+
+                            </div>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li>No Items found</li>
+                }
+            </ul>
+        </div>
+        <div class="foot">
+            <div class="sub-total">
+                <strong>Subtotal :</strong>
+                <span class="amount">$144.00</span>
+            </div>
+            <div class="buttons">
+                <a asp-action="Cart" asp-controller="Shopping" class="btn btn-dark btn-hover-primary">view cart</a>
+                <a href="checkout.html" class="btn btn-outline-dark">checkout</a>
+            </div>
+            <p class="minicart-message">Free Shipping on All Orders Over $100!</p>
+        </div>
+    </div>
+</div>

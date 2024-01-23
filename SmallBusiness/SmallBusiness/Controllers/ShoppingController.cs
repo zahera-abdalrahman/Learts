@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using SmallBusiness.Data;
 using SmallBusiness.Models;
 using SmallBusiness.ViewModels;
+using System.Security.Claims;
 
 namespace SmallBusiness.Controllers
 {
@@ -24,6 +27,7 @@ namespace SmallBusiness.Controllers
         }
 
 
+        [Authorize]
         public async Task<IActionResult> Cart(int ProductId, string change)
         {
             User user = await _userManager.GetUserAsync(User);
@@ -42,7 +46,12 @@ namespace SmallBusiness.Controllers
                 ViewBag.CartItemsCount = cartitems.Count;
                 ViewBag.CartItems = cartitems;
 
-                return View("Cart");
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return PartialView("_CartPartial", ViewBag.CartItems);
+                }
+
+                return View();
             }
 
 
@@ -119,7 +128,18 @@ namespace SmallBusiness.Controllers
             ViewBag.CartItems = cartItemsModified;
 
 
-            return View("Cart");
+            //#region Fav
+            //var favoriteProducts = _context.Product.Where(p => p.IsFav).ToList();
+
+            //ViewBag.Fav = favoriteProducts;
+            //#endregion
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_CartPartial", ViewBag.CartItems);
+            }
+
+            return View();
         }
 
         private double GetProductPrice(int productId)
@@ -140,7 +160,6 @@ namespace SmallBusiness.Controllers
                 .Where(ci => ci.CartId == cart.CartId)
                 .ToList();
 
-            // Pass cart data to the view using ViewBag
             ViewBag.CartItems = cartItems;
 
             if (!ModelState.IsValid)
@@ -153,19 +172,15 @@ namespace SmallBusiness.Controllers
 
         public async Task<IActionResult> SuccessfulOrder()
         {
-            // Get the current user
             User user = await _userManager.GetUserAsync(User);
 
-            // Get the cart for the current user
             Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
 
             if (cart == null)
             {
-                // Handle the case when the cart is not found
                 return NotFound();
             }
 
-            // Create a new order
             Order order = new Order
             {
                 OrderDate = DateTime.Now,
@@ -175,19 +190,88 @@ namespace SmallBusiness.Controllers
                 UserId = user.Id
             };
 
-            // Add the order to the database
             _context.Order.Add(order);
+            await _context.SaveChangesAsync();
 
-            // Clear the cart
-            var cartItems = _context.CartItems.Where(ci => ci.CartId == cart.CartId);
+
+            var cartItems = _context.CartItems.Include(ci => ci.Product).Where(ci => ci.CartId == cart.CartId).ToList();
+
+
+            ViewBag.CartItems = cartItems;
+
+           
+
+
+
+            foreach (var cartitem in cartItems)
+            {
+                OrderItems orderProduct = new OrderItems();
+                orderProduct.ProductId = cartitem.ProductId;
+                orderProduct.OrderId = order.OrderId;
+                orderProduct.ProductQuantity = cartitem.Quantity;
+                _context.Add(orderProduct);
+                await _context.SaveChangesAsync();
+
+            }
+
+
+
+            Payment payment = new Payment();
+            payment.OrderId = order.OrderId;
+            payment.Amount = order.TotalPrice;
+            payment.PaymentDate = DateTime.Now;
+            payment.Status = "paied";
+            _context.Add(payment);
+            await _context.SaveChangesAsync();
+
+
             _context.CartItems.RemoveRange(cartItems);
             cart.TotalPrice = 0;
 
-            // Save the changes
-            await _context.SaveChangesAsync();
 
-            return View();
+
+
+
+            await _context.SaveChangesAsync();
+            //await SendOrderConfirmationEmail(order, user);
+
+            TempData["SuccessMessage"] = "Your order has been successfully placed. An email confirmation has been sent.";
+
+            TempData["ShowSweetAlert"] = true;
+
+            return View("Checkout");
         }
+
+
+
+        public async Task SendOrderConfirmationEmail(Order order, User user)
+        {
+
+            var email = new MimeMessage();
+            email.From.Add(new MailboxAddress("5Dots", "fivedotsoffice@gmail.com"));
+            email.To.Add(new MailboxAddress($"{user.FirstName} {user.LastName}", user.Email));
+            email.Subject = "Order Confirmation";
+
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.TextBody = $"Dear {user.FirstName} {user.LastName},\n\n"
+                             + "Thank you for choosing us!\n"
+                             + $"Your order (Order ID: {order.OrderId}) has been successfully placed.\n"
+                             + $"Order Total: {order.TotalPrice}JD\n"
+                             + "We appreciate your business and look forward to serving you again!\n\n"
+                             + "Best regards, Learta Team\n";
+            email.Body = bodyBuilder.ToMessageBody();
+
+            using (var smtp = new MailKit.Net.Smtp.SmtpClient())
+            {
+                smtp.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                smtp.Connect("smtp.gmail.com", 587, false);
+                smtp.Authenticate("fivedotsoffice@gmail.com", "ecjodwaaclzuolqv");
+                await smtp.SendAsync(email);
+                smtp.Disconnect(true);
+            }
+        }
+
 
     }
 }
+

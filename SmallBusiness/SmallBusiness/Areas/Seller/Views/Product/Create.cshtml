@@ -1,0 +1,110 @@
+﻿@model SmallBusiness.ViewModels.ProductViewModel
+@{
+    ViewData["Title"] = "Create Product";
+}
+<style>
+    .drag-drop-area {
+        border: 2px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .dragover {
+        border-color: #2196F3;
+    }
+
+</style>
+<h2>Create Product</h2>
+
+<form asp-controller="Product" asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="ProductName">Product Name:</label>
+        <input asp-for="ProductName" class="form-control" />
+        <span asp-validation-for="ProductName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProductDescription">Product Description:</label>
+        <textarea asp-for="ProductDescription" class="form-control"></textarea>
+        <span asp-validation-for="ProductDescription" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProductPrice">Product Price:</label>
+        <input asp-for="ProductPrice" type="number" class="form-control" />
+        <span asp-validation-for="ProductPrice" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProductQuantityStock">Quantity in Stock:</label>
+        <input asp-for="ProductQuantityStock" type="number" class="form-control" />
+        <span asp-validation-for="ProductQuantityStock" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProductSale">Sale Percentage:</label>
+        <input asp-for="ProductSale" type="number" class="form-control" />
+        <span asp-validation-for="ProductSale" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CategoryId" class="control-label"></label>
+        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+
+    </div>
+
+    @*<div class="form-group">
+        <label asp-for="ImageUrl">Product Image:</label>
+        <input asp-for="File" type="file" class="form-control-file" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+    </div>*@
+
+    <div id="drag-drop-area" class="drag-drop-area">
+        <p>Drag & Drop an Image File Here</p>
+        <input asp-for="File" type="file" name="file" id="file" accept="image/*" />
+        <output id="result"></output>
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Create Product</button>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var dragDropArea = document.getElementById("drag-drop-area");
+
+        dragDropArea.addEventListener("dragover", function (e) {
+            e.preventDefault();
+            dragDropArea.classList.add("dragover");
+        });
+
+        dragDropArea.addEventListener("dragleave", function () {
+            dragDropArea.classList.remove("dragover");
+        });
+
+        dragDropArea.addEventListener("drop", function (e) {
+            e.preventDefault();
+            dragDropArea.classList.remove("dragover");
+
+            var fileInput = document.getElementById("file");
+            fileInput.files = e.dataTransfer.files;
+
+            showFileName(fileInput.files[0]);
+        });
+
+        document.getElementById("file").addEventListener("change", function () {
+            showFileName(this.files[0]);
+        });
+
+        function showFileName(file) {
+            var resultOutput = document.getElementById("result");
+            resultOutput.textContent = file.name;
+        }
+    });
+
+</script>
