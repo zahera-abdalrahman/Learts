@@ -1,28 +1,74 @@
 ﻿@model SmallBusiness.ViewModels.SubscriptionViewModel
-<link href="~/EditCSS/CreditCard.css" rel="stylesheet"/>
-<h2>Create Subscription</h2>
+<link href="~/credit/styles.css" rel="stylesheet" />
 
-<form asp-action="CreateSubscription" method="post">
-    <input type="hidden" asp-for="SellerId" />
+<main class="container">
+    <section class="ui">
+        <div class="container-left">
+            <form id="credit-card" asp-action="CreateSubscription" method="post">
+                <input type="hidden" asp-for="SellerId" />
 
-    <div class="form-group">
-        <label for="CreditCardNumber">Credit Card Number:</label>
-        <input type="text" id="CreditCardNumber" class="form-control" placeholder="Enter credit card number" />
-        <span asp-validation-for="CreditCardNumber" class="text-danger"></span>
-    </div>
+                <div class="number-container">
+                    <label>Card Number</label>
+                    <input type="text" name="card-number" id="card-number" maxlength="19" placeholder="1234 5678 9101 1121"
+                           onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="card-input">
 
-    <div class="form-group">
-        <label for="CreditCardExpiry">Expiry Date:</label>
-        <input type="date" id="CreditCardExpiry" name="CreditCardExpiry" class="form-control" placeholder="MM/YY" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-        <span asp-validation-for="CreditCardExpiry" class="text-danger"></span>
-    </div>
+                    <span asp-validation-for="CreditCardNumber" class="text-danger"></span>
 
-    <div class="form-group">
-        <label for="CreditCardCvc">CVC:</label>
-        <input type="text" id="CreditCardCvc" class="form-control" placeholder="Enter CVC" />
-        <span asp-validation-for="CreditCardCvc" class="text-danger"></span>
-    </div>
+                </div>
+                <div class="name-container">
+                    <label>Holder</label>
+                    <input asp-for="NameInCredit" type="text" class="card-input" name="name-text" maxlength="30" placeholder="NOAH JACOB"
+                           onkeypress="return (event.charCode > 64 && event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || event.key == ' '">
+                    <span asp-validation-for="NameInCredit" class="text-danger"></span>
 
-    <button type="submit" class="btn btn-primary">Create Subscription</button>
-</form>
-<script src="~/EditJS/CreditCard.js"></script>
+                </div>
+                <div class="infos-container">
+                    <div class="expiration-container">
+                        <label>Valid-thru</label>
+                        <input type="date" class="card-input" name="valid-thru-text" id="valid-thru-text" placeholder="MM/YY" min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <span asp-validation-for="CreditCardExpiry" class="text-danger"></span>
+
+                    </div>
+                    <div class="cvv-container">
+                        <label>CVV</label>
+                        <input type="text" class="card-input" name="cvv-text" id="cvv-text" maxlength="4" placeholder="1234"
+                               onkeypress="return event.charCode >=48 && event.charCode <= 57">
+                        <span asp-validation-for="CreditCardCvc" class="text-danger"></span>
+
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Subscription</button>
+            </form>
+        </div>
+        <div class="container-right">
+            <div class="card">
+                <div class="intern">
+                    <img class="approximation" src="~/credit/img/aprox.png" alt="aproximation">
+                    <div class="card-number">
+                        <div class="number-vl">1234 5678 9101 1121</div>
+                    </div>
+                    <div class="card-holder">
+                        <label>Holder</label>
+                        <div class="name-vl">NOAH JACOB</div>
+                    </div>
+                    <div class="card-infos">
+                        <div class="exp">
+                            <label>valid-thru</label>
+                            <div class="expiration-vl">MM/YY</div>
+                        </div>
+                        <div class="cvv">
+                            <label>CVV</label>
+                            <div class="cvv-vl">123</div>
+                        </div>
+                    </div>
+                    <img class="chip" src="~/credit/img/chip.png" alt="chip">
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+<script src="~/credit/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+

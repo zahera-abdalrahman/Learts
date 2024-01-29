@@ -17,22 +17,26 @@
                     {
                         <tr>
                             <td class="thumbnail">
-                                <a href="@Url.Action("Details", "Product", new { id = favorite.Product.ProductId })">
+                                <a href="@Url.Action("productDetails", "Product", new { id = favorite.Product.ProductId })">
                                     <img src="~/CategoryImg/@favorite.Product.ImageUrl" alt="@favorite.Product.ProductName">
                                 </a>
                             </td>
-                            <td class="name"> <a href="@Url.Action("Details", "Product", new { id = favorite.Product.ProductId })">@favorite.Product.ProductName</a></td>
+                            <td class="name"> <a href="@Url.Action("productDetails", "Product", new { id = favorite.Product.ProductId })">@favorite.Product.ProductName</a></td>
                             <td class="price"><span>£@favorite.Product.ProductPrice.ToString("0.00")</span></td>
-                            <td class="add-to-cart">                            </td>
-                            <td class="remove"><a href="#" class="btn">×</a></td>
+                            <td class="add-to-cart"><a data-product-id="@favorite.Product.ProductId" data-change="add" class="btn btn-light btn-hover-dark addToCartButton"><i class="fas fa-shopping-cart mr-2"></i>Add to Cart</a></td>
+                            <td class="remove">
+                                <a data-product-id="@favorite.Product.ProductId" class="btn removeFavoriteButton">×</a>
+                            </td>
+
+
                         </tr>
                     }
                 </tbody>
             </table>
             <div class="row">
                 <div class="col text-center mb-n3">
-                    <a class="btn btn-light btn-hover-dark mr-3 mb-3" href="shop.html">Continue Shopping</a>
-                    <a class="btn btn-dark btn-outline-hover-dark mb-3" href="shopping-cart.html">View Cart</a>
+                    <a class="btn btn-light btn-hover-dark mr-3 mb-3" asp-controller="Product" asp-action="products">Continue Shopping</a>
+                    <a class="btn btn-dark btn-outline-hover-dark mb-3" asp-action="Cart" asp-controller="Shopping">View Cart</a>
                 </div>
             </div>
         </form>
@@ -40,4 +44,67 @@
 
 </div>
 <!-- Wishlist Section End -->
+<script>
+    $(document).ready(function () {
+        $("#addToCartButton").click(function () {
+            var productId = $(this).data("product-id");
+            var change = $(this).data("change");
 
+            $.ajax({
+                type: "POST",
+                url: "/Shopping/Cart",
+                data: { productId: productId, change: change },
+                success: function (result) {
+                    if (result.toLowerCase().includes("login")) {
+                        window.location.href = "/Account/Login";
+                    } else {
+                        $("#offcanvas-cart .body").html($(result).find(".body").html());
+
+                        $("#offcanvas-cart").addClass("show");
+                    }
+                },
+                error: function (error) {
+                    if (error.status === 401) {
+                        window.location.href = "/Account/Login";
+                    } else {
+                        console.log("Error fetching partial view:", error);
+                    }
+                }
+            });
+        });
+
+        $(".offcanvas-close").click(function () {
+            $("#offcanvas-cart").removeClass("show");
+            location.reload(true); 
+        });
+
+
+
+
+
+
+
+
+        $(".removeFavoriteButton").click(function () {
+            var productId = $(this).data("product-id");
+            var rowToRemove = $(this).closest("tr"); 
+
+            $.ajax({
+                type: "POST",
+                url: "/Favorite/ToggleFavorite",
+                data: { productId: productId },
+                success: function (result) {
+                    if (result.IsFav) {
+                        rowToRemove.remove();
+                    }
+                    location.reload();
+                },
+                error: function (error) {
+                    console.log("Error removing item from favorites:", error);
+                }
+            });
+        });
+
+    });
+
+</script>

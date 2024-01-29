@@ -1,4 +1,16 @@
-﻿  <!-- OffCanvas Cart Start -->
+﻿@if (TempData["SweetAlertMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: 'Warning!',
+            text: '@TempData["SweetAlertMessage"]',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+    </script>
+}
+
+<!-- OffCanvas Cart Start -->
 <div id="offcanvas-cart" class="offcanvas offcanvas-cart">
     <div class="inner">
         <div class="head">
@@ -43,14 +55,38 @@
         </div>
         <div class="foot">
             <div class="sub-total">
-                <strong>Subtotal :</strong>
-                <span class="amount">$144.00</span>
+@*                <strong>Subtotal :</strong>
+*@               @* @{
+                    // Check if the user is authenticated
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        decimal subTotal = 0;
+                        foreach (var item in ViewBag.CartItems)
+                        {
+                            decimal itemPrice;
+                            if (item.Product.ProductSale > 0)
+                            {
+                                itemPrice = item.Product.ProductPrice - (item.Product.ProductPrice * item.Product.ProductSale / 100);
+                            }
+                            else
+                            {
+                                itemPrice = item.Product.ProductPrice;
+                            }
+                            subTotal += itemPrice * item.Quantity;
+                        }
+                        <span class="amount">$@subTotal.ToString("0.00")</span>
+                    }
+                    else
+                    {
+                    // If the user is not authenticated, show 0 as the subtotal
+                        <span class="amount">$0.00</span>
+                    }
+                }*@
             </div>
             <div class="buttons">
                 <a asp-action="Cart" asp-controller="Shopping" class="btn btn-dark btn-hover-primary">view cart</a>
-                <a href="checkout.html" class="btn btn-outline-dark">checkout</a>
+                <a asp-controller="Shopping" asp-action="Checkout" class="btn btn-outline-dark" id="checkoutButton">checkout</a>
             </div>
-            <p class="minicart-message">Free Shipping on All Orders Over $100!</p>
         </div>
     </div>
 </div>

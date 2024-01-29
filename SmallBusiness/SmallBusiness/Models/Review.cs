@@ -14,6 +14,8 @@ namespace SmallBusiness.Models
         public int ReviewRate { get; set; }
 
         [Required(ErrorMessage = "Review date is required")]
+        [DataType(DataType.Date)]
+
         public DateTime ReviewDate { get; set; }
 
         public string Name { get; set; }

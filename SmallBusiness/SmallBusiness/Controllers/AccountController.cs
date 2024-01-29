@@ -122,8 +122,7 @@ namespace Business.Controllers
 
                         await _userManager.AddToRoleAsync(user, "User");
                     }
-
-                    return RedirectToAction("Index", "Home");
+                    ViewBag.ShowSweetAlert = true;
                 }
 
 
@@ -202,8 +201,6 @@ namespace Business.Controllers
                 if (result.Succeeded)
                 {
                     await AssignRole(seller, "Seller");
-
-
                     return RedirectToAction("Profile", "Seller", new { area = "Seller", userId = seller.Id });
                 }
 
@@ -229,6 +226,123 @@ namespace Business.Controllers
         #endregion
 
 
+        //#region Login
+
+        //public IActionResult Login()
+        //{
+        //    return View("Login");
+        //}
+        ////[HttpPost]
+        ////public async Task<IActionResult> Login(LoginViewModel model)
+        ////{
+        ////    if (ModelState.IsValid)
+        ////    {
+        ////        var user = await _userManager.FindByEmailAsync(model.Email);
+
+        ////        if (user != null && !user.EmailConfirmed)
+        ////        {
+        ////            ModelState.AddModelError(string.Empty, "Please confirm your email before logging in.");
+        ////            return View("Login", model);
+        ////        }
+
+        ////        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+        ////        if (result.Succeeded)
+        ////        {
+        ////            HttpContext.Session.SetString("UserId", user.Id);
+        ////            HttpContext.Session.SetString("UserName", user.UserName);
+        ////            HttpContext.Session.SetString("Email", user.Email);
+
+        ////            var roles = await _userManager.GetRolesAsync(user);
+
+        ////            if (roles.Contains("Admin"))
+        ////            {
+        ////                return RedirectToAction("Index", "Home", new { area = "Admin" });
+        ////            }
+        ////            else if (roles.Contains("Seller"))
+        ////            {
+        ////                return RedirectToAction("Index", "Home", new { area = "Seller" });
+        ////            }
+        ////            else
+        ////            {
+        ////                return RedirectToAction("Index", "Home");
+        ////            }
+        ////        }
+        ////        else
+        ////        {
+        ////            ModelState.AddModelError(string.Empty, "Invalid email or password.");
+        ////        }
+        ////    }
+
+        ////    return View("Login", model);
+        ////}
+
+        //public async Task<IActionResult> Login(LoginViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var user = await _userManager.FindByEmailAsync(model.Email);
+
+        //        if (user != null && !user.EmailConfirmed)
+        //        {
+        //            ModelState.AddModelError(string.Empty, "Please confirm your email before logging in.");
+        //            return View("Login", model);
+        //        }
+
+        //        // Check if the user is a seller and is approved
+        //        if (user is Seller seller && !seller.IsApproved)
+        //        {
+        //            ModelState.AddModelError(string.Empty, "Your account is not approved. Please make a payment to activate your account.");
+        //            return View("Login", model);
+        //        }
+
+        //        var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+        //        if (result.Succeeded)
+        //        {
+        //            HttpContext.Session.SetString("UserId", user.Id);
+        //            HttpContext.Session.SetString("UserName", user.UserName);
+        //            HttpContext.Session.SetString("Email", user.Email);
+
+        //            var roles = await _userManager.GetRolesAsync(user);
+
+        //            if (roles.Contains("Admin"))
+        //            {
+        //                return RedirectToAction("Index", "Home", new { area = "Admin" });
+        //            }
+        //            else if (roles.Contains("Seller"))
+        //            {
+        //                return RedirectToAction("Index", "Home", new { area = "Seller" });
+        //            }
+        //            else
+        //            {
+        //                return RedirectToAction("Index", "Home");
+        //            }
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError(string.Empty, "Invalid email or password.");
+        //        }
+        //    }
+
+        //    return View("Login", model);
+        //}
+
+
+        //public async Task<IActionResult> Logout()
+        //{
+        //    if (User.Identity.IsAuthenticated)
+        //    {
+        //        HttpContext.Session.Clear();
+
+        //        await _signInManager.SignOutAsync();
+        //    }
+
+        //    return RedirectToAction("Index", "Home");
+        //}
+
+        //#endregion
+
         #region Login
 
         public IActionResult Login()
@@ -249,10 +363,21 @@ namespace Business.Controllers
                     return View("Login", model);
                 }
 
+                // Check if the user is a seller and is approved
+                if (user is Seller seller && !seller.IsApproved)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account is not approved. Please make a payment to activate your account.");
+                    return View("Login", model);
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
+                    HttpContext.Session.SetString("UserId", user.Id);
+                    HttpContext.Session.SetString("UserName", user.UserName);
+                    HttpContext.Session.SetString("Email", user.Email);
+
                     var roles = await _userManager.GetRolesAsync(user);
 
                     if (roles.Contains("Admin"))
@@ -268,8 +393,10 @@ namespace Business.Controllers
                         return RedirectToAction("Index", "Home");
                     }
                 }
-
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                }
             }
 
             return View("Login", model);
@@ -279,6 +406,8 @@ namespace Business.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                HttpContext.Session.Clear();
+
                 await _signInManager.SignOutAsync();
             }
 
@@ -286,8 +415,6 @@ namespace Business.Controllers
         }
 
         #endregion
-
-
         #region password
         [HttpGet]
         public IActionResult ForgotPassword()
@@ -365,8 +492,7 @@ namespace Business.Controllers
 
                     if (result.Succeeded)
                     {
-                        // Set SweetAlert success message
-                        return RedirectToAction("Login","Account"); // Redirect to your desired action
+                        return RedirectToAction("Login","Account"); 
                     }
 
                     foreach (var error in result.Errors)
@@ -374,12 +500,10 @@ namespace Business.Controllers
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
 
-                    // Set SweetAlert error message
-                    return RedirectToAction("Login", "Account"); // Redirect to your desired action
+                    return RedirectToAction("Login", "Account"); 
                 }
 
-                // Set SweetAlert error message
-                return RedirectToAction("Login", "Account"); // Redirect to your desired action
+                return RedirectToAction("Login", "Account"); 
             }
 
             return View(model);

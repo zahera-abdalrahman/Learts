@@ -143,22 +143,35 @@ namespace SmallBusiness.Areas.Admin.Controllers
         }
 
         // POST: Admin/Testimonial/Delete/5
+        // POST: Admin/Testimonials/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Testimonial == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Testimonial'  is null.");
-            }
-            var testimonial = await _context.Testimonial.FindAsync(id);
-            if (testimonial != null)
-            {
+                if (_context.Testimonial == null)
+                {
+                    return Problem("Entity set 'ApplicationDbContext.Testimonials' is null.");
+                }
+
+                var testimonial = await _context.Testimonial.FindAsync(id);
+
+                if (testimonial == null)
+                {
+                    return NotFound();
+                }
+
                 _context.Testimonial.Remove(testimonial);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Testimonial");
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                // Log the exception or handle it according to your application's requirements
+                return Problem($"An error occurred while deleting the testimonial. {ex.Message}");
+            }
         }
 
 

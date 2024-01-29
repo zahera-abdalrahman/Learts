@@ -1,8 +1,15 @@
-﻿@*@{
-    var cart = ViewBag.CartItems as CartItems;
-}*@
-
-<!-- Shopping Cart Section Start -->
+﻿<!-- Shopping Cart Section Start -->
+@if (TempData["SweetAlertMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: 'Warning!',
+            text: '@TempData["SweetAlertMessage"]',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+    </script>
+}
   @if (ViewBag.CartItems != null)
 {
     double totalCartPrice = 0; // Add this variable to store the total cart price
@@ -51,7 +58,7 @@
                                     var totalItemPrice = itemPrice * item.Quantity;
                                     totalCartPrice += totalItemPrice; // Accumulate the subtotal for each item
                                 }
-                                <td class="subtotal"><span>£@totalItemPrice</span></td>
+                                <td class="subtotal"><span>£@totalItemPrice.ToString("0.00")</span></td>
                                 <td class="remove"><a asp-controller="Shopping" asp-action="Cart" asp-route-productId="@item.Product.ProductId" asp-route-change="delete" class="btn">×</a></td>
                             </tr>
                         }
@@ -65,18 +72,18 @@
                     <tbody>
                         <tr class="subtotal">
                             <th>Subtotal</th>
-                            <td><span class="amount">£@totalCartPrice</span></td>
+                            <td><span class="amount">£@totalCartPrice.ToString("0.00")</span></td>
                         </tr>
                         <tr class="total">
                             <th>Total</th>
-                            <td><strong><span class="amount">£@totalCartPrice</span></strong></td>
+                            <td><strong><span class="amount">£@totalCartPrice.ToString("0.00")</span></strong></td>
                         </tr>
                     </tbody>
                 </table>
-                <a asp-action="Checkout" asp-controller="Shopping" class="btn btn-dark btn-outline-hover-dark">Proceed to checkout</a>
+                <a asp-action="Checkout" asp-controller="Shopping" class="btn btn-dark btn-outline-hover-dark" id="check">Proceed to checkout</a>
             </div>
         </div>
 
     </div>
+
 }
-<!-- Shopping Cart Section End -->

@@ -30,6 +30,7 @@ namespace SmallBusiness.Models
         [Range(0, 5, ErrorMessage = "Review rate must be between 0 and 5")]
         public int ReviewRate { get; set; }
 
+        [DataType(DataType.Date)]
         public DateTime CreateAt { get; set; }
 
         [Required]
@@ -46,7 +47,7 @@ namespace SmallBusiness.Models
 
         public List<Review> Reviews { get; set; } // Add this property to hold the reviews for the product
 
-        //public bool IsFav { get; set; }
+        public bool IsDelete { get; set; }
 
     }
 }

@@ -4,32 +4,102 @@
     ViewData["Title"] = "Profile Details";
 }
 
-<div class="pagetitle">
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin">Home</a></li>
-            <li class="breadcrumb-item">Tables</li>
-            <li class="breadcrumb-item active">Profile Details</li>
-        </ol>
-    </nav>
-</div>
 
-<section class="section">
-    <div class="row">
-        <div class="col-lg-12">
-            <dl class="row">
-                <dt class="col-sm-4">Profile Image:</dt>
-                <dd class="col-sm-8"><img src="~/Profile/@Model.ProfileImage" style="width:70px" /></dd>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
 
-                <dt class="col-sm-4">Shop Name:</dt>
-                <dd class="col-sm-8">@Model.ShopName</dd>
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
 
-                <dt class="col-sm-4">Description:</dt>
-                <dd class="col-sm-8">@Model.Description</dd>
+        hr {
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
 
-                <dt class="col-sm-4">Approval Status:</dt>
-                <dd class="col-sm-8">@Model.IsApproved</dd>
-            </dl>
+        dl.row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        dt, dd {
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            margin: 0;
+        }
+
+        dt {
+            font-weight: bold;
+            background-color: #eee;
+        }
+
+        dd {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagetitle">
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home" asp-area="Admin">Home</a></li>
+                <li class="breadcrumb-item"><a asp-action="GetSellers" asp-controller="Admin" asp-area="Admin">Sellers</a></li>
+                <li class="breadcrumb-item"><a asp-action="SellerDetails" asp-controller="Admin" asp-route-sellerId="@Model.SellerId" asp-area="Admin">Seller Details</a></li>
+                <li class="breadcrumb-item active">Profile Details</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+              
+                <div>
+                    <hr />
+                    <dl class="row">
+                       
+                        <dt>
+                            <strong>Profile Image:</strong>
+                        </dt>
+                        <dd>
+                            <img src="~/Profile/@Model.ProfileImage" style="width:80px" />
+                        </dd>
+
+                        <dt>
+                            <strong>Shop Name:</strong>
+                        </dt>
+                        <dd>
+                            @Model.ShopName
+                        </dd>
+
+                        <dt>
+                            <strong>Description:</strong>
+                        </dt>
+                        <dd>
+                            @Model.Description
+                        </dd>
+
+                    </dl>
+                </div>
+
+                <div class="text-end">
+                    <a href="@Url.Action("SellerDetails", "Admin", new { sellerId = Model.SellerId })" class="btn btn-primary">Back to Seller</a>
+
+                </div>
+               
+            </div>
         </div>
     </div>
-</section>
+</body>
+</html>

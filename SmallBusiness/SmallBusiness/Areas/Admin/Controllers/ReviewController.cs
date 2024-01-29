@@ -153,19 +153,38 @@ namespace SmallBusiness.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Review == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Review'  is null.");
-            }
-            var review = await _context.Review.FindAsync(id);
-            if (review != null)
-            {
+                if (_context.Review == null)
+                {
+                    return Problem("Entity set 'ApplicationDbContext.Review' is null.");
+                }
+
+                var review = await _context.Review.FindAsync(id);
+
+                if (review == null)
+                {
+                    return NotFound();
+                }
+
                 _context.Review.Remove(review);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Review");
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                // Log the exception or handle it according to your application's requirements
+                return Problem($"An error occurred while deleting the review. {ex.Message}");
+            }
         }
+
+
+
+
+
+
+
         public IActionResult ToggleStatus(int id)
         {
             var review = _context.Review.Find(id);

@@ -1,37 +1,78 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MimeKit;
+using SmallBusiness.Data;
+using SmallBusiness.Models;
 using SmallBusiness.ViewModels;
 
 namespace SmallBusiness.Controllers
 {
     public class ContactController : Controller
     {
-        public IActionResult Contact()
+        private readonly ILogger<ProductController> _logger;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly ApplicationDbContext _context;
+
+        public ContactController(UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager,
+            SignInManager<User> signInManager,
+            ILogger<ProductController> logger,
+            ApplicationDbContext context
+        )
         {
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
+            _logger = logger;
+            _context = context;
+        }
+
+        public async Task<IActionResult> ContactAsync()
+        {
+            #region cart
+            User user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
+
             return View();
         }
 
         [HttpPost]
         public IActionResult SendMessage(ContactFormViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // Process the form data
-                SendEmailAsync(model);
-
-                // Display a success message
-                ViewBag.SuccessMessage = "Your message has been sent successfully!";
-                return View("Contact");
+                ModelState.AddModelError("", "Data Not Completed");
+                return View();
             }
 
-            // If ModelState is not valid, return to the contact form with validation errors
-            return View("Contact", model);
+            SendEmailAsync(model);
+
+            return Json(new { success = true });
         }
 
         private async Task SendEmailAsync(ContactFormViewModel model)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(model.Name,model.Email));
+            message.From.Add(new MailboxAddress(model.Name, model.Email));
             message.To.Add(new MailboxAddress("Admin", "zaheraalakash15@gmail.com"));
             message.Subject = "New Contact Form Submission";
 

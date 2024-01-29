@@ -26,9 +26,9 @@
                         <div class="myaccount-content dashboad">
                             @if (User.Identity.IsAuthenticated)
                             {
-                                var user = await UserManager.GetUserAsync(User);
+                                var user1 = await UserManager.GetUserAsync(User);
                                
-                                <p>Hello <strong>@user.FirstName @user.LastName</strong></p>
+                                <p>Hello <strong>@user1.FirstName @user1.LastName</strong></p>
                                 <p>From your account dashboard you can view your <span>recent orders</span>,and <span>edit your password and account details</span>.</p>
                             }
                             else
@@ -65,7 +65,9 @@
                                                     <td>@order.OrderDate.ToString("MMMM dd, yyyy")</td>
                                                     <td>@order.Status</td>
                                                     <td>@order.TotalPrice</td>
-                                                    <td><a href="shopping-cart.html">View</a></td>
+                                                    <td>
+                                                        <a asp-action="OrderItems" asp-controller="UserDetails" asp-route-id="@order.OrderId" class="btn btn-brand">Order Items</a>
+                                                    </td>
                                                 </tr>
                                             }
                                         }
@@ -155,6 +157,9 @@
 </div>
 <!-- My Account Section End -->
 
+
+
+
 <script>
     function previewImage(input) {
         var preview = document.getElementById('previewImage');
@@ -172,7 +177,8 @@
     }
 
     // Attach the previewImage function to the change event of the file input
-    document.getElementById('fileInput').addEventListener('change', function () {
+    document.getElementById('profile-image').addEventListener('change', function () {
         previewImage(this);
     });
+
 </script>

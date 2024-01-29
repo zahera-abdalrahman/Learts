@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SmallBusiness.Data;
 using SmallBusiness.Models;
+using SmallBusiness.ViewModels;
 using System.Diagnostics;
 
 namespace SmallBusiness.Controllers
@@ -33,10 +34,10 @@ namespace SmallBusiness.Controllers
 
 
         #region Home
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> IndexAsync(int productId)
         {
             DateTime lastWeek = DateTime.Now.AddDays(-7);
-            var newProducts = _context.Product.Where(p => p.CreateAt >= lastWeek).ToList();
+            var newProducts = _context.Product.Where(p => p.CreateAt >= lastWeek).Take(10).ToList();
 
             var mostRatedProducts = _context.Product
                    .Where(p => p.ReviewRate == 5)
@@ -61,6 +62,7 @@ namespace SmallBusiness.Controllers
                     OldPrice = p.ProductPrice,
                     NewPrice = p.ProductPrice - (p.ProductPrice * p.ProductSale / 100)
                 })
+                .Take(10)
                 .ToList();
 
 
@@ -70,7 +72,7 @@ namespace SmallBusiness.Controllers
                 .Take(8)
                 .ToListAsync();
 
-            #region cart
+           #region cart
             User user = await _userManager.GetUserAsync(User);
 
             if (user != null)
@@ -100,7 +102,7 @@ namespace SmallBusiness.Controllers
             ViewBag.Reviews = reviews;
 
 
-            ViewBag.categoryList = _context.Category.ToList();
+            ViewBag.categoryList = _context.Category.Where(c=>c.IsDelete==false).ToList();
 
 
             ViewBag.NewProducts = newProducts;
@@ -127,13 +129,11 @@ namespace SmallBusiness.Controllers
 
 
 
-        
-
-
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Testimonial(Testimonial model)
         {
+            
             
                 var user = await _userManager.GetUserAsync(User);
                 var newReview = new Testimonial
@@ -145,12 +145,12 @@ namespace SmallBusiness.Controllers
                     isActive = false,
                     User = user
                 };
-
                 _context.Testimonial.Add(newReview);
                 await _context.SaveChangesAsync();
+                var swalScript = "Swal.fire('Review Submitted', 'Your review has been submitted and will be reviewed by the admin.', 'success');";
+                TempData["SweetAlertScript"] = swalScript;
+                return RedirectToAction("Index");           
 
-                return RedirectToAction("Index");
-           
         }
 
         #endregion
@@ -193,6 +193,89 @@ namespace SmallBusiness.Controllers
 
         #endregion
 
+
+
+
+        public async Task<IActionResult> productDetails(int productId)
+        {
+            var product = await _context.Product
+                .Include(p => p.Category)
+                .Include(p => p.profile) 
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
+
+            var reviews = await _context.Review
+        .Include(r => r.User)
+        .Include(r => r.Product)
+        .Where(r => r.ProductId == productId && r.isActive) 
+        .Take(8)
+        .ToListAsync();
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            var discountedPrice = CalculateDiscountedPrice(
+                (decimal)product.ProductPrice,
+                product.ProductSale
+            );
+
+            ViewBag.product = new
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                ProductDescription = product.ProductDescription,
+                ProductPrice = product.ProductPrice,
+                ProductQuantityStock = product.ProductQuantityStock,
+                CategoryId = product.CategoryId,
+                Category = product.Category,
+                ProductSale = product.ProductSale,
+                ImageUrl = product.ImageUrl,
+                DiscountedPrice = discountedPrice,
+                ProfileId = product.ProfileId,
+                Profile = product.profile,
+                DiscountPercent = product.ProductSale,
+                Rate = product.ReviewRate,
+                OldPrice = product.ProductPrice,
+                NewPrice = product.ProductPrice - (product.ProductPrice * product.ProductSale / 100)
+            };
+
+            ViewBag.Reviews = reviews;
+
+            #region cart
+            User user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
+
+
+            #region Fav
+            var favoriteProducts = _context.Favorite.Include(c => c.Product).Where(p => p.IsFav).ToList();
+
+            ViewBag.Fav = favoriteProducts;
+            #endregion
+            return PartialView("_ProductDetailsModal");
+        }
+
+
+        private decimal CalculateDiscountedPrice(decimal originalPrice, decimal discountPercent)
+        {
+            return originalPrice - (originalPrice * discountPercent / 100);
+        }
 
 
 

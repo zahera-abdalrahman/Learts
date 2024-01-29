@@ -1,5 +1,35 @@
 ﻿@model SmallBusiness.ViewModels.LoginViewModel
+<style>
+    .register{
+        display:flex;
+        justify-content:space-between;
+    }
+    .register-color{
+        color: #f28375 !important;
+        font-weight:bold;
+        text-decoration:underline;
+    }
 
+    .ab {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        height: 100%;
+        top: 0;
+        right: 0;
+        padding: 0 15px 7px 0;
+        cursor: pointer;
+    }
+
+        .ab i {
+            cursor: pointer;
+            z-index: 10;
+        }
+
+    .image {
+        position: relative;
+    }
+</style>
 <div class="section section-padding">
     <div class="container">
         <div class="row g-0" style="justify-content:center">
@@ -11,15 +41,28 @@
                     </div>
                     <div class="login-register-form">
                         <form method="post" asp-action="Login" asp-controller="Account">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                             <div class="row learts-mb-n50">
                                 <div class="col-12 learts-mb-50">
                                     <input asp-for="Email" placeholder="Username or email address" class="form-control" />
                                     <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                                 <div class="col-12 learts-mb-50">
-                                    <input asp-for="Password" type="password" placeholder="Password" class="form-control" />
+                                    <div class="input-group image">
+                                        <span class='ab' onclick="togglePasswordVisibility('registerPassword', 'togglePassword')">
+                                            <i class="fa fa-eye-slash" id="togglePassword"></i>
+                                        </span>
+                                        <input asp-for="Password" type="password" placeholder="Password" class="form-control" id="registerPassword" />
+                                    </div>
                                     <span asp-validation-for="Password" class="text-danger"></span>
 
+                                </div>
+                                <div class="col-12 learts-mb-20">
+                                    <div class="form-check">
+                                        <input asp-for="RememberMe" class="form-check-input" />
+                                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                                    </div>
                                 </div>
                                 <div class="col-12 text-center learts-mb-50">
                                     <button type="submit" class="btn btn-dark btn-outline-hover-dark">Login</button>
@@ -27,19 +70,12 @@
                                 <div class="col-12 learts-mb-50">
                                     <div class="row learts-mb-n20">
                                        
-                                        <div class="col-12 learts-mb-20">
-                                            <div class="form-check">
-                                                <input asp-for="RememberMe" class="form-check-input" />
-                                                <label class="form-check-label" for="rememberMe">Remember me</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 learts-mb-20">
+                                       
+                                        <div class="col-12 learts-mb-20 register">
                                             <a asp-action="ForgotPassword" asp-controller="Account" class="fw-400">Lost your password?</a>
+                                            <a asp-action="RegisterUser" asp-controller="Account" class="fw-400 register-color">Register</a>
                                         </div>
 
-                                        <div class="col-12 learts-mb-20">
-                                            <a asp-action="RegisterUser" asp-controller="Account" class="fw-400">Don't have an account <span>Register</span></a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -50,3 +86,19 @@
         </div>
     </div>
 </div>
+<script>
+    function togglePasswordVisibility(inputId, eyeIconId) {
+        var passwordInput = document.getElementById(inputId);
+        var eyeIcon = document.getElementById(eyeIconId);
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        }
+    }
+</script>

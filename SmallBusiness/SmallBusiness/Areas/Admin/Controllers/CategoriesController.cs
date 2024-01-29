@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SmallBusiness.Data;
@@ -25,7 +26,7 @@ namespace SmallBusiness.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Category != null ? 
-                          View(await _context.Category.ToListAsync()) :
+                          View(await _context.Category.Where(c=>c.IsDelete==false).ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Category'  is null.");
         }
 
@@ -60,6 +61,7 @@ namespace SmallBusiness.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryViewModel productCategory, [FromServices] IWebHostEnvironment host)
         {
+           
             string ImageName = "";
             if (productCategory.File != null)
             {
@@ -70,6 +72,7 @@ namespace SmallBusiness.Areas.Admin.Controllers
                 string FullPath = Path.Combine(PathImage, ImageName);
                 productCategory.File.CopyTo(new FileStream(FullPath, FileMode.Create));
             }
+            
             var newCat = new Category
             {
                 CategoryId = productCategory.CategoryId,
@@ -124,6 +127,10 @@ namespace SmallBusiness.Areas.Admin.Controllers
                 string FullPath = Path.Combine(PathImage, ImageName);
                 productCategory.File.CopyTo(new FileStream(FullPath, FileMode.Create));
             }
+            else
+            {
+                ImageName = productCategory.Image;
+            }
             var newCat = new Category
             {
                 CategoryId = productCategory.CategoryId,
@@ -157,19 +164,34 @@ namespace SmallBusiness.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Category == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Category'  is null.");
+                if (_context.Category == null)
+                {
+                    return Problem("Entity set 'ApplicationDbContext.Category' is null.");
+                }
+
+                var category = await _context.Category.FindAsync(id);
+
+                if (category == null)
+                {
+                    return NotFound();
+                }
+
+                // Soft delete by setting the IsDeleted flag
+                category.IsDelete = true;
+                _context.Entry(category).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index", "Categories");
             }
-            var category = await _context.Category.FindAsync(id);
-            if (category != null)
+            catch (Exception ex)
             {
-                _context.Category.Remove(category);
+                // Log the exception or handle it according to your application's requirements
+                return Problem($"An error occurred while deleting the category. {ex.Message}");
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
+
 
         private bool CategoryExists(int id)
         {

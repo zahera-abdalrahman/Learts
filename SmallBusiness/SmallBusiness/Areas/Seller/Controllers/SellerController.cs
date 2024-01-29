@@ -27,7 +27,35 @@ namespace SmallBusiness.Controllers
         }
 
 
-       
+
+        [Authorize(Roles = "Seller")] 
+        public IActionResult MyProfile()
+        {
+            var userId = GetCurrentUserId();
+
+            var profile = _context.Profile.FirstOrDefault(p => p.SellerId == userId);
+
+            if (profile == null)
+            {
+                return RedirectToAction("Profile");
+            }
+
+            var viewModel = new ProfileViewModel
+            {
+                ProfileId = profile.ProfileId,
+                ProfileImage = profile.ProfileImage,
+                ShopName = profile.ShopName,
+                Description = profile.Description,
+                IsApproved = profile.IsApproved,
+                FacebookLink = profile.FacebookLink,
+                InstagramLink = profile.InstagramLink,
+                PinterestLink = profile.PinterestLink,
+                Seller = profile.Seller,
+                SellerId = profile.SellerId,
+            };
+
+            return View(viewModel);
+        }
 
 
         /////////////////////////////////////
@@ -35,18 +63,7 @@ namespace SmallBusiness.Controllers
         #region Profile
         public IActionResult Profile(string userId)
         {
-            //var user = _userManager.GetUserAsync(User).Result;
-
-            //var existingProfile = _context.Profile.FirstOrDefault(p => p.SellerId == user.Id);
-
-            //if (existingProfile != null)
-            //{
-            //    return RedirectToAction("EditProfile", new { profileId = existingProfile.ProfileId });
-            //}
-            //else
-            //{
-            //    return View(); // Render the "Profile" view instead of redirecting
-            //}
+           
             var viewModel = new ProfileViewModel
             {
                 UserId = userId
@@ -72,10 +89,6 @@ namespace SmallBusiness.Controllers
             }
 
 
-            //var user = await _userManager.GetUserAsync(User);
-            //var existingProfile = _context.Profile.FirstOrDefault(p => p.SellerId == user.Id);
-
-
             var user = await _userManager.FindByIdAsync(viewModel.UserId);
 
             var profile = new Profile
@@ -85,6 +98,9 @@ namespace SmallBusiness.Controllers
                 Description = viewModel.Description,
                 IsApproved = false, // Modify as needed
                 SellerId = user.Id,
+                FacebookLink = viewModel.FacebookLink,
+                InstagramLink = viewModel.InstagramLink,
+                PinterestLink = viewModel.PinterestLink,
             };
 
             _context.Profile.Add(profile);
@@ -98,12 +114,10 @@ namespace SmallBusiness.Controllers
         {
             var userId = GetCurrentUserId();
 
-            // Retrieve the profile for the logged-in user
             var profile = _context.Profile.FirstOrDefault(p => p.SellerId == userId);
 
             if (profile == null)
             {
-                // Redirect to the profile creation page if no profile is found
                 return RedirectToAction("Profile");
             }
 
@@ -113,103 +127,68 @@ namespace SmallBusiness.Controllers
                 ProfileImage = profile.ProfileImage,
                 ShopName = profile.ShopName,
                 Description = profile.Description,
-                IsApproved = profile.IsApproved
+                IsApproved = profile.IsApproved,
+                FacebookLink = profile.FacebookLink,
+                InstagramLink = profile.InstagramLink,
+                PinterestLink = profile.PinterestLink,
+                Seller=profile.Seller,
+                SellerId=profile.SellerId,
+                
             };
 
             return View(viewModel);
         }
 
-        // Helper method to get the current user's ID
+
+
+        [HttpPost]
+        public IActionResult EditProfile(int profileId, ProfileViewModel viewModel, [FromServices] IWebHostEnvironment host)
+        {
+
+            string ImageName = "";
+            if (viewModel.File != null)
+            {
+                string PathImage = Path.Combine(host.WebRootPath, "Profile");
+                FileInfo fi = new FileInfo(viewModel.File.FileName);
+                ImageName = "Image" + DateTime.UtcNow.ToString().Replace("/", "").Replace(":", "").Replace("-", "").Replace(" ", "") + fi.Extension;
+
+                string FullPath = Path.Combine(PathImage, ImageName);
+                viewModel.File.CopyTo(new FileStream(FullPath, FileMode.Create));
+            }
+            else
+            {
+                ImageName = viewModel.ProfileImage;
+            }
+
+            var sellerId = GetCurrentUserId();
+            var profile = _context.Profile.FirstOrDefault(p => p.SellerId == sellerId);
+
+            if (profile == null)
+            {
+                return RedirectToAction("Profile");
+            }
+
+             
+                profile.ProfileImage = ImageName;
+                profile.ShopName = viewModel.ShopName;
+                profile.Description = viewModel.Description;
+                profile.IsApproved = viewModel.IsApproved;
+                profile.FacebookLink= viewModel.FacebookLink;
+                profile.InstagramLink = viewModel.InstagramLink;
+                profile.PinterestLink= viewModel.PinterestLink;
+
+                _context.Profile.Update(profile);
+                _context.SaveChanges();
+
+            
+            return View("EditProfile",viewModel);
+        }
         private string GetCurrentUserId()
         {
             return _userManager.GetUserId(User);
         }
 
-
-        [HttpPost]
-        public IActionResult EditProfile(int profileId, ProfileViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                var profile = _context.Profile.FirstOrDefault(p => p.ProfileId == profileId);
-
-                if (profile == null || profile.SellerId != GetCurrentUserId())
-                {
-                    return RedirectToAction("Profile");
-                }
-
-                profile.ProfileImage = viewModel.ProfileImage;
-                profile.ShopName = viewModel.ShopName;
-                profile.Description = viewModel.Description;
-                profile.IsApproved = viewModel.IsApproved;
-
-                _context.Profile.Update(profile);
-                _context.SaveChanges();
-
-                return RedirectToAction("Profile");
-            }
-
-            return View(viewModel);
-        }
-
         #endregion
 
-        /////////////////////////////////////
-
-        //#region AddProduct
-        //public IActionResult CreateProduct()
-        //{
-        //    ViewData["CategoryId"] = new SelectList(_context.Category, "CategoryId", "CategoryName");
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //public IActionResult CreateProduct(ProductViewModel viewModel, [FromServices] IWebHostEnvironment host)
-        //{
-
-
-        //    string ImageName = "";
-        //    if (viewModel.File != null)
-        //    {
-        //        string PathImage = Path.Combine(host.WebRootPath, "CategoryImg");
-        //        FileInfo fi = new FileInfo(viewModel.File.FileName);
-        //        ImageName = "Image" + DateTime.UtcNow.ToString().Replace("/", "").Replace(":", "").Replace("-", "").Replace(" ", "") + fi.Extension;
-
-        //        string FullPath = Path.Combine(PathImage, ImageName);
-        //        viewModel.File.CopyTo(new FileStream(FullPath, FileMode.Create));
-        //    }
-
-
-        //        var sellerId = GetCurrentUserId();
-        //        var profile = _context.Profile.FirstOrDefault(p => p.SellerId == sellerId);
-
-        //        if (profile == null)
-        //        {
-        //            return RedirectToAction("Profile");
-        //        }
-
-
-        //        var product = new Product
-        //        {
-        //            ProductName = viewModel.ProductName,
-        //            ProductDescription = viewModel.ProductDescription,
-        //            ProductPrice = viewModel.ProductPrice,
-        //            ProductQuantityStock = viewModel.ProductQuantityStock,
-        //            ProductSale = viewModel.ProductSale,
-        //            ImageUrl = ImageName,
-        //            CategoryId = viewModel.CategoryId,
-        //            ProfileId = profile.ProfileId,
-        //            CreateAt= DateTime.UtcNow,
-        //            ReviewRate=viewModel.ReviewRate,
-        //        };
-
-        //        _context.Product.Add(product);
-        //        _context.SaveChanges();
-
-        //        return RedirectToAction("Profile");
-        //}
-
-
-        //#endregion
     }
 }

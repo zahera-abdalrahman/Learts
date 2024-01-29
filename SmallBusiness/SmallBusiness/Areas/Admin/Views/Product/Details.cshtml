@@ -1,0 +1,138 @@
+﻿@model SmallBusiness.Models.Product
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        hr {
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+
+        dl.row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        dt, dd {
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            margin: 0;
+        }
+
+        dt {
+            font-weight: bold;
+            background-color: #eee;
+        }
+
+        dd {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="pagetitle">
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home" asp-area="Admin">Home</a></li>
+                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Product" asp-area="Admin">Products</a></li>
+                <li class="breadcrumb-item active">Product Details</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div>
+                    <hr />
+                    <dl class="row">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ProductName)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.ProductName)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ProductDescription)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.ProductDescription)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ProductPrice)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.ProductPrice)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ProductQuantityStock)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.ProductQuantityStock)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ProductSale)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.ProductSale)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.ReviewRate)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.ReviewRate)/5
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CreateAt)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.CreateAt)
+                        </dd>
+                        <dt>
+                            Product Image
+                        </dt>
+                        <dd>
+                            <img src="~/CategoryImg/@Model.ImageUrl" style="width:90px" />
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Category)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.Category.CategoryName)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.profile)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.profile.Description)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="text-end">
+                    <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

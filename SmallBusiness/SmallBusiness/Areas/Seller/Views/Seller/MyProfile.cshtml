@@ -1,0 +1,92 @@
+﻿@model SmallBusiness.ViewModels.ProfileViewModel
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    hr {
+        border: 1px solid #ccc;
+        margin: 20px 0;
+    }
+
+    dl.row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    dt, dd {
+        padding: 10px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        margin: 0;
+    }
+
+    dt {
+        font-weight: bold;
+        background-color: #eee;
+    }
+
+    dd {
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+            <li class="breadcrumb-item" active>My Profile</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+           
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <img src="~/Profile/@Model.ProfileImage" alt="Profile Image" style="width:300px;height:300px;border-radius:50%;margin:auto;display:flex;justify-content:center;" />
+                               
+                                <div>
+                                    <hr />
+                                    <dl class="row">
+
+                                        <dt>
+                                            <strong>Shop Name:</strong>
+                                        </dt>
+                                        <dd>
+                                            @Model.ShopName
+                                        </dd>
+
+                                        <dt>
+                                            <strong>Description:</strong>
+                                        </dt>
+                                        <dd>
+                                            @Model.Description
+                                        </dd>
+                                      
+                                    </dl>
+                                </div>
+                                <div class="text-center">
+                                    <form asp-action="EditProfile" asp-controller="Seller" method="get">
+                                        <input type="hidden" name="profileId" value="@Model.ProfileId" />
+                                        <button type="submit" class="btn btn-primary">Edit Profile</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+</section>

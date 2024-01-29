@@ -59,6 +59,31 @@ namespace SmallBusiness.Controllers
                     ConfirmPassword = ""
                 }
             };
+            #region cart
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
+
+
+            #region Fav
+            var favoriteProducts = _context.Favorite.Include(c => c.Product).Where(p => p.IsFav).ToList();
+
+            ViewBag.Fav = favoriteProducts;
+            #endregion
             return View(UserDetails);
         }
 
@@ -100,7 +125,6 @@ namespace SmallBusiness.Controllers
 
                 if (model.EditModel.ProfileImage != null)
                 {
-                    // Process and save the uploaded image
                     string uniqueFileName = ProcessUploadedFile(model.EditModel.ProfileImage, host);
                     user.Image = uniqueFileName;
                 }
@@ -156,6 +180,47 @@ namespace SmallBusiness.Controllers
 
             return uniqueFileName;
         }
+
+
+
+
+
+
+
+        public async Task<IActionResult> OrderItemsAsync(int id)
+        {
+
+            var orderItems = _context.OrderItems
+                .Where(oi => oi.OrderId == id)
+                .Include(oi => oi.Product)
+                .Include(oi => oi.Order)
+                .ToList();
+            #region cart
+            User user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
+
+            return View(orderItems);
+        }
+
+
+
+
 
     }
 }

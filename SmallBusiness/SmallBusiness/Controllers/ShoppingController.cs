@@ -11,6 +11,9 @@ using System.Security.Claims;
 
 namespace SmallBusiness.Controllers
 {
+    [Authorize]
+
+
     public class ShoppingController : Controller
     {
 
@@ -25,7 +28,6 @@ namespace SmallBusiness.Controllers
             _context = context;
             _userManager = userManager;
         }
-
 
         [Authorize]
         public async Task<IActionResult> Cart(int ProductId, string change)
@@ -142,18 +144,34 @@ namespace SmallBusiness.Controllers
             return View();
         }
 
+        [Authorize]
         private double GetProductPrice(int productId)
         {
             return (double)(_context.Product.FirstOrDefault(p => p.ProductId == productId)?.ProductPrice ?? 0);
         }
 
-
+        [Authorize]
         public async Task<IActionResult> Checkout(PaymentViewModel model)
         {
             User user = await _userManager.GetUserAsync(User);
 
             Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
 
+            if (cart == null || !_context.CartItems.Any(ci => ci.CartId == cart.CartId))
+            {
+                TempData["ShowSweetAlert"] = true;
+                TempData["SweetAlertTitle"] = "Empty Cart!";
+                TempData["SweetAlertMessage"] = "Your cart is empty. Please add items before proceeding to checkout.";
+
+                return RedirectToAction("Cart");
+            }
+
+
+            //if (cart == null || !_context.CartItems.Any(ci => ci.CartId == cart.CartId))
+            //{
+            //    // Return JSON result indicating an empty cart
+            //    return Json(new { isEmpty = true, message = "Your cart is empty. Please add items before proceeding to checkout." });
+            //}
             var cartItems = _context
                 .CartItems
                 .Include(ci => ci.Product)
@@ -169,7 +187,7 @@ namespace SmallBusiness.Controllers
 
             return RedirectToAction("SuccessfulOrder");
         }
-
+        [Authorize]
         public async Task<IActionResult> SuccessfulOrder()
         {
             User user = await _userManager.GetUserAsync(User);
@@ -234,12 +252,9 @@ namespace SmallBusiness.Controllers
 
             await _context.SaveChangesAsync();
             //await SendOrderConfirmationEmail(order, user);
+            TempData["SellerConfirmation"] = true;
 
-            TempData["SuccessMessage"] = "Your order has been successfully placed. An email confirmation has been sent.";
-
-            TempData["ShowSweetAlert"] = true;
-
-            return View("Checkout");
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -247,31 +262,38 @@ namespace SmallBusiness.Controllers
         public async Task SendOrderConfirmationEmail(Order order, User user)
         {
 
-            var email = new MimeMessage();
-            email.From.Add(new MailboxAddress("5Dots", "fivedotsoffice@gmail.com"));
-            email.To.Add(new MailboxAddress($"{user.FirstName} {user.LastName}", user.Email));
-            email.Subject = "Order Confirmation";
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("LEARTS", "learts2024@gmail.com"));
+            message.To.Add(new MailboxAddress($"{user.FirstName} {user.LastName}", user.Email));
+            message.Subject = "Order Confirmation";
+
 
             var bodyBuilder = new BodyBuilder();
+
+
             bodyBuilder.TextBody = $"Dear {user.FirstName} {user.LastName},\n\n"
                              + "Thank you for choosing us!\n"
                              + $"Your order (Order ID: {order.OrderId}) has been successfully placed.\n"
                              + $"Order Total: {order.TotalPrice}JD\n"
                              + "We appreciate your business and look forward to serving you again!\n\n"
                              + "Best regards, Learta Team\n";
-            email.Body = bodyBuilder.ToMessageBody();
+            message.Body = bodyBuilder.ToMessageBody();
 
-            using (var smtp = new MailKit.Net.Smtp.SmtpClient())
+
+            var smtpServer = "smtp.gmail.com";
+            var smtpPort = 587;
+            var useSsl = false;
+            var smtpUsername = "learts2024@gmail.com";
+            var smtpPassword = "luuqmyopbrmchuez";
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
             {
-                smtp.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-                smtp.Connect("smtp.gmail.com", 587, false);
-                smtp.Authenticate("fivedotsoffice@gmail.com", "ecjodwaaclzuolqv");
-                await smtp.SendAsync(email);
-                smtp.Disconnect(true);
+                await client.ConnectAsync(smtpServer, smtpPort, useSsl);
+                await client.AuthenticateAsync(smtpUsername, smtpPassword);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
             }
+
         }
-
-
     }
 }
 

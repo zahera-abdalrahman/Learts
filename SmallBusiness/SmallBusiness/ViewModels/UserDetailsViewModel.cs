@@ -12,5 +12,6 @@ namespace SmallBusiness.ViewModels
         [Display(Name = "Edit Details")]
         public UpdateViewModel EditModel { get; set; }
 
+
     }
 }

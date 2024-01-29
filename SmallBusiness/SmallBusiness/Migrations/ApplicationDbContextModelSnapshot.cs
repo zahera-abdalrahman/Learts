@@ -222,6 +222,9 @@ namespace SmallBusiness.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
                     b.HasKey("CategoryId");
 
                     b.ToTable("Category");
@@ -361,6 +364,9 @@ namespace SmallBusiness.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("bit");
+
                     b.Property<string>("ProductDescription")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -406,8 +412,20 @@ namespace SmallBusiness.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FacebookLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InstagramLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PinterestLink")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfileImage")
                         .IsRequired()
@@ -485,7 +503,7 @@ namespace SmallBusiness.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("SellerID")
+                    b.Property<string>("SellerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -500,7 +518,7 @@ namespace SmallBusiness.Migrations
 
                     b.HasKey("SubscriptionId");
 
-                    b.HasIndex("SellerID");
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Subscription");
                 });
@@ -753,7 +771,7 @@ namespace SmallBusiness.Migrations
             modelBuilder.Entity("SmallBusiness.Models.OrderItems", b =>
                 {
                     b.HasOne("SmallBusiness.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -831,7 +849,7 @@ namespace SmallBusiness.Migrations
                 {
                     b.HasOne("SmallBusiness.Models.Seller", "Seller")
                         .WithMany()
-                        .HasForeignKey("SellerID")
+                        .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -868,6 +886,11 @@ namespace SmallBusiness.Migrations
             modelBuilder.Entity("SmallBusiness.Models.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("SmallBusiness.Models.Order", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("SmallBusiness.Models.Product", b =>

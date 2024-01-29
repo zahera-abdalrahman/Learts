@@ -8,8 +8,8 @@
 <div class="pagetitle">
     <nav>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin">Home</a></li>
-            <li class="breadcrumb-item"><a asp-action="Category" asp-controller="Admin">Category</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Categories">Category</a></li>
             <li class="breadcrumb-item" active>Create Category</li>
 
         </ol>
@@ -18,32 +18,51 @@
 
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Vertical Form</h5>
         <div class="row">
+            <img id="previewImage" src="~/2024.png" style="width:300px;height:300px;border-radius:50%;margin:auto;display:flex;justify-content:center;" class="mb-3" />
+
                 <form asp-action="Create" enctype="multipart/form-data">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <div class="form-group col-12">
                         <label asp-for="CategoryName" class="form-label"></label>
-                        <input asp-for="CategoryName" class="form-control" />
+                    <input asp-for="CategoryName" class="form-control"  required/>
                         <span asp-validation-for="CategoryName" class="text-danger"></span>
                     </div>
-                    <div class="form-group col-12">
-                        <label asp-for="Image"></label>
-                        <input asp-for="File" type="file" name="File" />
-                        <span asp-validation-for="Image" class="text-danger"></span>
+                    <div class="form-group col-12 mt-3">
+                    <input asp-for="Image" type="file" name="File" id="fileInput" required />
+                    <span asp-validation-for="Image" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-brand" />
+                    <div class="form-group text-end mt-3">
+                    <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                        <input type="submit" value="Create" class="btn btn-primary" />
                     </div>
                 </form>
         </div>
 
-        <div>
-            <a asp-action="Index">Back to List</a>
-        </div>
     </div>
 </div>
 
 
 
 
+<!-- Add this script to your Razor Page or in a separate JavaScript file -->
+<script>
+    function previewImage(input) {
+        var preview = document.getElementById('previewImage');
+        var file = input.files[0];
+
+        if (file) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Attach the previewImage function to the change event of the file input
+    document.getElementById('fileInput').addEventListener('change', function () {
+        previewImage(this);
+    });
+</script>

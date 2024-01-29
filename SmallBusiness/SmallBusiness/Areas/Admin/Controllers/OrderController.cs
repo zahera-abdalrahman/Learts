@@ -110,37 +110,30 @@ namespace SmallBusiness.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,TotalPrice,Status,OrderDate,CartId,UserId")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,Status")] Order order)
         {
             if (id != order.OrderId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.OrderId))
+           
+                    var existingOrder = await _context.Order.FindAsync(id);
+                    if (existingOrder == null)
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                    // Update only the Status property
+                    existingOrder.Status = order.Status;
+
+                    _context.Update(existingOrder);
+                    await _context.SaveChangesAsync();
+               
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["CartId"] = new SelectList(_context.Cart, "CartId", "UserId", order.CartId);
-            ViewData["UserId"] = new SelectList(_context.User, "Id", "Id", order.UserId);
-            return View(order);
+           
         }
+
 
         // GET: Admin/Order/Delete/5
         public async Task<IActionResult> Delete(int? id)

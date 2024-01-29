@@ -31,7 +31,6 @@ namespace SmallBusiness.ViewModels
         [Range(0, 5, ErrorMessage = "Review rate must be between 0 and 5")]
         public int ReviewRate { get; set; }
 
-        [Required]
         public string ImageUrl { get; set; }
 
         [Required(ErrorMessage = "Category ID is required")]

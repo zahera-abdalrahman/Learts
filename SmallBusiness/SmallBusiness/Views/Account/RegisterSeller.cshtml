@@ -1,6 +1,26 @@
 ﻿@using SmallBusiness.List;
 @model SmallBusiness.ViewModels.RegisterUserViewModel
+<style>
+    .ab {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        height: 100%;
+        top: 0;
+        right: 0;
+        padding: 0 15px 7px 0;
+        cursor: pointer;
+    }
 
+        .ab i {
+            cursor: pointer;
+            z-index: 10;
+        }
+
+    .image {
+        position: relative;
+    }
+</style>
 <!-- Login & Register Section Start -->
 <div class="section section-padding">
     <div class="container">
@@ -14,6 +34,8 @@
                     </div>
                     <div class="login-register-form">
                         <form method="post" asp-action="RegisterSeller" asp-controller="Account" enctype="multipart/form-data">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
                             <div class="row learts-mb-n50">
                                 <div class="col-12 learts-mb-20">
                                     <label asp-for="FirstName">First Name <abbr class="required">*</abbr></label>
@@ -43,19 +65,30 @@
                                     </select>
                                     <span asp-validation-for="City" class="text-danger"></span>
                                 </div>
+
                                 <div class="col-12 learts-mb-20">
                                     <label asp-for="Password">Password <abbr class="required">*</abbr></label>
-                                    <input asp-for="Password" type="password" id="registerEmail">
+                                    <div class="input-group image">
+                                        <span class='ab' onclick="togglePasswordVisibility('registerPassword', 'togglePassword')">
+                                            <i class="fa fa-eye-slash" id="togglePassword"></i>
+                                        </span>
+                                        <input asp-for="Password" type="password" id="registerPassword" class="form-control">
+                                    </div>
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-12 learts-mb-20">
                                     <label asp-for="ConfirmPassword">Confirm Password <abbr class="required">*</abbr></label>
-                                    <input asp-for="ConfirmPassword" type="password" id="registerEmail">
+                                    <div class="input-group image">
+                                        <span class='ab' onclick="togglePasswordVisibility('confirmPassword', 'toggleConfirmPassword')">
+                                            <i class="fa fa-eye-slash" id="toggleConfirmPassword"></i>
+                                        </span>
+                                        <input asp-for="ConfirmPassword" type="password" id="confirmPassword" class="form-control">
+                                    </div>
                                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                                 </div>
                                 <div class="col-12 learts-mb-50">
-                                    <p>Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our privacy policy</p>
+                                    <p>Your personal data will be used to support your experience throughout this website, to manage access to your account</p>
                                 </div>
                                 <div class="col-12 text-center learts-mb-50">
                                     <button class="btn btn-dark btn-outline-hover-dark">Register</button>
@@ -71,3 +104,19 @@
 
 </div>
 <!-- Login & Register Section End -->
+<script>
+    function togglePasswordVisibility(inputId, eyeIconId) {
+        var passwordInput = document.getElementById(inputId);
+        var eyeIcon = document.getElementById(eyeIconId);
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+        } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+        }
+    }
+</script>

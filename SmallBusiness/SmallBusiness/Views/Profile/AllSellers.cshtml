@@ -1,36 +1,36 @@
-﻿ <!-- Portfolio Section Start -->
+﻿<!-- Portfolio Section Start -->
 <div class="section section-padding">
     <div class="container">
-        <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-sm-2 row-cols-1 learts-mb-n30">
-
-
-            @foreach (var profile in ViewBag.AllSellers)
+        <div class="row row-cols-lg-3 row-cols-sm-2 row-cols-1 learts-mb-n30">
+             @foreach (var profile in ViewBag.AllSellers)
             {
                 
-                <div class="col learts-mb-30">
-                    <div class="portfolio">
+            <div class="col learts-mb-30">
+                <div class="portfolio">
                         <div class="thumbnail"><img src="~/Profile/@profile.ProfileImage" alt=""></div>
-                        <div class="content">
+                    <div class="content">
                             <h4 class="title"><a href="portfolio-details.html">@profile.ShopName</a></h4>
-                            <div class="desc">
-                                <p>@profile.Description</p>
-                            </div>
-                            <div class="link">
-                                <a href="@Url.Action("ProfileDetails", "Profile", new { profileId = profile.ProfileId })">Read more</a>
-                            </div>
+                        <div class="desc">
+                                @{
+                                    // Split the description into words
+                                    string[] words = profile.Description.Split(' ');
+
+                                    // Take the first 5 words
+                                    string first5Words = string.Join(" ", words.Take(10));
+
+                                    // Display the first 5 words
+                                    <p>@first5Words...</p>
+                                }
                         </div>
+                            <div class="link"><a href="@Url.Action("ProfileDetails", "Profile", new { profileId = profile.ProfileId })">Read more</a></div>
                     </div>
                 </div>
-            }
-
-        </div>
-        
-
-        <div class="row learts-mt-50">
-            <div class="col text-center">
-                <a href="#" class="btn btn-dark btn-outline-hover-dark">Load More</a>
             </div>
+
+           }
+
         </div>
+
     </div>
 
 </div>

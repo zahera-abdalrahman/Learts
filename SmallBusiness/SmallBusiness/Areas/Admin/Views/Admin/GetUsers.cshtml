@@ -6,116 +6,72 @@
     var role = ViewBag.Role as string;
 }
 
-<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    .search-box {
-        width: fit-content;
-        height: fit-content;
-        position: relative;
-    }
-
-    .input-search {
-        height: 50px;
-        width: 50px;
-        border-style: none;
-        padding: 10px;
-        font-size: 18px;
-        letter-spacing: 2px;
-        outline: none;
-        border-radius: 25px;
-        transition: all .5s ease-in-out;
-        background-color: #72a499;
-        padding-right: 40px;
-        color: #72a499;
-    }
-
-        .input-search::placeholder {
-            color:black;
-            font-size: 18px;
-            letter-spacing: 2px;
-            font-weight: 100;
-        }
-
-    .btn-search {
-        width: 50px;
-        height: 50px;
-        border-style: none;
-        font-size: 20px;
-        font-weight: bold;
-        outline: none;
-        cursor: pointer;
-        border-radius: 50%;
-        position: absolute;
-        right: 0px;
-        color: #ffffff;
-        background-color: transparent;
-        pointer-events: painted;
-    }
-
-        .btn-search:focus ~ .input-search {
-            width: 300px;
-            border-radius: 0px;
-            background-color: white;
-            border-bottom: 1px solid rgba(255,255,255,.5);
-            transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
-        }
-
-    .input-search:focus {
-        width: 300px;
-        border-radius: 0px;
-        background-color: white;
-        border-bottom: 1px solid rgba(255,255,255,.5);
-        transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
-    }
-
-</style>
-
-    <div class="pagetitle">
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Admin">Home</a></li>
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
             <li class="breadcrumb-item" active>Users</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-<div class="container">
-    <form method="get" action="@Url.Action("GetUsers", "Admin")" class="form-inline">
-        <div class="search-box">
-            <button class="btn-search"><i class="bi bi-search"></i></button>
-            <input type="text" class="input-search form-control" name="searchTerm" placeholder="Search by name" value="@ViewBag.SearchTerm">
-        </div>
-        <button class="btn btn-primary d-none" type="submit">Search</button>
-    </form>
-</div>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
 
-    <section class="section">
-        
-        <div class="row">
-            <div class="col-lg-12">
-                
-                <div class="container">
-                    
-                    @foreach (var user in users)
-                    {
-                        <div class="box">
-                            <div class="image">
-                            <img src="~/User/@user.Image" alt="">
-                            </div>
-                            <div class="name_job">@user.FirstName @user.LastName</div>
-                            <p>@user.UserName</p>
-                            <div class="btns">
-                                <button class="btn" onclick="location.href='@Url.Action("UserDetails", "Admin", new { userId = user.Id })'">Details</button>
-                            <a href="#" class="btn btn-sm font-sm rounded btn-danger" onclick="confirmDelete('@user.Id')">Delete</a>
-                        </div>
-                        </div>
-                    }
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table datatable table-hover">
+                        <thead>
+                            <tr>
+                                <th>
+                                    User Name
+                                </th>
+                                <th>
+                                    User Image
+                                </th>
+                                <th>
+                                    User Name
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             @foreach (var user in users)
+                            {
+                                <tr>
+                                    <td>
+                                        @user.FirstName @user.LastName
+                                    </td>
+                                    <td>
+                                        <img src="~/User/@user.Image" alt="" style="width:90px">
+                                    </td>
+                                    <td>
+                                        @user.UserName
+                                    </td>
+                                    <td class="text-end">
+                                        <button class="btn btn-primary" onclick="location.href='@Url.Action("UserDetails", "Admin", new { userId = user.Id })'">
+                                            <i class="ri-file-list-2-line"></i>
+                                        </button>
+                                        <form id="deleteForm-@user.Id" method="post" asp-action="Delete" asp-route-id="@user.Id" class="d-inline" style="padding-top: 0;padding-bottom: 0;">
+                                            @Html.HiddenFor(modelItem => user.Id)
+                                            <button type="submit" class="btn btn-danger" style="display: none;"></button>
+                                            <a href="#" class="btn btn-danger" onclick="confirmDelete('@user.Id')">
+                                                <i class="ri-delete-bin-5-line"></i>
+                                            </a>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
         </div>
-    </section>
+    </div>
+</section>
+
+
 <script>
     function confirmDelete(userId) {
         Swal.fire({
@@ -128,10 +84,9 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // If the user clicks "Yes, delete it!"
-                window.location.href = '@Url.Action("Delete", "Admin", new { area = "", userId = "__userId__" })'.replace('__userId__', userId);
+                // If confirmed, submit the form
+                document.getElementById('deleteForm-' + userId).submit();
             }
         });
     }
 </script>
-

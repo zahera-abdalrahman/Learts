@@ -39,14 +39,15 @@ namespace SmallBusiness.Areas.Seller.Controllers
                 return RedirectToAction("CreateProfile"); // Redirect to create a profile if not exists
             }
 
-            // Filter products based on the seller's profile
+            // Retrieve products that belong to the current seller's profile
             var products = await _context.Product
-                .Where(p => p.ProfileId == profile.ProfileId)
+                .Where(p => !p.IsDelete && p.ProfileId == profile.ProfileId)
                 .Include(p => p.Category)
                 .Include(p => p.profile)
                 .ToListAsync();
 
             return View(products);
+
         }
 
 
@@ -265,18 +266,32 @@ namespace SmallBusiness.Areas.Seller.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Product == null)
+            try
             {
-                return Problem("Entity set 'ApplicationDbContext.Product'  is null.");
+                if (_context.Product == null)
+                {
+                    return Problem("Entity set 'ApplicationDbContext.Product' is null.");
+                }
+
+                var product = await _context.Product.FindAsync(id);
+
+                if (product == null)
+                {
+                    return NotFound();
+                }
+
+                // Soft delete by setting the IsDeleted flag
+                product.IsDelete = true;
+                _context.Entry(product).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index");
             }
-            var product = await _context.Product.FindAsync(id);
-            if (product != null)
+            catch (Exception ex)
             {
-                _context.Product.Remove(product);
+                // Handle exceptions, log, or return an error view
+                return RedirectToAction("Index"); // You may want to redirect to an error page
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmallBusiness.Data; // Assuming you have a DbContext named 'SmallBusinessDbContext'
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace SmallBusiness.Controllers
 {
+    [Authorize]
     public class FavoriteController : Controller
     {
         
@@ -36,7 +38,6 @@ namespace SmallBusiness.Controllers
 
             if (user != null)
             {
-                // Retrieve favorites including associated products
                 var favoriteProducts = _context.Favorite
                     .Include(f => f.Product)
                     .Where(f => f.UserId == user.Id && f.IsFav)
@@ -46,7 +47,7 @@ namespace SmallBusiness.Controllers
             }
             else
             {
-                ViewBag.Fav = new List<Favorite>(); // or handle this case as needed
+                ViewBag.Fav = new List<Favorite>();
             }
 
             #region cart
@@ -72,27 +73,6 @@ namespace SmallBusiness.Controllers
         }
 
 
-
-
-
-        //[HttpPost]
-        //public async Task<IActionResult> ToggleFavorite(int productId)
-        //{
-        //    var product = await _context.Product.FindAsync(productId);
-
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    product.IsFav = !product.IsFav;
-        //    await _context.SaveChangesAsync();
-
-        //    return Json(new { IsFav = product.IsFav });
-        //}
-
-
-
         [HttpPost]
         public async Task<IActionResult> ToggleFavorite(int productId)
         {
@@ -100,7 +80,7 @@ namespace SmallBusiness.Controllers
 
             if (user == null)
             {
-                return Unauthorized(); // You may want to handle this case differently
+                return Unauthorized(); 
             }
 
             var favorite = await _context.Favorite
@@ -108,23 +88,20 @@ namespace SmallBusiness.Controllers
 
             if (favorite == null)
             {
-                // Product is not in favorites, add it
                 _context.Favorite.Add(new Favorite
                 {
                     UserId = user.Id,
                     ProductId = productId,
-                    IsFav = true // Set IsFav to true when adding to favorites
+                    IsFav = true 
                 });
             }
             else
             {
-                // Product is in favorites, toggle the IsFav property
                 favorite.IsFav = !favorite.IsFav;
             }
 
             await _context.SaveChangesAsync();
 
-            // Retrieve user-specific favorites after saving changes
             var userFavorites = await _context.Favorite
                 .Where(f => f.UserId == user.Id && f.IsFav)
                 .Select(f => f.ProductId)

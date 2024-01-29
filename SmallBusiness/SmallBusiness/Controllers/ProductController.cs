@@ -29,46 +29,90 @@ namespace SmallBusiness.Controllers
             _context = context;
         }
 
-        //public async Task<IActionResult> products()
-        //{
-        //    var products = _context.Product
-        //.Include(p => p.Category)
-        //.Include(p => p.profile)
-        //.ToList();
-        //    #region cart
-        //    User user = await _userManager.GetUserAsync(User);
-
-        //    if (user != null)
-        //    {
-        //        Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
-
-        //        if (cart != null)
-        //        {
-        //            var cartItemsModified = _context
-        //                .CartItems
-        //                .Include(ci => ci.Product)
-        //                .Where(ci => ci.CartId == cart.CartId)
-        //                .ToList();
-
-        //            ViewBag.CartItems = cartItemsModified;
-        //        }
-        //    }
-        //    #endregion
-
-        //    return View(products);
-        //}
 
 
-
-        public IActionResult ProductSale()
+        public async Task<IActionResult> ProductSaleAsync(string categoryName, string searchProductName, string sortOrder)
         {
-            var productsWithDiscount = _context
-                .Product
-                .Include(p => p.Category)
-                .Where(p => p.ProductSale > 0)
-                .ToList();
 
-            var discountedProducts = productsWithDiscount
+            #region cart
+            User user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
+
+            #region Fav
+            var favoriteProducts = _context.Favorite.Include(c => c.Product).Where(p => p.IsFav).ToList();
+
+            ViewBag.Fav = favoriteProducts;
+            #endregion
+
+            List<Product> categoryProducts;
+
+            if (string.IsNullOrEmpty(categoryName))
+            {
+                categoryName = "All";
+            }
+
+            // Filter by category
+            if (categoryName.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                categoryProducts = _context.Product.Include(p => p.Category).Where(p => p.ProductSale > 0).ToList();
+            }
+            else
+            {
+                categoryProducts = _context
+                    .Product
+                    .Include(p => p.Category)
+                    .Where(p => p.Category != null && p.Category.CategoryName == categoryName && p.ProductSale > 0)
+                    .ToList();
+            }
+
+            // Filter by product name if provided
+            if (!string.IsNullOrEmpty(searchProductName))
+            {
+                categoryProducts = categoryProducts
+                    .Where(p => p.ProductName.Contains(searchProductName, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+            switch (sortOrder)
+            {
+                case "rating":
+                    categoryProducts = categoryProducts.OrderByDescending(p => p.ReviewRate).ToList();
+                    break;
+
+                case "date":
+                    categoryProducts = categoryProducts.OrderByDescending(p => p.CreateAt).ToList();
+                    break;
+
+                case "price":
+                    categoryProducts = categoryProducts.OrderBy(p => p.ProductPrice).ToList();
+                    break;
+
+                case "price-desc":
+                    categoryProducts = categoryProducts.OrderByDescending(p => p.ProductPrice).ToList();
+                    break;
+
+                // Add more cases for additional sorting options if needed
+
+                default:
+                    break;
+            }
+
+            var discountedProducts = categoryProducts
                 .Select(
                     p =>
                         new
@@ -81,21 +125,76 @@ namespace SmallBusiness.Controllers
                             CategoryId = p.CategoryId,
                             Category = p.Category,
                             DiscountPercent = p.ProductSale,
+                            Rate=p.ReviewRate,
                             ImageUrl = p.ImageUrl,
                             DiscountedPrice = p.ProductPrice - (p.ProductPrice * p.ProductSale / 100)
                         }
                 )
                 .ToList();
 
-            ViewBag.productList = discountedProducts;
+            if (discountedProducts.Any())
+            {
+                ViewBag.productList = discountedProducts;
+            }
+            else
+            {
+                ViewBag.productList = null;
+                ViewBag.NoProductsMessage = !string.IsNullOrEmpty(searchProductName)
+                    ? $"No products found for \"{searchProductName}\"."
+                    : "No products found.";
+            }
+
+            var categoryList = _context.Category.Where(c => c.IsDelete == false).ToList();
+            var categoryProductCount = new Dictionary<int, int>();
+            foreach (var category in categoryList)
+            {
+                int productCount = _context.Product
+                    .Count(p => p.Category != null && p.Category.CategoryId == category.CategoryId && p.ProductSale > 0);
+                categoryProductCount.Add(category.CategoryId, productCount);
+            }
+
+            ViewBag.SearchTerm = searchProductName;
+
+            ViewBag.categoryList = categoryList;
+            ViewBag.categoryCount = discountedProducts.Count;
+            ViewBag.ALL = categoryProducts.Count;
+
+            ViewBag.categoryProductCount = categoryProductCount;
+
             return View();
         }
 
 
 
-
-        public IActionResult products(string categoryName)
+        public async Task<IActionResult> productsAsync(string categoryName, string searchProductName, string sortOrder)
         {
+
+
+            #region cart
+            User user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
+            {
+                Cart cart = _context.Cart.FirstOrDefault(c => c.UserId == user.Id);
+
+                if (cart != null)
+                {
+                    var cartItemsModified = _context
+                        .CartItems
+                        .Include(ci => ci.Product)
+                        .Where(ci => ci.CartId == cart.CartId)
+                        .ToList();
+
+                    ViewBag.CartItems = cartItemsModified;
+                }
+            }
+            #endregion
+            #region Fav
+            var favoriteProducts = _context.Favorite.Include(c => c.Product).Where(p => p.IsFav).ToList();
+
+            ViewBag.Fav = favoriteProducts;
+            #endregion
+
             List<Product> categoryProducts;
 
             if (string.IsNullOrEmpty(categoryName))
@@ -116,6 +215,35 @@ namespace SmallBusiness.Controllers
                     .ToList();
             }
 
+            if (!string.IsNullOrEmpty(searchProductName))
+            {
+                categoryProducts = categoryProducts
+                    .Where(p => p.ProductName.Contains(searchProductName, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "rating":
+                    categoryProducts = categoryProducts.OrderByDescending(p => p.ReviewRate).ToList();
+                    break;
+
+                case "date":
+                    categoryProducts = categoryProducts.OrderByDescending(p => p.CreateAt).ToList();
+                    break;
+
+                case "price":
+                    categoryProducts = categoryProducts.OrderBy(p => p.ProductPrice).ToList();
+                    break;
+
+                case "price-desc":
+                    categoryProducts = categoryProducts.OrderByDescending(p => p.ProductPrice).ToList();
+                    break;
+
+                default:
+                    break;
+            }
+
             var discountedProducts = categoryProducts
                 .Select(
                     p =>
@@ -129,17 +257,42 @@ namespace SmallBusiness.Controllers
                             CategoryId = p.CategoryId,
                             Category = p.Category,
                             DiscountPercent = p.ProductSale,
+                            Rate = p.ReviewRate,
                             ImageUrl = p.ImageUrl,
-                            DiscountedPrice = p.ProductPrice - (p.ProductPrice * p.ProductSale / 100)
+                            OldPrice = p.ProductPrice,
+                            NewPrice = p.ProductPrice - (p.ProductPrice * p.ProductSale / 100)
                         }
                 )
                 .ToList();
 
-            ViewBag.productList = discountedProducts;
-            ViewBag.categoryList = _context.Category;
+            if (discountedProducts.Any())
+            {
+                ViewBag.productList = discountedProducts;
+            }
+            else
+            {
+                ViewBag.productList = null;
+                ViewBag.NoProductsMessage = !string.IsNullOrEmpty(searchProductName)
+                    ? $"No products found for \"{searchProductName}\"."
+                    : "No products found.";
+            }
+
+            var categoryList = _context.Category.Where(c => c.IsDelete == false).ToList();
+            var categoryProductCount = new Dictionary<int, int>();
+            foreach (var category in categoryList)
+            {
+                int productCount = _context.Product
+                    .Count(p => p.Category != null && p.Category.CategoryId == category.CategoryId);
+                categoryProductCount.Add(category.CategoryId, productCount);
+            }
+
+            ViewBag.SearchTerm = searchProductName;
+
+            ViewBag.categoryList = categoryList;
             ViewBag.categoryCount = discountedProducts.Count;
             ViewBag.ALL = categoryProducts.Count;
 
+            ViewBag.categoryProductCount = categoryProductCount;
 
             return View();
         }
@@ -148,18 +301,21 @@ namespace SmallBusiness.Controllers
 
 
 
+
         public async Task<IActionResult> productDetails(int productId)
         {
-            var product = _context.Product
+            var product = await _context.Product
                 .Include(p => p.Category)
-                .FirstOrDefault(p => p.ProductId == productId);
+                .Include(p => p.profile) 
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             var reviews = await _context.Review
-                .Include(r => r.User)
-                .Include(r=>r.Product)
-                .Where(r => r.isActive)
-                .Take(8)
-                .ToListAsync();
+        .Include(r => r.User)
+        .Include(r => r.Product)
+        .Where(r => r.ProductId == productId && r.isActive) 
+        .Take(8)
+        .ToListAsync();
+
             if (product == null)
             {
                 return NotFound();
@@ -181,11 +337,16 @@ namespace SmallBusiness.Controllers
                 Category = product.Category,
                 ProductSale = product.ProductSale,
                 ImageUrl = product.ImageUrl,
-                DiscountedPrice = discountedPrice
+                DiscountedPrice = discountedPrice,
+                ProfileId = product.ProfileId, 
+                Profile = product.profile,
+                DiscountPercent = product.ProductSale,
+                Rate = product.ReviewRate,
+                OldPrice = product.ProductPrice,
+                NewPrice = product.ProductPrice - (product.ProductPrice * product.ProductSale / 100)
             };
 
             ViewBag.Reviews = reviews;
-
 
             #region cart
             User user = await _userManager.GetUserAsync(User);
@@ -208,7 +369,11 @@ namespace SmallBusiness.Controllers
             #endregion
 
 
+            #region Fav
+            var favoriteProducts = _context.Favorite.Include(c => c.Product).Where(p => p.IsFav).ToList();
 
+            ViewBag.Fav = favoriteProducts;
+            #endregion
             return View();
         }
 
@@ -219,12 +384,11 @@ namespace SmallBusiness.Controllers
 
 
 
-
+        #region review
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Review(Review model, int ProductId)
         {
-            // Check if the product with the specified ProductId exists
             var productExists = await _context.Product.AnyAsync(p => p.ProductId == ProductId);
             if (!productExists)
             {
@@ -238,9 +402,9 @@ namespace SmallBusiness.Controllers
                 UserId = user.Id,
                 Name = model.Name,
                 Email = model.Email,
-                ProductId = ProductId, // Set the correct ProductId here
+                ProductId = ProductId, 
                 ReviewDate = DateTime.Now,
-                ReviewRate=model.ReviewRate,
+                ReviewRate = model.ReviewRate,
                 ReviewMessage = model.ReviewMessage,
                 isActive = false,
                 User = user
@@ -251,15 +415,19 @@ namespace SmallBusiness.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                var swalScript = "Swal.fire('Review Submitted', 'Your review has been submitted and will be reviewed by the admin.', 'success');";
+                TempData["SweetAlertScript"] = swalScript;
             }
             catch (DbUpdateException ex)
             {
-               
+
                 return BadRequest($"Error adding review: {ex.Message}");
             }
 
             return RedirectToAction("productDetails", new { productId = ProductId });
         }
+        #endregion
+
 
     }
 

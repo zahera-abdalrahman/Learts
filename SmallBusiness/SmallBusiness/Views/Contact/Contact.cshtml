@@ -1,4 +1,5 @@
 ﻿@model SmallBusiness.ViewModels.ContactFormViewModel
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
  <!-- Contact Information & Map Section Start -->
 <div class="section section-padding">
@@ -35,7 +36,7 @@
         <!-- Contact Map Start -->
         <div class="row learts-mt-60">
             <div class="col">
-                <iframe class="contact-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2136.986005919501!2d-73.9685579655238!3d40.75862446708152!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c258e4a1c884e5%3A0x24fe1071086b36d5!2sThe%20Atrium!5e0!3m2!1sen!2sbd!4v1585132512970!5m2!1sen!2sbd" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+                <iframe class="contact-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d27076.03371976073!2d35.94538754999999!3d31.974344350000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151b5fd9a6ce8763%3A0x79808ed49db4ff79!2sBasman%2C%20Amman!5e0!3m2!1sen!2sjo!4v1706166336860!5m2!1sen!2sjo" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
             </div>
         </div>
         <!-- Contact Map End -->
@@ -62,7 +63,9 @@
                     <form asp-controller="Contact" asp-action="SendMessage" method="post" id="contact-form">
                         <div class="row learts-mb-n30">
                             <div class="col-md-6 col-12 learts-mb-30">
-                                <input asp-for="Name" class="form-control" placeholder="Your Name *" />
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                                <input asp-for="Name" class="form-control" placeholder="Your Name *"/>
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                             <div class="col-md-6 col-12 learts-mb-30">
@@ -86,3 +89,37 @@
     </div>
 </div>
 <!-- Contact Form Section End -->
+<!-- Add this script to handle the form submission and show SweetAlert -->
+<script>
+    $(document).ready(function () {
+        $("#contact-form").submit(function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("SendMessage", "Contact")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (data) {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Your message has been sent successfully.',
+                        });
+
+                        $("#contact-form")[0].reset();
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Something went wrong. Please try again.',
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+

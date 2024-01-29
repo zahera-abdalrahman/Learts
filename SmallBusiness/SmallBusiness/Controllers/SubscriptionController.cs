@@ -28,11 +28,11 @@ namespace SmallBusiness.Controllers
 
         public IActionResult CreateSubscription(string userId)
         {
-            // Assuming you have some logic to get the current seller's ID
 
             var viewModel = new SubscriptionViewModel
             {
                 SellerId = userId
+               
             };
 
             return View(viewModel);
@@ -46,11 +46,11 @@ namespace SmallBusiness.Controllers
         
             var subscription = new Subscription
             {
-                SellerID = viewModel.SellerId,
+                SellerId = viewModel.SellerId,
                 SubscriptionStartDate = DateTime.Now,
                 SubscriptionEndDate = DateTime.Now.AddMonths(1),
                 Price =50,
-                status = false
+                status = false,
             };
 
             _context.Subscription.Add(subscription);
@@ -58,9 +58,8 @@ namespace SmallBusiness.Controllers
 
             _context.SaveChanges();
 
-            // Add logic for payment processing here (e.g., integrate with a payment gateway)
+            TempData["SellerConfirmation"] = true;
 
-            // Redirect to a success page or the default home page
             return RedirectToAction("Index", "Home");
         }
     }

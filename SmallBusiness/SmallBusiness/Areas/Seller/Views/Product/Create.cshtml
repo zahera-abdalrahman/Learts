@@ -14,65 +14,80 @@
     }
 
 </style>
-<h2>Create Product</h2>
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Home</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Product">Product</a></li>
+            <li class="breadcrumb-item" active>Create Product</li>
 
-<form asp-controller="Product" asp-action="Create" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="ProductName">Product Name:</label>
-        <input asp-for="ProductName" class="form-control" />
-        <span asp-validation-for="ProductName" class="text-danger"></span>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <img id="previewImage" src="~/2024.png" style="width:300px;height:300px;border-radius:50%;margin:auto;display:flex;justify-content:center;" class="mb-3" />
+                <form asp-controller="Product" asp-action="Create" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label asp-for="ProductName">Product Name:</label>
+                        <input asp-for="ProductName" class="form-control" />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ProductDescription">Product Description:</label>
+                        <textarea asp-for="ProductDescription" class="form-control"></textarea>
+                        <span asp-validation-for="ProductDescription" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ProductPrice">Product Price:</label>
+                        <input asp-for="ProductPrice" type="number" class="form-control" />
+                        <span asp-validation-for="ProductPrice" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ProductQuantityStock">Quantity in Stock:</label>
+                        <input asp-for="ProductQuantityStock" type="number" class="form-control" />
+                        <span asp-validation-for="ProductQuantityStock" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="ProductSale">Sale Percentage:</label>
+                        <input asp-for="ProductSale" type="number" class="form-control" />
+                        <span asp-validation-for="ProductSale" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CategoryId" class="control-label"></label>
+                        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+
+                    </div>
+
+                    @*<div class="form-group">
+                    <label asp-for="ImageUrl">Product Image:</label>
+                    <input asp-for="File" type="file" class="form-control-file" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>*@
+
+                    <div id="drag-drop-area" class="drag-drop-area">
+                        <p>Drag & Drop an Image File Here</p>
+                        <input asp-for="File" type="file" name="file" id="file" accept="image/*" />
+                        <output id="result"></output>
+                    </div>
+
+                    <div class="text-end mt-3">
+                        <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                        <button type="submit" class="btn btn-primary">Create Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="ProductDescription">Product Description:</label>
-        <textarea asp-for="ProductDescription" class="form-control"></textarea>
-        <span asp-validation-for="ProductDescription" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ProductPrice">Product Price:</label>
-        <input asp-for="ProductPrice" type="number" class="form-control" />
-        <span asp-validation-for="ProductPrice" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ProductQuantityStock">Quantity in Stock:</label>
-        <input asp-for="ProductQuantityStock" type="number" class="form-control" />
-        <span asp-validation-for="ProductQuantityStock" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ProductSale">Sale Percentage:</label>
-        <input asp-for="ProductSale" type="number" class="form-control" />
-        <span asp-validation-for="ProductSale" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CategoryId" class="control-label"></label>
-        <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
-
-    </div>
-
-    @*<div class="form-group">
-        <label asp-for="ImageUrl">Product Image:</label>
-        <input asp-for="File" type="file" class="form-control-file" />
-        <span asp-validation-for="ImageUrl" class="text-danger"></span>
-    </div>*@
-
-    <div id="drag-drop-area" class="drag-drop-area">
-        <p>Drag & Drop an Image File Here</p>
-        <input asp-for="File" type="file" name="file" id="file" accept="image/*" />
-        <output id="result"></output>
-    </div>
-
-
-    <button type="submit" class="btn btn-primary">Create Product</button>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

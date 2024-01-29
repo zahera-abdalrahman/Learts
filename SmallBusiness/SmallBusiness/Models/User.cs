@@ -14,7 +14,8 @@ namespace SmallBusiness.Models
 
         [Required(ErrorMessage = "City is required")]
         public string City { get; set; }
-       
+
+
         //[Required]
         //public string Street { get; set; }
 

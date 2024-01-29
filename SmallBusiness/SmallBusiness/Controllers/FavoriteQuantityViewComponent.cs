@@ -26,7 +26,6 @@ namespace SmallBusiness.Controllers
 
                 if (user != null)
                 {
-                    // Assuming you have a property named 'IsFav' in your Product model
                     var favoriteQuantity = _context.Favorite
                         .Count(p => p.IsFav && p.UserId == user.Id);
 

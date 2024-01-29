@@ -30,5 +30,8 @@ namespace SmallBusiness.Models
         [ForeignKey("UserId")]
         public User User { get; set; }
 
+        public ICollection<OrderItems> OrderItems { get; set; }
+
+
     }
 }

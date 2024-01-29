@@ -1,0 +1,178 @@
+﻿@using System.Security.Claims;
+
+<style>
+    .form-rating {
+        display: flex;
+        align-items: center;
+    }
+
+    .stars-edit {
+        display: flex;
+    }
+
+    .star-edit {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+        background-color: #ddd; /* Set star color to your desired color */
+        clip-path: polygon( 50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35% );
+    }
+
+
+    .star-display {
+        cursor: pointer;
+        width: 24px;
+        height: 24px;
+        margin-right: 5px;
+        background-color: orange; /* Set star color to your desired color */
+        clip-path: polygon( 50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35% );
+    }
+
+
+
+        .star-edit:hover,
+        .star-edit.active {
+            background-color: orange; /* Set hover and active color to your desired color */
+        }
+</style>
+
+<!-- Modal -->
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <button class="close" data-bs-dismiss="modal">&times;</button>
+            <div class="row learts-mb-n30">
+
+                <!-- Product Images Start -->
+                <div class="col-lg-6 col-12 learts-mb-30">
+                    <div class="product-images">
+                        <div class="product-gallery-slider-quickview">
+                            <div class="product-zoom" data-image="~/CategoryImg/@(ViewBag.Product?.ImageUrl)">
+                                <img src="~/CategoryImg/@(ViewBag.Product?.ImageUrl)" alt="">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Images End -->
+                <!-- Product Summery Start -->
+                <div class="col-lg-6 col-12 overflow-hidden position-relative learts-mb-30">
+              
+
+                    <div class="product-summery customScroll">
+                    @functions {
+                        double GetAverageRating(List<Review> reviews)
+                        {
+                            if (reviews != null && reviews.Any())
+                            {
+                                var validReviews = reviews.Where(r => r.ReviewRate >= 0); // Filter out invalid reviews
+                                if (validReviews.Any())
+                                {
+                                    var averageRating = validReviews.Average(r => r.ReviewRate);
+                                    return averageRating;
+                                }
+                            }
+                            return 0;
+                        }
+                    }
+
+                    @{
+                        double averageRating = GetAverageRating(ViewBag.Reviews as List<Review>);
+                    }
+
+                    <span class="stars-edit" style="pointer-events: none;">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <span class="@(i <= averageRating ? "star-display" : "star-edit") @(i <= averageRating - 0.5 ? "active" : "")"></span>
+                        }
+                    </span>
+
+                    <a href="#reviews" class="review-link">(<span class="count">@(ViewBag.Reviews?.Count)</span> customer reviews)</a>
+
+
+
+
+                        <h3 class="product-title">@Html.Raw(ViewBag.Product?.ProductName)</h3>
+
+                    
+                    @if ((ViewBag.Product?.DiscountPercent) > 0)
+                    {
+                        <span class="price">
+
+                            <del class="old product-price" style="display:inline">$@(ViewBag.Product?.OldPrice)</del>
+                            <span class="new product-price" style="display:inline;color:#f28375">$@(ViewBag.Product?.NewPrice.ToString("0.00"))</span>
+                        </span>
+                    }
+                    else
+                    {
+                        <div class="price product-price">
+                            @(ViewBag.Product?.OldPrice)
+                        </div>
+                    }
+
+                    <div class="product-description">
+                            <p>@Html.Raw(ViewBag.Product?.ProductDescription)</p>
+                        </div>
+                        <div class="product-variations">
+                            <table>
+                                <tbody>
+
+                                    <tr>
+                                        <td class="label"><span>@(ViewBag.Product?.ProductQuantityStock)</span></td>
+                                        <td class="value">
+                                            <div class="product-quantity">
+                                                <span class="qty-btn minus"><i class="ti-minus"></i></span>
+                                                <input type="text" class="input-qty" value="1">
+                                                <span class="qty-btn plus"><i class="ti-plus"></i></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    @functions {
+                        bool IsProductInUserFavorites(List<Favorite> favorites, int productId, string userId)
+                        {
+                            return favorites != null && favorites.Any(f => f.ProductId == productId && f.UserId == userId);
+                        }
+                    }
+
+                    @{
+                        // Get the current user ID
+                        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    }
+                        <div class="product-buttons">
+                      
+                        <a href="/Shopping/Cart?ProductId=@(ViewBag.Product?.ProductId)&change=add" class="btn btn-dark btn-outline-hover-dark"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                        </div>
+                        <div class="product-brands">
+                            <span class="title">Brands</span>
+                            <div>
+                            <a href="@Url.Action("ProfileDetails", "Profile", new { profileId = (ViewBag.Product?.Profile?.ProfileId) })" style="display: flex">
+                                <img src="~/Profile/@(ViewBag.Product?.Profile?.ProfileImage)" style="width:100px;" />
+                            </a>
+                        </div>
+                        </div>
+                        <div class="product-meta mb-0">
+                            <table>
+                                <tbody>
+
+                                    <tr>
+                                        <td class="label"><span>Category</span></td>
+                                        <td class="value">
+                                            <ul class="product-category">
+                                                <li><a href="#">@Html.Raw(ViewBag.Product?.Category.CategoryName)</a></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Summery End -->
+
+            </div>
+        </div>
+    </div>

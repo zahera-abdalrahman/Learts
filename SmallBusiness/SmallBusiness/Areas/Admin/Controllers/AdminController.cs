@@ -71,22 +71,24 @@ namespace SmallBusiness.Controllers
         }
 
 
-        [HttpPost]
-        public IActionResult Delete(string userId)
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var userToDelete = _userManager.FindByIdAsync(userId).Result;
+            var userToDelete = await _userManager.FindByIdAsync(id);
 
             if (userToDelete == null)
             {
                 return NotFound();
             }
 
-            var result = _userManager.DeleteAsync(userToDelete).Result;
+            var result = await _userManager.DeleteAsync(userToDelete);
 
             if (result.Succeeded)
             {
@@ -99,6 +101,8 @@ namespace SmallBusiness.Controllers
                 return View("Error");
             }
         }
+
+
         #endregion
 
         #region Sellers
@@ -115,16 +119,7 @@ namespace SmallBusiness.Controllers
                 });
 
 
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                searchTerm = searchTerm.ToLower();
-                sellersWithProfiles = sellersWithProfiles
-                .Where(seller =>
-                        seller.Seller.FirstName.ToLower().Contains(searchTerm) ||
-                        seller.Seller.LastName.ToLower().Contains(searchTerm)
-                    );
-            }
-
+         
 
 
             ViewBag.SellersWithProfiles = sellersWithProfiles;
@@ -134,19 +129,19 @@ namespace SmallBusiness.Controllers
         }
         public async Task<IActionResult> ToggleStatusAsync(string id)
         {
-            var user = _context.Seller.Find(id);
+            var seller = _context.Seller.FirstOrDefault(s => s.Id == id);
 
-            if (user != null)
+            if (seller != null)
             {
-                user.IsApproved = !user.IsApproved;
+                seller.IsApproved = !seller.IsApproved;
                 _context.SaveChanges();
 
-                if (user.IsApproved)
+                if (seller.IsApproved)
                 {
-                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { area = "", userId = user.Id, token = await _userManager.GenerateEmailConfirmationTokenAsync(user) }, Request.Scheme);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { area = "", userId = seller.Id, token = await _userManager.GenerateEmailConfirmationTokenAsync(seller) }, Request.Scheme);
 
 
-                    await SendActivationEmail(user.Email, user.FirstName, user.LastName, confirmationLink);
+                    await SendActivationEmail(seller.Email, seller.FirstName, seller.LastName, confirmationLink);
                 }
             }
 
@@ -187,14 +182,14 @@ namespace SmallBusiness.Controllers
 
         public IActionResult SellerDetails(string sellerId)
         {
-
-
             if (string.IsNullOrEmpty(sellerId))
             {
                 return NotFound();
             }
 
-            var seller = _context.Seller.FirstOrDefault(s => s.Id == sellerId);
+            //var seller = _context.Seller.FirstOrDefault(s => s.Id == sellerId);
+
+            var seller = _context.Seller.Include(s => s.Subscriptions).FirstOrDefault(s => s.Id == sellerId);
 
             if (seller == null)
             {
@@ -203,6 +198,7 @@ namespace SmallBusiness.Controllers
 
             return View(seller);
         }
+
 
 
         public IActionResult ProfileDetails(string sellerId)
@@ -215,7 +211,7 @@ namespace SmallBusiness.Controllers
                 return RedirectToAction("GetSellers");
             }
 
-            var profile = _context.Profile.FirstOrDefault(p => p.SellerId == sellerId);
+            var profile = _context.Profile.Include(p=>p.Seller).FirstOrDefault(p => p.SellerId == sellerId);
 
             if (profile == null)
             {
@@ -226,6 +222,27 @@ namespace SmallBusiness.Controllers
         }
 
 
+        [HttpPost, ActionName("DeleteSeller")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSellerConfirmed(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            var sellerToDelete = await _context.Seller.FindAsync(id);
+
+            if (sellerToDelete == null)
+            {
+                return NotFound();
+            }
+
+            _context.Seller.Remove(sellerToDelete);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("GetSellers");
+        }
 
 
         #endregion

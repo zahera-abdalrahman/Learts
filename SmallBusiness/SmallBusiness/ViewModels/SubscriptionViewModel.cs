@@ -33,5 +33,9 @@ namespace SmallBusiness.ViewModels
             [Required]
             [RegularExpression(@"^\d{3}$", ErrorMessage = "Invalid CVC")]
             public string CreditCardCvc { get; set; }
-        }
+
+        [Required(ErrorMessage = "Name should contain only letters and spaces")]
+
+        public string NameInCredit { get; set; }
+    }
     }

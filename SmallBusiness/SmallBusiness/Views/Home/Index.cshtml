@@ -1,5 +1,9 @@
 ﻿@using System.Security.Claims;
 @model SmallBusiness.Models.Testimonial
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -20,6 +24,31 @@
     }
     
 </style>
+
+
+@{
+    bool orderConfirmationEmailSent = TempData["OrderConfirmationEmailSent"] as bool? ?? false;
+}
+<script>
+    $(document).ready(function () {
+        if (@orderConfirmationEmailSent.ToString().ToLower()) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Confirmation Email Sent!',
+                text: 'An email containing the details of your order has been sent to you.',
+                showConfirmButton: false,
+                timer: 3000 
+            });
+        }
+    });
+</script>
+
+
+@{
+    var sellerConfirmation = TempData["SellerConfirmation"] as bool? ?? false;
+}
+
+
 <!-- Slider main container Start -->
 <div class="home1-slider swiper-container">
     <div class="swiper-wrapper">
@@ -42,7 +71,7 @@
                     <img src="~/assets/images/slider/home1/slide-2-3.webp" alt="Slide Icon">
                 </span>
                 <h2 class="title">Newly arrived</h2>
-                <h3 class="sub-title">Sale up to <br>10%</h3>
+                <h3 class="sub-title">Sale up to <br>70%</h3>
                 <div class="link"><a asp-action="ProductSale" asp-controller="Product">shop now</a></div>
             </div>
         </div>
@@ -54,53 +83,49 @@
 <!-- Slider main container End -->
 
 
-<!-- Category Banner Style Four Section Start -->
-<div class="section section-padding pt-0 mt-5">
+<!-- Category Banner Section Start -->
+<div class="section section-fluid learts-pt-30">
     <div class="container">
-
         <!-- Section Title Start -->
         <div class="section-title2 text-center">
             <h3 class="sub-title">Shop by categories</h3>
             <p>Browse a wide range of distinctive pieces of arts you could never find elsewhere.</p>
         </div>
         <!-- Section Title End -->
-
-        <div class="row row-cols-lg-4 row-cols-sm-2 row-cols-1 learts-mb-n40">
-               @foreach (var category in ViewBag.categoryList)
+        <div class="category-banner1-carousel">
+            @if (ViewBag.categoryList != null)
             {
-              
-            <div class="col learts-mb-40">
-                <div class="category-banner4">
-                        <a asp-action="products" asp-controller="Product" asp-route-CategoryName="@category.CategoryName" class="inner">
-                            <div class="image"><img src="~/CategoryImg/@category.Image" alt=""></div>
-                        <div class="content" data-bg-color="#f4ede7">
-                                <h3 class="title">@category.CategoryName</h3>
+                @foreach (var category in ViewBag.categoryList)
+                {
+
+                    <div class="col">
+                        <div class="category-banner4">
+                            <a asp-action="products" asp-controller="Product" asp-route-CategoryName="@category.CategoryName" class="inner">
+                                <div class="image"><img src="~/CategoryImg/@category.Image" alt=""></div>
+                                <div class="content" data-bg-color="#f4ede7">
+                                    <h3 class="title">@category.CategoryName</h3>
+                                </div>
+                            </a>
                         </div>
-                    </a>
-                </div>
-            </div>
-
-         }
-
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No categories</p>
+            }
         </div>
-
     </div>
 </div>
-<!-- Category Banner Style Four Section End -->
-
-
-
-
-
+<!-- Category Banner Section End -->
 
 <!-- Product Section Start -->
 <div class="section section-padding border-bottom">
     <div class="container">
-        <!-- Section Title Start -->
         <div class="section-title2 text-center">
-            <h2 class="title">Product Tab Style 01</h2>
+            <h3 class="sub-title">Just for you</h3>
         </div>
-        <!-- Section Title End -->
+      
         <!-- Product Tab Start -->
         <div class="row">
             <div class="col-12">
@@ -124,77 +149,92 @@
                                 // Get the current user ID
                                 var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                             }
-
-                            @foreach (var newProduct in ViewBag.NewProducts)
+                            @if (ViewBag.categoryList != null)
                             {
-                                <div class="col">
-                                    <div class="product">
-                                        <div class="product-thumb">
-                                            <a href="product-details.html" class="image">
-                                                <img src="~/CategoryImg/@newProduct.ImageUrl" alt="Product Image">
-                                                <img class="image-hover " src="~/CategoryImg/@newProduct.ImageUrl" alt="Product Image">
-                                            </a>
-                                            <button type="button" class="add-to-wishlist " data-product-id="@newProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
-                                                <i class="@(IsProductInUserFavorites(ViewBag.Fav, newProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, newProduct.ProductId, currentUserId)"></i>
-                                            </button>
-                                        </div>
-                                        <div class="product-info">
-                                            <h6 class="title"><a href="product-details.html">@newProduct.ProductName</a></h6>
-                                            <span class="price">$@newProduct.ProductPrice</span>
-                                            <div class="product-buttons">
-                                                <a href="#" class="product-button hintT-top" data-hint="Quick View" onclick="showProductDetails(@newProduct.ProductId)">
-                                                    <i class="fas fa-search"></i>
+                                @foreach (var newProduct in ViewBag.NewProducts)
+                                {
+                                    <div class="col">
+                                        <div class="product">
+                                            <div class="product-thumb">
+                                                <a asp-controller="Product" asp-action="productDetails" asp-route-productId="@newProduct.ProductId" class="image">
+                                                    <img src="~/CategoryImg/@newProduct.ImageUrl" alt="Product Image">
+                                                    <img class="image-hover " src="~/CategoryImg/@newProduct.ImageUrl" alt="Product Image">
                                                 </a>
-                                                <a class="addToCartButton circle" data-product-id="@newProduct.ProductId" data-change="add" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart icon"></i></a>
+                                                <button type="button" class="add-to-wishlist " data-product-id="@newProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
+                                                    <i class="@(IsProductInUserFavorites(ViewBag.Fav, newProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, newProduct.ProductId, currentUserId)"></i>
+                                                </button>
+                                            </div>
+                                            <div class="product-info">
+                                                <h6 class="title"><a href="product-details.html">@newProduct.ProductName</a></h6>
+                                                <span class="price">$@newProduct.ProductPrice</span>
+                                                <div class="product-buttons">
+                                                    <a href="#" class="product-button hintT-top quickViewButton" data-hint="Quick View" data-product-id="@newProduct.ProductId">
+                                                        <i class="fas fa-search"></i>
+                                                    </a>
+                                                    <a data-product-id="@newProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             }
-
+                            else
+                            {
+                                <p>No Products Available</p>
+                            }
                         </div>
                         <!-- Products End -->
                     </div>
                     <div class="tab-pane fade" id="tab-sale-items">
                         <!-- Products Start -->
                         <div class="products row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1">
-                            @foreach (var discountedProduct in ViewBag.DiscountedProducts)
-                            {
-                                <div class="col">
-                                    <div class="product">
-                                        <div class="product-thumb">
-                                            <a href="product-details.html" class="image">
-                                                <span class="product-badges">
-                                                    <span class="onsale">-@discountedProduct.DiscountPercent.ToString("0.")%</span>
+                             @if (ViewBag.categoryList != null)
+            {
+                                @foreach (var discountedProduct in ViewBag.DiscountedProducts)
+                                {
+                                    <div class="col">
+                                        <div class="product">
+                                            <div class="product-thumb">
+                                                <a asp-controller="Product" asp-action="productDetails" asp-route-productId="@discountedProduct.ProductId" class="image">
+                                                    <span class="product-badges">
+                                                        <span class="onsale">-@discountedProduct.DiscountPercent.ToString("0.")%</span>
+                                                    </span>
+                                                    <img src="~/CategoryImg/@discountedProduct.ImageUrl" alt="Product Image">
+                                                    <img class="image-hover " src="~/CategoryImg/@discountedProduct.ImageUrl" alt="Product Image">
+                                                </a>
+                                                <button type="button" class="add-to-wishlist " data-product-id="@discountedProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
+                                                    <i class="@(IsProductInUserFavorites(ViewBag.Fav, discountedProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, discountedProduct.ProductId, currentUserId)"></i>
+                                                </button>
+                                            </div>
+                                            <div class="product-info">
+                                                <h6 class="title"><a href="product-details.html">@discountedProduct.ProductName</a></h6>
+                                                <span class="price">
+                                                    <span class="old">$@discountedProduct.OldPrice</span>
+                                                    <span class="new">$@discountedProduct.NewPrice.ToString("0.00")</span>
                                                 </span>
-                                                <img src="~/CategoryImg/@discountedProduct.ImageUrl" alt="Product Image">
-                                                <img class="image-hover " src="~/CategoryImg/@discountedProduct.ImageUrl" alt="Product Image">
-                                            </a>
-                                            <button type="button" class="add-to-wishlist " data-product-id="@discountedProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
-                                                <i class="@(IsProductInUserFavorites(ViewBag.Fav, discountedProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, discountedProduct.ProductId, currentUserId)"></i>
-                                            </button>
-                                        </div>
-                                        <div class="product-info">
-                                            <h6 class="title"><a href="product-details.html">@discountedProduct.ProductName</a></h6>
-                                            <span class="price">
-                                                <span class="old">$@discountedProduct.OldPrice</span>
-                                                <span class="new">$@discountedProduct.NewPrice.ToString("0.00")</span>
-                                            </span>
-                                            <div class="product-buttons">
-                                                <a href="#quickViewModal" data-bs-toggle="modal" class="product-button hintT-top" data-hint="Quick View"><i class="fas fa-search"></i></a>
-                                                <a class="addToCartButton" data-product-id="@discountedProduct.ProductId" data-change="add" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                                <div class="product-buttons">
+                                                    <a href="#" class="product-button hintT-top quickViewButton" data-hint="Quick View" data-product-id="@discountedProduct.ProductId">
+                                                        <i class="fas fa-search"></i>
+                                                    </a>
+                                                    <a data-product-id="@discountedProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                }
                             }
-
+                            else
+                            {
+                                <p>No Products Available</p>
+                            }
                         </div>
                         <!-- Products End -->
                     </div>
                     <div class="tab-pane fade" id="tab-best-sellers">
                         <!-- Products Start -->
                         <div class="products row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1">
+                             @if (ViewBag.categoryList != null)
+            {
                             @foreach (var rateProduct in ViewBag.MostRatedProducts)
                             {
                                 <div class="col">
@@ -203,7 +243,7 @@
                                             <span class="product-badges">
                                                 <span class="hot">hot</span>
                                             </span>
-                                            <a href="product-details.html" class="image">
+                                                <a asp-controller="Product" asp-action="productDetails" asp-route-productId="@rateProduct.ProductId" class="image">
                                                 <img src="~/CategoryImg/@rateProduct.ImageUrl" alt="Product Image">
                                                 <img class="image-hover " src="~/CategoryImg/@rateProduct.ImageUrl" alt="Product Image">
                                             </a>
@@ -217,25 +257,28 @@
                                                 $@rateProduct.ProductPrice
                                             </span>
                                             <div class="product-buttons">
-                                                <a href="#quickViewModal" data-bs-toggle="modal" class="product-button hintT-top" data-hint="Quick View"><i class="fas fa-search"></i></a>
-                                                <a class="addToCartButton" data-product-id="@rateProduct.ProductId" data-change="add" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart" style="font-size: 16px;line-height: 48px;"></i></a>
+                                                    <a href="#" class="product-button hintT-top quickViewButton" data-hint="Quick View" data-product-id="@rateProduct.ProductId">
+                                                        <i class="fas fa-search"></i>
+                                                    </a>
+                                                <a data-product-id="@rateProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                }
                             }
-
+                            else
+                            {
+                                <p>No Products Available</p>
+                            }
                         </div>
                         <!-- Products End -->
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Product Tab End -->
-       @* <div class="row g-0 justify-content-center learts-mt-50">
-            <a href="#" class="btn p-0"><i class="ti-plus"></i> load more ...</a>
-        </div>*@
+     
 
     </div>
 </div>
@@ -266,7 +309,7 @@
                             <div class="author">
                                 @if (testimonial.User != null)
                                 {
-                                    <img src="~/@testimonial.User.Image" alt="">
+                                    <img src="~/User/@testimonial.User.Image" alt="">
 
                                 }
                                 else
@@ -292,7 +335,12 @@
 <!-- Testimonial Section End -->
 
 
-
+@if (TempData.ContainsKey("SweetAlertScript"))
+{
+    <script>
+        @Html.Raw(TempData["SweetAlertScript"])
+    </script>
+}
 
 
 <div class="section section-padding border-bottom">
@@ -303,15 +351,20 @@
             <form method="post" asp-action="Testimonial" asp-controller="Home">
                 <div class="row learts-mb-n30">
                     <div class="col-md-6 col-12 learts-mb-30">
-                        <input type="text" asp-for="Name" name="Name" placeholder="Name *">
+                        <input type="text" asp-for="Name" name="Name" placeholder="Name *" required>
+                        <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
+
                     <div class="col-md-6 col-12 learts-mb-30">
-                        <input type="email" name="Email" placeholder="Email *" asp-for="Email">
+                        <input type="email" name="Email" placeholder="Email *" asp-for="Email" required>
+                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
-                    <div class="col-12 learts-mb-10"></div>
+
                     <div class="col-12 learts-mb-30">
-                        <textarea name="TestimonialMessage" placeholder="Your Review *" asp-for="TestimonialMessage"></textarea>
+                        <textarea name="TestimonialMessage" placeholder="Your Review *" asp-for="TestimonialMessage" required></textarea>
+                        <span asp-validation-for="TestimonialMessage" class="text-danger"></span>
                     </div>
+
                     <div class="col-12 text-center learts-mb-30">
                         <button type="submit" class="btn btn-dark btn-outline-hover-dark">Submit</button>
                     </div>
@@ -321,8 +374,12 @@
     </div>
 </div>
 
+<!--Modal-->
+<div class="quickViewModal modal fade" id="quickViewModal">
 
+@Html.Partial("_ProductDetailsModal");
 
+</div>
 
 @section scripts {
     <script>
@@ -344,62 +401,20 @@
 
                     $(heartIcon).data('fav', data.isFav);
 
-                    // Reload the page
                     location.reload();
                 },
                 error: function (xhr, status, error) {
                     console.error('Error during AJAX request:', error);
-                    // Handle error as needed
                 }
             });
         }
+
     </script>
 }
 
 
-@*<script>
-    $(document).ready(function () {
-        // Attach click event to the "Add to Cart" button
-        $("#addToCartButton").click(function () {
-            var productId = $(this).data("product-id");
-            var change = $(this).data("change");
-
-            $.ajax({
-                type: "POST",
-                url: "/Shopping/Cart",
-                data: { productId: productId, change: change },
-                success: function (result) {
-                    // Update the offcanvas cart with the returned HTML
-                    $("#offcanvas-cart .body").html($(result).find(".body").html());
-
-                    // Display the offcanvas cart if it was hidden
-                    $("#offcanvas-cart").addClass("show");
-                },
-                error: function (error) {
-                    console.log("Error fetching partial view:", error);
-                    // Handle the error, show an alert, or log the error as needed
-                }
-            });
-        });
-
-        // Attach click event to the offcanvas close button
-        $(".offcanvas-close").click(function () {
-            $("#offcanvas-cart").removeClass("show");
-            // Reload the page after closing the offcanvas
-            location.reload(true); // Force a reload from the server
-        });
-    });
-
-
-</script>*@
-
-
-
-
-
 <script>
     $(document).ready(function () {
-        // Attach click event to the "Add to Cart" button with class addToCartButton
         $(".addToCartButton").click(function () {
             var productId = $(this).data("product-id");
             var change = $(this).data("change");
@@ -409,24 +424,71 @@
                 url: "/Shopping/Cart",
                 data: { productId: productId, change: change },
                 success: function (result) {
-                    // Update the offcanvas cart with the returned HTML
-                    $("#offcanvas-cart .body").html($(result).find(".body").html());
+                    if (result.toLowerCase().includes("login")) {
+                        window.location.href = "/Account/Login";
+                    } else {
+                        $("#offcanvas-cart .body").html($(result).find(".body").html());
 
-                    // Display the offcanvas cart if it was hidden
-                    $("#offcanvas-cart").addClass("show");
+                        $("#offcanvas-cart").addClass("show");
+                    }
                 },
                 error: function (error) {
-                    console.log("Error fetching partial view:", error);
-                    // Handle the error, show an alert, or log the error as needed
+                    if (error.status === 401) {
+                        window.location.href = "/Account/Login";
+                    } else {
+                        console.log("Error fetching partial view:", error);
+                    }
                 }
             });
         });
 
-        // Attach click event to the offcanvas close button
         $(".offcanvas-close").click(function () {
             $("#offcanvas-cart").removeClass("show");
-            // Reload the page after closing the offcanvas
-            location.reload(true); // Force a reload from the server
+            location.reload(true); 
         });
+    });
+
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('.product-button.hintT-top.quickViewButton').on('click', function (e) {
+        e.preventDefault();
+        var productId = $(this).data('product-id');
+        $.ajax({
+            url: '/Home/ProductDetails',
+            type: 'GET',
+            data: { productId: productId },
+            success: function (data) {
+                // Use .html() to insert the returned HTML into the modal
+                $('#quickViewModal .modal-content').html(data);
+                $('#quickViewModal').modal('show');
+            },
+            error: function (error) {
+                console.log("Error during AJAX request:", error);
+                // Handle the error, show an alert, or log the error as needed
+            }
+        });
+    });
+});
+
+
+
+</script>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        if (@sellerConfirmation.ToString().ToLower()) {
+            Swal.fire({
+                icon: 'success',
+                title: 'The Admin will accept you soon',
+                text: 'An email containing the details of your order has been sent to you.',
+                showConfirmButton: false,
+                timer: 3000 // Adjust the timer as needed
+            });
+        }
     });
 </script>

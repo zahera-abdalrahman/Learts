@@ -12,6 +12,7 @@ namespace SmallBusiness.Models
         [DataType(DataType.Date)]
         public DateTime RegisterDate { get; set; }
 
+        public ICollection<Subscription> Subscriptions { get; set; }
 
     }
 }

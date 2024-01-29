@@ -32,6 +32,7 @@ namespace SmallBusiness.Controllers
             var allSellers = _context.Profile
                 .Where(p => p.SellerId != null)
                 .Include(p => p.Seller)
+                .Where(p=>p.Seller.IsApproved==true)
                 .ToList();
 
             ViewBag.AllSellers = allSellers;
@@ -111,6 +112,13 @@ namespace SmallBusiness.Controllers
             }
             #endregion
 
+            #region Fav
+            var favoriteProducts = _context.Favorite.Include(c => c.Product).Where(p => p.IsFav).ToList();
+
+            ViewBag.Fav = favoriteProducts;
+            #endregion
+
+
             return View();
         }
 
@@ -129,25 +137,20 @@ namespace SmallBusiness.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Extract profileId from the form data
                 int profileId = model.ProfileId;
 
-                // Process the form data
                 SendEmailAsync(model, profileId);
 
-                // Display a success message
                 ViewBag.SuccessMessage = "Your message has been sent successfully!";
                 return RedirectToAction("ProfileDetails", new { profileId = profileId });
             }
 
-            // If ModelState is not valid, return to the contact form with validation errors
             return View("ProfileDetails", model);
         }
 
 
         private async Task SendEmailAsync(ContactProfileViewModel model, int profileId)
         {
-            // Get the seller's email dynamically based on the profile ID
             var sellerEmail = GetSellerEmailForProfileId(profileId);
 
             if (sellerEmail == null)
@@ -157,7 +160,7 @@ namespace SmallBusiness.Controllers
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(model.Name, model.Email));
-            message.To.Add(new MailboxAddress("Seller", sellerEmail)); // Use the retrieved seller's email
+            message.To.Add(new MailboxAddress("Seller", sellerEmail)); 
             message.Subject = "New Contact Form Submission";
 
             var bodyBuilder = new BodyBuilder();

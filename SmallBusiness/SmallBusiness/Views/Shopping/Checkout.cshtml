@@ -1,125 +1,116 @@
 ﻿@{
-     var cart = ViewBag.CartItems as CartItems;
+    var cart = ViewBag.CartItems as CartItems;
 }
 @model SmallBusiness.ViewModels.PaymentViewModel
+<link href="~/checkout/checkout.css" rel="stylesheet" />
 
-<main>
 
-    @if (TempData["ShowSweetAlert"] as bool? == true)
-    {
-        <script>
-            Swal.fire({
-                title: 'Success!',
-                text: 'Your order has been successfully placed. An email confirmation has been sent.',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    }
-<div class="row">
-<div class="col-md-6">
-<div class="mb-25">
-    <h4>Billing Details</h4>
-</div>
-<form method="post">
-    <div class="form-group">
-        <input asp-for="CCNum" placeholder="CC Number">
-        <span asp-validation-for="CCNum" class="text-danger"></span>
-
-        <input asp-for="ExpireDate" type="month" placeholder="Expire Date">
-        <span asp-validation-for="ExpireDate" class="text-danger"></span>
-
-        <input asp-for="CVV" placeholder="CVV">
-        <span asp-validation-for="CVV" class="text-danger"></span>
-
-        <input asp-for="Name" placeholder="Name">
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-    <button type="submit" >Place Order</button>
-</form>
-</div>
-<div class="col-md-6">
-    <div class="order_review">
-        <div class="mb-20">
-            <h4>Your Orders</h4>
-        </div>
-        <div class="table-responsive order_table text-center">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th colspan="2">Product</th>
-                    <th>Total</th>
-                </tr>
-                </thead>
-                <tbody>
+<div class='container container-check'>
+    <div class='window'>
+        <div class='order-info'>
+            <div class='order-info-content'>
+                <h2 class="header-2">Order Summary</h2>
+                <div class='line'></div>
+               
                 @foreach (var item in
-                    ViewBag.CartItems)
+                ViewBag.CartItems)
                 {
-                        decimal itemPrice;
-                                if (item.Product.ProductSale > 0)
-                        {
-                                    itemPrice = item.Product.ProductPrice - (item.Product.ProductPrice * item.Product.ProductSale / 100);
-                        }
-                        else
-                        {
-                                    itemPrice = item.Product.ProductPrice;
-                        }
-                    <tr>
-                        <td class="image product-thumbnail">
-                                        <img src="~/CategoryImg/@item.Product.ImageUrl" style="width:70px" alt="#">
-                        </td>
-                        <td>
-                            <h5>
-                                            <a href="shop-product-full.html">@item.Product.ProductName</a>
-                            </h5> <span class="product-qty">x @item.Quantity</span>
-                        </td>
-                        <td>$@itemPrice</td>
-                    </tr>
+                    decimal itemPrice;
+                    if (item.Product.ProductSale > 0)
+                    {
+                        itemPrice = item.Product.ProductPrice - (item.Product.ProductPrice * item.Product.ProductSale / 100);
+                    }
+                    else
+                    {
+                        itemPrice = item.Product.ProductPrice;
+                    }
+                    <table class='order-table'>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img src="~/CategoryImg/@item.Product.ImageUrl" class='full-width'></img>
+                                </td>
+                                <td>
+                                    <br> <span class='thin'>@item.Product.ProductName <span class="product-qty">x @item.Quantity</span></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class='price'>$@itemPrice.ToString("0.00")</div>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                    <div class='line'></div>
                 }
-                </tr>
-                <tr>
-                    <th>SubTotal</th>
+                <div class='total'>
                     @{
                         decimal subTotal = 0;
                         foreach (var item in
-                            ViewBag.CartItems)
+                        ViewBag.CartItems)
                         {
-                                decimal itemPrice;
-                                        if (item.Product.ProductSale > 0)
-                                {
-                                            itemPrice = item.Product.ProductPrice - (item.Product.ProductPrice * item.Product.ProductSale / 100);
-                                }
-                                else
-                                {
-                                            itemPrice = item.Product.ProductPrice;
-                                }
+                            decimal itemPrice;
+                            if (item.Product.ProductSale > 0)
+                            {
+                                itemPrice = item.Product.ProductPrice - (item.Product.ProductPrice * item.Product.ProductSale / 100);
+                            }
+                            else
+                            {
+                                itemPrice = item.Product.ProductPrice;
+                            }
                             subTotal += itemPrice * item.Quantity;
                         }
                     }
-                    <td class="product-subtotal" colspan="2">$@subTotal</td>
-                </tr>
-                <tr>
-                    <th>Shipping</th>
-                    <td colspan="2">
-                        <em>Free Shipping</em>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Total</th>
-                    <td colspan="2" class="product-subtotal">
-                        <span class="font-xl text-brand fw-900">$@subTotal</span>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    <span style='float:left;'>
+                        TOTAL
+                    </span>
+                    <span style='float:right; text-align:right;'>
+                        $@subTotal.ToString("0.00")
+                    </span>
+                </div>
+            </div>
         </div>
-        <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+        <div class='credit-info'>
+            <div class='credit-info-content'>
+               
+                <img src='https://dl.dropboxusercontent.com/s/ubamyu6mzov5c80/visa_logo%20%281%29.png' height='80' class='credit-card-image' id='credit-card-image'>
+               <form method="post">
+                   <div>
+                        Card Number
+                        <input asp-for="CCNum" class='input-field'>
+
+                   </div>
+                    <div>
+                        Card Holder
+                        <input asp-for="Name" class='input-field'>
+
+                    </div>
+                    <table class='half-input-table'>
+                        <tr>
+                            <td>
+                               <div>
+                                    Expires
+                                    <input type="month" asp-for="ExpireDate" class='input-field' placeholder="MM/YY" min="@DateTime.Now.ToString("yyyy-MM")">
+
+                               </div>
+
+                            </td>
+                            <td>
+                               <div>
+                                    CVC
+                                    <input asp-for="CVV" class='input-field' maxlength="3">
+                               </div>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <button class='pay-btn'>Checkout</button>
+               </form>
+
+            </div>
+
+        </div>
     </div>
 </div>
-</div>
-</main>
-
-
-
-<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

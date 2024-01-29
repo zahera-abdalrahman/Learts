@@ -5,6 +5,7 @@ namespace SmallBusiness.Models
 {
     public class Profile
     {
+
         [Key]
         public int ProfileId { get; set; }
 
@@ -22,6 +23,15 @@ namespace SmallBusiness.Models
         [Required]
         public bool IsApproved { get; set; }
 
+
+        [Url(ErrorMessage = "Invalid URL format")]
+        public string InstagramLink { get; set; }
+
+        [Url(ErrorMessage = "Invalid URL format")]
+        public string FacebookLink { get; set; }
+
+        [Url(ErrorMessage = "Invalid URL format")]
+        public string PinterestLink { get; set; }
 
         [ForeignKey("SellerId")]
         public string SellerId { get; set; }

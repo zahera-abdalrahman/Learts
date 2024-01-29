@@ -1,4 +1,8 @@
-﻿ <!-- Shop Products Section Start -->
+﻿@using System.Security.Claims;
+
+
+
+<!-- Shop Products Section Start -->
 <div class="section section-padding pt-0">
 
     <!-- Shop Toolbar Start -->
@@ -8,14 +12,7 @@
 
                 <!-- Isotop Filter Start -->
                 <div class="col-md col-12 align-self-center learts-mb-20">
-                    <div class="single-widget learts-mb-40">
-                        <div class="widget-search">
-                            <form action="#">
-                                <input type="text" placeholder="Search products....">
-                                <button><i class="fas fa-search"></i></button>
-                            </form>
-                        </div>
-                    </div>
+                    
                 </div>
                 <!-- Isotop Filter End -->
 
@@ -24,9 +21,8 @@
 
                         <li>
                             <div class="product-sorting">
-                                <select class="nice-select">
-                                    <option value="menu_order" selected="selected">Default sorting</option>
-                                    <option value="popularity">Sort by popularity</option>
+                                <select class="nice-select" name="sortOrder" id="sortOrderSelect" onchange="redirectToSorting()">
+                                    <option value="menu_order">Default sorting</option>
                                     <option value="rating">Sort by average rating</option>
                                     <option value="date">Sort by latest</option>
                                     <option value="price">Sort by price: low to high</option>
@@ -36,12 +32,13 @@
                         </li>
                         <li>
                             <div class="product-column-toggle d-none d-xl-flex">
-                                <button class="toggle active hintT-top" data-hint="5 Column" data-column="5"><i class="ti-layout-grid4-alt"></i></button>
-                                <button class="toggle hintT-top" data-hint="4 Column" data-column="4"><i class="ti-layout-grid3-alt"></i></button>
+                                <button class="toggle hintT-top" data-hint="5 Column" data-column="5"><i class="ti-layout-grid4-alt"></i></button>
+                                <button class="toggle active hintT-top" data-hint="4 Column" data-column="4"><i class="ti-layout-grid3-alt"></i></button>
                                 <button class="toggle hintT-top" data-hint="3 Column" data-column="3"><i class="ti-layout-grid2-alt"></i></button>
                             </div>
                         </li>
-                        
+
+
                     </ul>
                 </div>
 
@@ -50,58 +47,275 @@
     </div>
     <!-- Shop Toolbar End -->
   
-
     <div class="section learts-mt-70">
         <div class="container">
-            <!-- Products Start -->
-            <div id="shop-products" class="products isotope-grid row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1">
+            <div class="row learts-mb-n50">
 
-                <div class="grid-sizer col-1"></div>
+                <div class="col-lg-9 col-12 learts-mb-50 order-lg-2">
+                    <!-- Products Start -->
+                    <div id="shop-products" class="products isotope-grid row row-cols-xl-4 row-cols-md-3 row-cols-sm-2 row-cols-1">
 
-           
+                        <div class="grid-sizer col-1"></div>
 
-                @if (ViewBag.productList != null)
-                {
-                    @foreach (var product in ViewBag.productList)
-                    {
-                        <div class="grid-item col featured">
-                            <div class="product">
-                                <div class="product-thumb">
-                                    <a asp-controller="Product" asp-action="productDetails" asp-route-productId="@product.ProductId" class="image">
-                                        <img src="~/CategoryImg/@product.ImageUrl" alt="Product Image">
-                                        <img class="image-hover " src="~/CategoryImg/@product.ImageUrl" alt="Product Image">
-                                    </a>
-                                    <a href="wishlist.html" class="add-to-wishlist hintT-left" data-hint="Add to wishlist"><i class="far fa-heart"></i></a>
-                                </div>
-                                <div class="product-info">
-                                    <h6 class="title"><a href="product-details.html">@product.ProductName</a></h6>
-                                   
-                                    <span class="price">
-                                        <span class="old">$@product.Price</span>
-                                        <span class="new">$@product.DiscountedPrice</span>
-                                    </span>
-                                    <div class="product-buttons">
-                                        <a href="#quickViewModal" data-bs-toggle="modal" class="product-button hintT-top" data-hint="Quick View"><i class="fas fa-search"></i></a>
-                                        <a href="#" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
-                                        <a href="#" class="product-button hintT-top" data-hint="Compare"><i class="fas fa-random"></i></a>
+                        @if (ViewBag.productList != null && ViewBag.productList.Count > 0)
+                        {
+                            @foreach (var product in ViewBag.productList)
+                            {
+                                <div class="grid-item col featured">
+                                    <div class="product">
+                                        <div class="product-thumb">
+                                            @if (product.DiscountPercent > 0)
+                                            {
+                                                <span class="product-badges">
+                                                    <span class="onsale">-@product.DiscountPercent.ToString("0.")%</span>
+                                                </span>
+                                            }
+                                            <a asp-controller="Product" asp-action="productDetails" asp-route-productId="@product.ProductId" class="image">
+                                                <img src="~/CategoryImg/@product.ImageUrl" alt="Product Image">
+                                                <img class="image-hover " src="~/CategoryImg/@product.ImageUrl" alt="Product Image">
+                                            </a>
+                                            @functions {
+                                        bool IsProductInUserFavorites(List<Favorite> favorites, int productId, string userId)
+                                        {
+                                            return favorites != null && favorites.Any(f => f.ProductId == productId && f.UserId == userId);
+                                        }
+                                    }
+
+                                    @{
+                                                // Get the current user ID
+                                                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                                            }
+
+
+
+                                            <button type="button" class="add-to-wishlist " data-product-id="@product.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
+                                                <i class="@(IsProductInUserFavorites(ViewBag.Fav, product.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, product.ProductId, currentUserId)"></i>
+                                            </button>
+                                        </div>
+                                        <div class="product-info">
+                                            <h6 class="title"><a href="product-details.html">@product.ProductName</a></h6>
+
+                                            <span class="price">
+                                                <span class="old">$@product.Price</span>
+                                                <span class="new">$@product.DiscountedPrice</span>
+                                            </span>
+                                            <div class="product-buttons">
+                                                <a href="#" class="product-button hintT-top quickViewButton" data-hint="Quick View" data-product-id="@product.ProductId">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                                <a data-product-id="@product.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col">
+                                <p>@ViewBag.NoProductsMessage</p>
                             </div>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <p>No products found.</p>
-                }
+                        }
 
-            </div>
-            <!-- Products End -->
-            <div class="text-center learts-mt-70">
-                <a href="#" class="btn btn-dark btn-outline-hover-dark"><i class="ti-plus"></i> More</a>
+                    </div>
+                    <!-- Products End -->
+
+                </div>
+
+                <div class="col-lg-3 col-12 learts-mb-10 order-lg-1">
+
+                    <!-- Search Start -->
+                    <div class="single-widget learts-mb-40">
+                        <div class="widget-search">
+                            <form method="get" action="@Url.Action("ProductSale", "Product")">
+                                <input type="text" name="searchProductName" placeholder="Search products....">
+                                <button type="submit"><i class="fas fa-search"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Search End -->
+                    <!-- Categories Start -->
+                    <div class="single-widget learts-mb-40">
+                        <h3 class="widget-title product-filter-widget-title">Product categories</h3>
+                        <ul class="widget-list">
+
+
+                            <li>
+                                <a href="@Url.Action("ProductSale", "Product", new { categoryName = "All", applyFilter = true })"
+                                   class="@((ViewBag.SelectedCategory ?? "All").Equals("All", StringComparison.OrdinalIgnoreCase) ? "active" : "")">
+                                    All
+                                </a>
+                            </li>
+                            @foreach (var category in ViewBag.categoryList)
+                            {
+                                <li><a href="@Url.Action("ProductSale", "Product", new { categoryName = category.CategoryName })">@category.CategoryName</a></li>
+                                <span class="count">
+                                    @if (ViewBag.categoryProductCount.ContainsKey(category.CategoryId))
+                                    {
+                                        @ViewBag.categoryProductCount[category.CategoryId]
+                                    }
+                                    else
+                                    {
+                                        <span>0</span>
+                                    }
+                                </span>
+                            }
+                        </ul>
+                    </div>
+                    <!-- Categories End -->
+
+                </div>
+
             </div>
         </div>
     </div>
 
 </div>
 <!-- Shop Products Section End -->
+<!--Modal-->
+<div class="quickViewModal modal fade" id="quickViewModal">
+
+    @Html.Partial("_ProductDetailsModal");
+
+</div>
+<script>
+    function redirectToSorting() {
+        var selectedOption = document.getElementById("sortOrderSelect").value;
+        window.location.href = "/Product/ProductSale?sortOrder=" + selectedOption;
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        // Attach click event to the "Add to Cart" button
+        $("#addToCartButton").click(function () {
+            var productId = $(this).data("product-id");
+            var change = $(this).data("change");
+
+            $.ajax({
+                type: "POST",
+                url: "/Shopping/Cart",
+                data: { productId: productId, change: change },
+                success: function (result) {
+                    // Check if the response contains a redirect to the login page
+                    if (result.toLowerCase().includes("login")) {
+                        // Redirect the user to the login page
+                        window.location.href = "/Account/Login";
+                    } else {
+                        // Update the offcanvas cart with the returned HTML
+                        $("#offcanvas-cart .body").html($(result).find(".body").html());
+
+                        // Display the offcanvas cart if it was hidden
+                        $("#offcanvas-cart").addClass("show");
+                    }
+                },
+                error: function (error) {
+                    if (error.status === 401) {
+                        // Unauthorized - Redirect to the login page
+                        window.location.href = "/Account/Login";
+                    } else {
+                        console.log("Error fetching partial view:", error);
+                        // Handle other errors as needed
+                    }
+                }
+            });
+        });
+
+        // Attach click event to the offcanvas close button
+        $(".offcanvas-close").click(function () {
+            $("#offcanvas-cart").removeClass("show");
+            // Reload the page after closing the offcanvas
+            location.reload(true); // Force a reload from the server
+        });
+    });
+
+
+    $(".removeFavoriteButton").click(function (e) {
+        e.preventDefault();
+
+        var button = $(this); // Store the reference to the button
+
+        var productId = button.data("product-id");
+
+        $.ajax({
+            type: "POST",
+            url: "/Favorite/ToggleFavorite",
+            data: { productId: productId },
+            success: function (result) {
+                if (result.IsFav) {
+                    console.log("Product is still in favorites");
+                } else {
+                    console.log("Product removed from favorites");
+                    // Reload the page after removing the item
+                    location.reload();
+                }
+            },
+            error: function (error) {
+                console.log("Error removing product from favorites:", error);
+            }
+        });
+    });
+
+
+</script>
+<!--Modal-->
+<script>
+    $(document).ready(function () {
+        $('.product-button.hintT-top.quickViewButton').on('click', function (e) {
+            e.preventDefault();
+            var productId = $(this).data('product-id');
+            $.ajax({
+                url: '/Home/ProductDetails',
+                type: 'GET',
+                data: { productId: productId },
+                success: function (data) {
+                    // Use .html() to insert the returned HTML into the modal
+                    $('#quickViewModal .modal-content').html(data);
+                    $('#quickViewModal').modal('show');
+                },
+                error: function (error) {
+                    console.log("Error during AJAX request:", error);
+                    // Handle the error, show an alert, or log the error as needed
+                }
+            });
+        });
+    });
+
+
+
+</script>
+
+<!--Add to fav-->
+@section scripts {
+    <script>
+        function toggleFavorite(button) {
+            var productId = $(button).data('product-id');
+            var heartIcon = $(button).find('i');
+            var initialFavState = $(heartIcon).data('fav');
+
+            $.ajax({
+                url: '@Url.Action("ToggleFavorite", "Favorite")',
+                type: 'POST',
+                data: { productId: productId },
+                success: function (data) {
+                    if (data.isFav) {
+                        heartIcon.removeClass('far').addClass('fas');
+                    } else {
+                        heartIcon.removeClass('fas').addClass('far');
+                    }
+
+                    $(heartIcon).data('fav', data.isFav);
+
+                    // Reload the page
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error during AJAX request:', error);
+                    // Handle error as needed
+                }
+            });
+        }
+
+    </script>
+}
