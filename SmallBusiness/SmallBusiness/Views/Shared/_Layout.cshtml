@@ -73,6 +73,11 @@
         .header-lan-curr li:nth-child(1) a::after {
             content: none !important;
         }
+
+        .header-lan-curr li:nth-child(2) a::before,
+        .header-lan-curr li:nth-child(2) a::after {
+            content: none !important;
+        }
     </style>
 
 
@@ -107,10 +112,27 @@
                 <!-- Header Language & Currency Start -->
                 <div class="col">
                     <ul class="header-lan-curr">
-                      
-                        <li>
-                            <a href="/Account/Pricing" style="border-radius:2px;background-color:#72a499;color:white;padding:5px 10px;">Start Selling</a>
-                        </li>
+                      @if (User.Identity.IsAuthenticated)
+                            {
+                       <li>
+
+                       </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a href="/Account/Pricing" style="border-radius:5px;background-color:#72a499;color:white;padding:10px 15px;font-weight:bold">
+                                    <img src="~/payment-method.png" style="width: 20px;margin-right: 5px;">
+                                    Start Selling
+                                    </a>
+                            </li>
+                           @* <li>
+                                <a href="@Url.Action("RegisterUser", "Account", new { area = "" })" style="border-radius:5px;background-color:#72a499;color:white;padding:10px 15px;font-weight:bold;height: 41px;
+">
+                                    Register
+                                </a>
+                            </li>*@
+                        }
                     </ul>
                 </div>
                 <!-- Header Language & Currency End -->

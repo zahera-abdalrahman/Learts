@@ -36,16 +36,19 @@ namespace SmallBusiness.Controllers
         #region Home
         public async Task<IActionResult> IndexAsync(int productId)
         {
-            DateTime lastWeek = DateTime.Now.AddDays(-7);
-            var newProducts = _context.Product.Where(p => p.CreateAt >= lastWeek).Take(10).ToList();
+            var newProducts = _context.Product
+        .OrderByDescending(p => p.CreateAt)
+        .Take(10)
+        .ToList();
 
             var mostRatedProducts = _context.Product
-                   .Where(p => p.ReviewRate == 5)
-                   .OrderByDescending(p => p.ReviewRate)
-                   .Take(10)
-                   .ToList();
+         .Include(p => p.Reviews) 
+         .Where(p => p.Reviews.Any(r => r.ReviewRate == 5))
+         .OrderByDescending(p => p.Reviews.Count(r => r.ReviewRate == 5))
+         .Take(10)
+         .ToList();
             var productsWithSales = _context.Product.Where(p => p.ProductSale > 0).ToList();
-           
+
 
             var discountedProducts = productsWithSales
                 .Select(p => new
@@ -72,7 +75,7 @@ namespace SmallBusiness.Controllers
                 .Take(8)
                 .ToListAsync();
 
-           #region cart
+            #region cart
             User user = await _userManager.GetUserAsync(User);
 
             if (user != null)
@@ -102,7 +105,7 @@ namespace SmallBusiness.Controllers
             ViewBag.Reviews = reviews;
 
 
-            ViewBag.categoryList = _context.Category.Where(c=>c.IsDelete==false).ToList();
+            ViewBag.categoryList = _context.Category.Where(c => c.IsDelete == false).ToList();
 
 
             ViewBag.NewProducts = newProducts;
@@ -114,42 +117,27 @@ namespace SmallBusiness.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Testimonial(Testimonial model)
         {
-            
-            
-                var user = await _userManager.GetUserAsync(User);
-                var newReview = new Testimonial
-                {
-                    UserId = user.Id,
-                    Name = model.Name,
-                    Email = model.Email,
-                    TestimonialMessage = model.TestimonialMessage,
-                    isActive = false,
-                    User = user
-                };
-                _context.Testimonial.Add(newReview);
-                await _context.SaveChangesAsync();
-                var swalScript = "Swal.fire('Review Submitted', 'Your review has been submitted and will be reviewed by the admin.', 'success');";
-                TempData["SweetAlertScript"] = swalScript;
-                return RedirectToAction("Index");           
+
+
+            var user = await _userManager.GetUserAsync(User);
+            var newReview = new Testimonial
+            {
+                UserId = user.Id,
+                Name = model.Name,
+                Email = model.Email,
+                TestimonialMessage = model.TestimonialMessage,
+                isActive = false,
+                User = user
+            };
+            _context.Testimonial.Add(newReview);
+            await _context.SaveChangesAsync();
+            var swalScript = "Swal.fire('Review Submitted', 'Your review has been submitted and will be reviewed by the admin.', 'success');";
+            TempData["SweetAlertScript"] = swalScript;
+            return RedirectToAction("Index");
 
         }
 
@@ -200,13 +188,13 @@ namespace SmallBusiness.Controllers
         {
             var product = await _context.Product
                 .Include(p => p.Category)
-                .Include(p => p.profile) 
+                .Include(p => p.profile)
                 .FirstOrDefaultAsync(p => p.ProductId == productId);
 
             var reviews = await _context.Review
         .Include(r => r.User)
         .Include(r => r.Product)
-        .Where(r => r.ProductId == productId && r.isActive) 
+        .Where(r => r.ProductId == productId && r.isActive)
         .Take(8)
         .ToListAsync();
 

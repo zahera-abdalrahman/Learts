@@ -31,6 +31,15 @@ namespace SmallBusiness.Areas.Seller.Controllers
         // GET: Seller/Review
         public async Task<IActionResult> Index()
         {
+
+            var isSubscriptionActive = await CheckSubscriptionStatus();
+
+            if (!isSubscriptionActive)
+            {
+                TempData["Message"] = "Please renew your subscription to access product listing.";
+                return RedirectToAction("Index", "Home"); // Redirect to a page for renewing subscription
+            }
+
             var sellerId = GetCurrentUserId();
 
             // Retrieve the profile associated with the current seller
@@ -57,7 +66,14 @@ namespace SmallBusiness.Areas.Seller.Controllers
             return View(reviews);
         }
 
+        private async Task<bool> CheckSubscriptionStatus()
+        {
+            var sellerId = GetCurrentUserId();
 
+            var subscription = await _context.Subscription.FirstOrDefaultAsync(s => s.SellerId == sellerId);
+
+            return subscription != null && subscription.status;
+        }
         // GET: Seller/Review/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -69,6 +69,8 @@ namespace SmallBusiness.Controllers
 
         public async Task<IActionResult> ProfileDetailsAsync(int profileId)
         {
+
+
             var profile = _context.Profile
                 .Include(p => p.Seller)
                 .FirstOrDefault(p => p.ProfileId == profileId);
@@ -82,6 +84,7 @@ namespace SmallBusiness.Controllers
                 .Include(p => p.Category)
                 .Where(p => p.ProfileId == profileId)
                 .ToList();
+
 
             var viewModel = new ProfileDetailsViewModel
             {

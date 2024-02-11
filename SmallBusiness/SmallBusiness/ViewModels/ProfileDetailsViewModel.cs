@@ -7,5 +7,6 @@ namespace SmallBusiness.ViewModels
 
         public Profile Profile { get; set; }
         public List<Product> Products { get; set; }
+
     }
 }

@@ -163,18 +163,18 @@ namespace SmallBusiness.Controllers
             return View("UserDetails", model);
         }
 
-        private string ProcessUploadedFile(IFormFile profileImage, IWebHostEnvironment host)
+        private string ProcessUploadedFile(IFormFile ProfileImage, IWebHostEnvironment host)
         {
             string uniqueFileName = null;
 
-            if (profileImage != null)
+            if (ProfileImage != null)
             {
                 string uploadsFolder = Path.Combine(host.WebRootPath, "User");
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(profileImage.FileName);
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(ProfileImage.FileName);
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    profileImage.CopyTo(fileStream);
+                    ProfileImage.CopyTo(fileStream);
                 }
             }
 

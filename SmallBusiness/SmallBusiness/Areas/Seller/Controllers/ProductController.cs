@@ -29,17 +29,24 @@ namespace SmallBusiness.Areas.Seller.Controllers
         // GET: Seller/Product
         public async Task<IActionResult> Index()
         {
+            var isSubscriptionActive = await CheckSubscriptionStatus();
+
+            if (!isSubscriptionActive)
+            {
+                TempData["Message"] = "Please renew your subscription to access product listing.";
+                return RedirectToAction("Index","Home"); // Redirect to a page for renewing subscription
+            }
+
+
             var sellerId = GetCurrentUserId();
 
-            // Retrieve the profile associated with the current seller
             var profile = await _context.Profile.FirstOrDefaultAsync(p => p.SellerId == sellerId);
 
             if (profile == null)
             {
-                return RedirectToAction("CreateProfile"); // Redirect to create a profile if not exists
+                return RedirectToAction("CreateProfile"); 
             }
 
-            // Retrieve products that belong to the current seller's profile
             var products = await _context.Product
                 .Where(p => !p.IsDelete && p.ProfileId == profile.ProfileId)
                 .Include(p => p.Category)
@@ -48,6 +55,14 @@ namespace SmallBusiness.Areas.Seller.Controllers
 
             return View(products);
 
+        }
+        private async Task<bool> CheckSubscriptionStatus()
+        {
+            var sellerId = GetCurrentUserId();
+
+            var subscription = await _context.Subscription.FirstOrDefaultAsync(s => s.SellerId == sellerId);
+
+            return subscription != null && subscription.status;
         }
 
 
@@ -152,16 +167,14 @@ namespace SmallBusiness.Areas.Seller.Controllers
                 return NotFound();
             }
 
-            // Ensure that the product belongs to the current seller
             var sellerId = GetCurrentUserId();
             var profile = await _context.Profile.FirstOrDefaultAsync(p => p.SellerId == sellerId);
 
             if (profile == null || product.ProfileId != profile.ProfileId)
             {
-                return NotFound(); // Redirect or show an error if the product doesn't belong to the current seller
+                return NotFound(); 
             }
 
-            // Convert the Product entity to ProductViewModel
             var productViewModel = new ProductViewModel
             {
                 ProductId = product.ProductId,
@@ -209,15 +222,13 @@ namespace SmallBusiness.Areas.Seller.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Retrieve the existing product from the database
             var existingProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductId == id && p.ProfileId == profile.ProfileId);
 
             if (existingProduct == null)
             {
-                return NotFound(); // Product not found or doesn't belong to the current seller
+                return NotFound(); 
             }
 
-            // Update the properties of the existing product
             existingProduct.ProductName = viewModel.ProductName;
             existingProduct.ProductDescription = viewModel.ProductDescription;
             existingProduct.ProductPrice = viewModel.ProductPrice;
@@ -280,7 +291,6 @@ namespace SmallBusiness.Areas.Seller.Controllers
                     return NotFound();
                 }
 
-                // Soft delete by setting the IsDeleted flag
                 product.IsDelete = true;
                 _context.Entry(product).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
@@ -289,8 +299,7 @@ namespace SmallBusiness.Areas.Seller.Controllers
             }
             catch (Exception ex)
             {
-                // Handle exceptions, log, or return an error view
-                return RedirectToAction("Index"); // You may want to redirect to an error page
+                return RedirectToAction("Index");
             }
         }
 

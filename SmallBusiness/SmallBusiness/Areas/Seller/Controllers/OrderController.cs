@@ -90,9 +90,16 @@ namespace SmallBusiness.Areas.Seller.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var isSubscriptionActive = await CheckSubscriptionStatus();
+
+            if (!isSubscriptionActive)
+            {
+                TempData["Message"] = "Please renew your subscription to access product listing.";
+                return RedirectToAction("Index", "Home"); // Redirect to a page for renewing subscription
+            }
+
             var sellerId = GetCurrentUserId();
 
-            // Retrieve the profile associated with the current seller
             var profile = await _context.Profile.FirstOrDefaultAsync(p => p.SellerId == sellerId);
 
             if (profile == null)
@@ -110,7 +117,14 @@ namespace SmallBusiness.Areas.Seller.Controllers
 
             return View(orders);
         }
+        private async Task<bool> CheckSubscriptionStatus()
+        {
+            var sellerId = GetCurrentUserId();
 
+            var subscription = await _context.Subscription.FirstOrDefaultAsync(s => s.SellerId == sellerId);
+
+            return subscription != null && subscription.status;
+        }
         // GET: Seller/Order/UserOrderItems/5
         public async Task<IActionResult> UserOrderItems(int? id)
         {

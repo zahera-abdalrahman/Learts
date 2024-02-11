@@ -51,7 +51,7 @@
                                     <div class="detail-qty border radius  m-auto product-quantity">
                                         <a class="qty-btn minus" asp-controller="Shopping" asp-action="Cart" asp-route-productId="@item.Product.ProductId" asp-route-change="remove"><i class="ti-minus"></i></a>
                                         <input type="text" class="input-qty" value="@item.Quantity">
-                                        <a class="qty-btn plus" asp-controller="Shopping" asp-action="Cart" asp-route-productId="@item.Product.ProductId" asp-route-change="add"><i class="ti-plus"></i></a>
+                                        <a class="qty-btn plus" asp-controller="Shopping" asp-action="Cart" asp-route-productId="@item.Product.ProductId" asp-route-change="add" asp-route-quantity="1"><i class="ti-plus"></i></a>
                                     </div>
                                 </td>
                                 @{

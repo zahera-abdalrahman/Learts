@@ -4,9 +4,10 @@ namespace SmallBusiness.ViewModels
 {
     public class SubscriptionViewModel
     {
-        
-       
-            [Required]
+        public int SubscriptionId { get; set; }
+
+
+        [Required]
             public string SellerId { get; set; }
 
             [Required]

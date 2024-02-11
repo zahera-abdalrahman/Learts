@@ -23,6 +23,7 @@ namespace SmallBusiness.Models
 
         public decimal Price { get; set; }
 
+
         //[Required(ErrorMessage = "Name should contain only letters and spaces")]
         //public string NameInCredit { get; set; }
 

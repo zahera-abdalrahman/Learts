@@ -11,7 +11,7 @@
 </div><!-- End Page Title -->
 
 <div class="card">
-    <div class="card-body">
+    <div class="card-body pt-3">
         <div class="row">
             <img id="previewImage" src="~/Profile/@Model.ProfileImage" style="width:300px;height:300px;border-radius:50%;margin:auto" class="mb-3" />
             <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
@@ -54,7 +54,7 @@
                     <span asp-validation-for="PinterestLink" class="text-danger"></span>
                 </div>
                 <div class="text-end">
-                    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+                    <button type="submit" class="btn btn-primary mt-3 text-end">Save Changes</button>
                 </div>
             </form>
         </div>

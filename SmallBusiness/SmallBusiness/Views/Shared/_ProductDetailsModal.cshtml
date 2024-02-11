@@ -117,16 +117,16 @@
                             <table>
                                 <tbody>
 
-                                    <tr>
-                                        <td class="label"><span>@(ViewBag.Product?.ProductQuantityStock)</span></td>
-                                        <td class="value">
-                                            <div class="product-quantity">
-                                                <span class="qty-btn minus"><i class="ti-minus"></i></span>
-                                                <input type="text" class="input-qty" value="1">
-                                                <span class="qty-btn plus"><i class="ti-plus"></i></span>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td class="label"><span>Quantity</span></td>
+                                    <td class="value">
+                                        <div class="product-quantity">
+                                            <span class="qty-btn minus" onclick="decreaseQuantity()"><i class="ti-minus"></i></span>
+                                            <input type="text" class="input-qty" id="quantity" value="1">
+                                            <span class="qty-btn plus" onclick="increaseQuantity()"><i class="ti-plus"></i></span>
+                                        </div>
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -141,10 +141,11 @@
                         // Get the current user ID
                         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     }
-                        <div class="product-buttons">
-                      
-                        <a href="/Shopping/Cart?ProductId=@(ViewBag.Product?.ProductId)&change=add" class="btn btn-dark btn-outline-hover-dark"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
-                        </div>
+                       <div class="product-buttons">
+    <a href="#" id="addToCartBtn" class="btn btn-dark btn-outline-hover-dark">
+        <i class="fas fa-shopping-cart"></i> Add to Cart
+    </a>
+</div>
                         <div class="product-brands">
                             <span class="title">Brands</span>
                             <div>
@@ -176,3 +177,25 @@
             </div>
         </div>
     </div>
+<script>
+    function increaseQuantity() {
+        var quantityElement = document.getElementById("quantity");
+        var currentQuantity = parseInt(quantityElement.value);
+        quantityElement.value = currentQuantity + 1; // Increment the current quantity by 1
+    }
+
+    function decreaseQuantity() {
+        var quantityElement = document.getElementById("quantity");
+        var currentQuantity = parseInt(quantityElement.value);
+
+        if (currentQuantity > 1) {
+            quantityElement.value = currentQuantity - 1; // Decrease the current quantity by 1 if it's greater than 1
+        }
+    }
+
+    document.getElementById("addToCartBtn").addEventListener("click", function () {
+        var quantity = document.getElementById("quantity").value;
+
+        window.location.href = "/Shopping/Cart?ProductId=@(ViewBag.Product?.ProductId)&change=add&quantity=" + quantity;
+    });
+</script>

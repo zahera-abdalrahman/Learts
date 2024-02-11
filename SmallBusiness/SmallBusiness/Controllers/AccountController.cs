@@ -142,26 +142,22 @@ namespace Business.Controllers
         {
             if (userId == null || token == null)
             {
-                // Handle the error appropriately
                 return RedirectToAction("Index", "Home");
             }
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                // Handle the error appropriately
                 return RedirectToAction("Index", "Home");
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
             if (result.Succeeded)
             {
-                // Email confirmed successfully
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                // Handle the error appropriately
                 return RedirectToAction("Index", "Home");
             }
         }
@@ -369,7 +365,7 @@ namespace Business.Controllers
                     ModelState.AddModelError(string.Empty, "Your account is not approved. Please make a payment to activate your account.");
                     return View("Login", model);
                 }
-
+              
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)

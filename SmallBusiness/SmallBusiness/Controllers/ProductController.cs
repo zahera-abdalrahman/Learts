@@ -204,13 +204,14 @@ namespace SmallBusiness.Controllers
 
             if (categoryName.Equals("All", StringComparison.OrdinalIgnoreCase))
             {
-                categoryProducts = _context.Product.Include(p => p.Category).ToList();
+                categoryProducts = _context.Product.Include(p => p.Category).Include(p => p.Reviews).ToList();
             }
             else
             {
                 categoryProducts = _context
                     .Product
                     .Include(p => p.Category)
+                    .Include(p=>p.Reviews)
                     .Where(p => p.Category != null && p.Category.CategoryName == categoryName)
                     .ToList();
             }
@@ -225,7 +226,9 @@ namespace SmallBusiness.Controllers
             switch (sortOrder)
             {
                 case "rating":
-                    categoryProducts = categoryProducts.OrderByDescending(p => p.ReviewRate).ToList();
+                    categoryProducts = categoryProducts
+                        .OrderByDescending(p => p.Reviews.Any() ? p.Reviews.Average(r => r.ReviewRate) : 0)
+                        .ToList();
                     break;
 
                 case "date":
@@ -257,7 +260,7 @@ namespace SmallBusiness.Controllers
                             CategoryId = p.CategoryId,
                             Category = p.Category,
                             DiscountPercent = p.ProductSale,
-                            Rate = p.ReviewRate,
+                            ReviewRate = p.Reviews.Any() ? p.Reviews.Average(r => r.ReviewRate) : 0,
                             ImageUrl = p.ImageUrl,
                             OldPrice = p.ProductPrice,
                             NewPrice = p.ProductPrice - (p.ProductPrice * p.ProductSale / 100)

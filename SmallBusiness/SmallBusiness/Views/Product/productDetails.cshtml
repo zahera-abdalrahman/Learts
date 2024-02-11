@@ -130,13 +130,14 @@
                     <div class="product-variations">
                         <table>
                             <tbody>
+
                                 <tr>
                                     <td class="label"><span>Quantity</span></td>
                                     <td class="value">
                                         <div class="product-quantity">
-                                            <span class="qty-btn minus"><i class="ti-minus"></i></span>
-                                            <input type="text" class="input-qty" value="1">
-                                            <span class="qty-btn plus"><i class="ti-plus"></i></span>
+                                            <span class="qty-btn minus" onclick="decreaseQuantity()"><i class="ti-minus"></i></span>
+                                            <input type="text" class="input-qty" id="quantity" value="1">
+                                            <span class="qty-btn plus" onclick="increaseQuantity()"><i class="ti-plus"></i></span>
                                         </div>
                                     </td>
                                 </tr>
@@ -163,18 +164,8 @@
                                         </ul>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="label"><span>Share on</span></td>
-                                    <td class="va">
-                                        <div class="product-share">
-                                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                            <a href="#"><i class="fab fa-twitter"></i></a>
-                                            <a href="#"><i class="fab fa-google-plus-g"></i></a>
-                                            <a href="#"><i class="fab fa-pinterest"></i></a>
-                                            <a href="#"><i class="far fa-envelope"></i></a>
-                                        </div>
-                                    </td>
-                                </tr>
+
+                            
                             </tbody>
                         </table>
                     </div>
@@ -294,52 +285,7 @@
 
     </div>
 </div>
-<!-- Single Products Infomation Section End -->
-<!-- Recommended Products Section Start -->
-<div class="section section-padding">
-    <div class="container">
 
-        <!-- Section Title Start -->
-        <div class="section-title2 text-center">
-            <h2 class="title">You Might Also Like</h2>
-        </div>
-        <!-- Section Title End -->
-        <!-- Products Start -->
-        <div class="product-carousel">
-
-            <div class="col">
-                <div class="product">
-                    <div class="product-thumb">
-                        <a href="product-details.html" class="image">
-                            <span class="product-badges">
-                                <span class="onsale">-13%</span>
-                            </span>
-                            <img src="assets/images/product/s270/product-1.webp" alt="Product Image">
-                            <img class="image-hover " src="assets/images/product/s270/product-1-hover.webp" alt="Product Image">
-                        </a>
-                        <a href="wishlist.html" class="add-to-wishlist hintT-left" data-hint="Add to wishlist"><i class="far fa-heart"></i></a>
-                    </div>
-                    <div class="product-info">
-                        <h6 class="title"><a href="product-details.html">Boho Beard Mug</a></h6>
-                        <span class="price">
-                            <span class="old">$45.00</span>
-                            <span class="new">$39.00</span>
-                        </span>
-                        <div class="product-buttons">
-                            <a href="#quickViewModal" data-bs-toggle="modal" class="product-button hintT-top" data-hint="Quick View"><i class="fas fa-search"></i></a>
-                            <a href="#" class="product-button hintT-top" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
-                            <a href="#" class="product-button hintT-top" data-hint="Compare"><i class="fas fa-random"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!-- Products End -->
-
-    </div>
-</div>
-<!-- Recommended Products Section End -->
 @if (TempData.ContainsKey("SweetAlertScript"))
 {
     <script>
@@ -351,47 +297,51 @@
 
 <script>
     $(document).ready(function () {
-        // Attach click event to the "Add to Cart" button
         $("#addToCartButton").click(function () {
             var productId = $(this).data("product-id");
             var change = $(this).data("change");
+            var quantity = parseInt($("#quantity").val()); // Get the quantity from the input field
 
             $.ajax({
                 type: "POST",
                 url: "/Shopping/Cart",
-                data: { productId: productId, change: change },
+                data: { productId: productId, change: change, quantity: quantity }, // Include quantity in the data
                 success: function (result) {
-                    // Check if the response contains a redirect to the login page
                     if (result.toLowerCase().includes("login")) {
-                        // Redirect the user to the login page
                         window.location.href = "/Account/Login";
                     } else {
-                        // Update the offcanvas cart with the returned HTML
                         $("#offcanvas-cart .body").html($(result).find(".body").html());
-
-                        // Display the offcanvas cart if it was hidden
                         $("#offcanvas-cart").addClass("show");
                     }
                 },
                 error: function (error) {
                     if (error.status === 401) {
-                        // Unauthorized - Redirect to the login page
                         window.location.href = "/Account/Login";
                     } else {
                         console.log("Error fetching partial view:", error);
-                        // Handle other errors as needed
                     }
                 }
             });
         });
 
-        // Attach click event to the offcanvas close button
         $(".offcanvas-close").click(function () {
             $("#offcanvas-cart").removeClass("show");
-            // Reload the page after closing the offcanvas
-            location.reload(true); // Force a reload from the server
+            location.reload(true);
         });
+
+        $(".star-edit").on("click", function () {
+            var rating = $(this).data("rating");
+
+            $(".star-edit").removeClass("active");
+            $(this).prevAll().addBack().addClass("active");
+
+            $("#reviewRate").val(rating);
+        });
+
+        var initialRating = 1;
+        $(".star-edit[data-rating='" + initialRating + "']").trigger("click");
     });
+
 
 </script>
 
@@ -417,12 +367,10 @@
 
                     $(heartIcon).data('fav', data.isFav);
 
-                    // Reload the page
                     location.reload();
                 },
                 error: function (xhr, status, error) {
                     console.error('Error during AJAX request:', error);
-                    // Handle error as needed
                 }
             });
         }
@@ -434,21 +382,32 @@
 
 
 <script>
+    function increaseQuantity() {
+        var quantityElement = document.getElementById("quantity");
+        var currentQuantity = parseInt(quantityElement.value);
+        quantityElement.value = currentQuantity ;
+    }
+
+    function decreaseQuantity() {
+        var quantityElement = document.getElementById("quantity");
+        var currentQuantity = parseInt(quantityElement.value);
+
+        if (currentQuantity > 1) {
+            quantityElement.value = currentQuantity;
+        }
+    }
+
     $(document).ready(function () {
-        // Handle star rating interaction
         $(".star-edit").on("click", function () {
             var rating = $(this).data("rating");
 
-            // Update active state of stars
             $(".star-edit").removeClass("active");
             $(this).prevAll().addBack().addClass("active");
 
-            // Update the hidden input value
             $("#reviewRate").val(rating);
         });
 
-        // Optional: Set initial rating if needed
-        var initialRating = 1; // Set your initial rating value
+        var initialRating = 1; 
         $(".star-edit[data-rating='" + initialRating + "']").trigger("click");
     });
 </script>

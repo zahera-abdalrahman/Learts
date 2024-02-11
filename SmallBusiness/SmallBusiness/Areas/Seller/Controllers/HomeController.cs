@@ -25,20 +25,149 @@ namespace SmallBusiness.Areas.Seller.Controllers
             return _userManager.GetUserId(User);
         }
 
+
+
+
         public async Task<IActionResult> Index()
         {
-
             var sellerId = GetCurrentUserId();
 
-            // Retrieve the profile associated with the current seller
             var profile = await _context.Profile.FirstOrDefaultAsync(p => p.SellerId == sellerId);
 
-            if (profile == null)
+
+            #region subscription
+
+            var currentDate1 = DateTime.Now;
+
+            var subscription1 = await _context.Subscription
+                .FirstOrDefaultAsync(s => s.SellerId == sellerId && s.SubscriptionEndDate.Date == currentDate1.Date);
+
+            if (subscription1 != null)
             {
-                return RedirectToAction("CreateProfile"); // Redirect to create a profile if not exists
+                subscription1.status = false;
+                await _context.SaveChangesAsync();
             }
 
-            // Retrieve orders with order items that belong to products owned by the current seller
+            if (subscription1 != null && !subscription1.status)
+            {
+                ViewBag.ShowResubscribeButton = true;
+            }
+
+
+
+            if (Request.Method == "POST")
+            {
+                if (Request.Form["resubscribe"] == "true")
+                {
+                    subscription1.status = true;
+
+                    subscription1.SubscriptionStartDate = DateTime.Now;
+                    subscription1.SubscriptionEndDate = currentDate1.Date.AddMonths(1);
+                    subscription1.Price += 50;
+
+                    await _context.SaveChangesAsync();
+                    ViewBag.ShowResubscribeButton = false; 
+                }
+            }
+            #endregion
+
+
+            //        #region HomePage
+            //        var currentDate = DateTime.Now;
+            //        var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+            //        var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            //        var sellerOrderItemsThisMonth = await _context.OrderItems
+            //            .Include(oi => oi.Order)
+            //            .ThenInclude(o => o.User)
+            //            .Include(oi => oi.Product)
+            //            .ThenInclude(oi=>oi.Reviews)
+            //            .Where(oi => oi.Product.ProfileId == profile.ProfileId &&
+            //                         oi.Order.OrderDate >= startOfMonth &&
+            //                         oi.Order.OrderDate <= endOfMonth)
+            //            .ToListAsync();
+
+            //        decimal totalProductsPriceThisMonth = sellerOrderItemsThisMonth
+            //            .Sum(oi => oi.Product.ProductPrice * oi.ProductQuantity);
+
+            //        var orders = await _context.Order
+            //            .Include(o => o.User)
+            //            .Include(o => o.OrderItems)
+            //            .ThenInclude(oi => oi.Product)
+            //            .Where(o => o.OrderItems.Any(oi => oi.Product.ProfileId == profile.ProfileId))
+            //            .ToListAsync();
+
+            //        int numberOfCustomers = orders
+            //            .Select(o => o.UserId)
+            //            .Distinct()
+            //            .Count();
+
+            //        int totalProductCount = sellerOrderItemsThisMonth
+            //.Select(oi => oi.ProductId)
+            //.Distinct()
+            //.Count();
+
+            //        var subscription = await _context.Subscription
+            //            .FirstOrDefaultAsync(s => s.SellerId == sellerId && s.SubscriptionEndDate >= currentDate);
+
+            //        //var latestProducts = orders
+            //        //    .SelectMany(o => o.OrderItems)
+            //        //    .OrderByDescending(oi => oi.Order.OrderDate)
+            //        //    .Take(10)
+            //        //    .Select(oi => oi.Product)
+            //        //    .ToList();
+
+
+
+
+
+            //        var subscriptionEndDate = _context.Subscription
+            //      .Where(s => s.SellerId == GetCurrentUserId())
+            //      .Select(s => s.SubscriptionEndDate)
+            //      .FirstOrDefault();
+
+            //        //if (subscriptionEndDate < DateTime.Now)
+            //        //{
+            //        //    return RedirectToAction("Logout", "Account");
+            //        //}
+
+            //        var remainingDays = (subscriptionEndDate - DateTime.Now).Days;
+
+            //        ViewBag.RemainingDays = remainingDays;
+
+
+
+
+
+
+            //        ViewBag.sellerOrderItemsThisMonth = sellerOrderItemsThisMonth;
+            //        ViewBag.totalProductCount = totalProductCount;
+            //        ViewBag.TotalProductsPriceThisMonth = totalProductsPriceThisMonth;
+            //        ViewBag.NumberOfCustomers = numberOfCustomers;
+            //        ViewBag.Subscription = subscription;
+            //        #endregion
+            #region HomePage
+            var currentDate = DateTime.Now;
+            var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
+            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            var sellerOrderItemsThisMonth = await _context.OrderItems
+                .Include(oi => oi.Order)
+                .ThenInclude(o => o.User)
+                .Include(oi => oi.Product)
+                .ThenInclude(oi => oi.Reviews)
+                .Where(oi => oi.Product.ProfileId == profile.ProfileId &&
+                            oi.Order.OrderDate >= startOfMonth &&
+                            oi.Order.OrderDate <= endOfMonth)
+                .ToListAsync();
+
+            decimal totalProductsPriceThisMonth = sellerOrderItemsThisMonth
+                .Sum(oi => oi.Product.ProductPrice * oi.ProductQuantity);
+
+            // Calculate total quantity of products sold
+            int totalProductQuantityThisMonth = sellerOrderItemsThisMonth
+                .Sum(oi => oi.ProductQuantity);
+
             var orders = await _context.Order
                 .Include(o => o.User)
                 .Include(o => o.OrderItems)
@@ -46,56 +175,42 @@ namespace SmallBusiness.Areas.Seller.Controllers
                 .Where(o => o.OrderItems.Any(oi => oi.Product.ProfileId == profile.ProfileId))
                 .ToListAsync();
 
-
-
-            // Calculate the total revenue for the current month
-            var currentDate = DateTime.Now;
-            var startOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
-            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
-
-            decimal totalRevenueThisMonth = orders
-                .Where(o => o.OrderDate >= startOfMonth && o.OrderDate <= endOfMonth)
-                .SelectMany(o => o.OrderItems)
-                .Sum(oi => oi.Product.ProductPrice);
-
-
-            // Count the number of customers who bought from the seller
             int numberOfCustomers = orders
                 .Select(o => o.UserId)
                 .Distinct()
                 .Count();
 
-
-            int totalProductCount = orders
-            .SelectMany(o => o.OrderItems)
-            .Count();
-
-
+            int totalProductCount = sellerOrderItemsThisMonth
+                .Select(oi => oi.ProductId)
+                .Distinct()
+                .Count();
 
             var subscription = await _context.Subscription
-        .FirstOrDefaultAsync(s => s.SellerId == sellerId && s.SubscriptionEndDate >= currentDate);
+                .FirstOrDefaultAsync(s => s.SellerId == sellerId && s.SubscriptionEndDate >= currentDate);
 
+            var subscriptionEndDate = _context.Subscription
+    .Where(s => s.SellerId == GetCurrentUserId())
+    .Select(s => s.SubscriptionEndDate)
+    .FirstOrDefault();
 
-            // Get the latest 10 products sold
-            var latestProducts = orders
-                .SelectMany(o => o.OrderItems)
-                .OrderByDescending(oi => oi.Order.OrderDate)
-                .Take(10)
-                .Select(oi => oi.Product)
-                .ToList();
+            ViewBag.SubscriptionEndDate = subscriptionEndDate;
 
-            ViewBag.LatestProducts = latestProducts;
+            var remainingDays = (subscriptionEndDate - DateTime.Now).Days;
 
-
-            ViewBag.TotalProductCount = totalProductCount;
-            ViewBag.TotalRevenueThisMonth = totalRevenueThisMonth;
+            ViewBag.RemainingDays = remainingDays;
+            ViewBag.sellerOrderItemsThisMonth = sellerOrderItemsThisMonth;
+            ViewBag.totalProductCount = totalProductCount;
+            ViewBag.TotalProductsPriceThisMonth = totalProductsPriceThisMonth;
             ViewBag.NumberOfCustomers = numberOfCustomers;
             ViewBag.Subscription = subscription;
-
+            ViewBag.TotalProductQuantityThisMonth = totalProductQuantityThisMonth; // Add this line to pass total product quantity to the view
+            #endregion
 
             return View();
-
         }
+
+
+
     }
 }
 

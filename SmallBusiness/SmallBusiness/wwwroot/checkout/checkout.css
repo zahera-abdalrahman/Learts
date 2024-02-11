@@ -14,7 +14,15 @@ h2 {
     font-size: 19px;
     font-size: 1.2rem;
 }
+input {
+    background-color: white !important;
+    border-radius: 10px !important;
+}
 
+input:focus{
+   border:none;
+   outline:none;
+}
 .container-check {
     height: 100%;
     -webkit-box-pack: center;
@@ -85,7 +93,7 @@ ul {
 
     .half-input-table td:first-of-type {
         border-right: 10px solid #72a499;
-        width: 50%;
+        width: 50%;f
     }
 
 .window {

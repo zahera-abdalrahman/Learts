@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SmallBusiness.Data;
 using SmallBusiness.Models;
 using SmallBusiness.ViewModels;
 
 namespace SmallBusiness.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    [Area("Admin")]
+    [Authorize(Roles = "Seller")]
+    [Area("Seller")]
     public class AdminEditController : Controller
     {
 
@@ -36,6 +37,14 @@ namespace SmallBusiness.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+
+            var isSubscriptionActive = await CheckSubscriptionStatus();
+
+            if (!isSubscriptionActive)
+            {
+                TempData["Message"] = "Please renew your subscription to access product listing.";
+                return RedirectToAction("Index", "Home"); 
+            }
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
@@ -53,12 +62,24 @@ namespace SmallBusiness.Areas.Admin.Controllers
                 City = user.City,
                 CurrentPassword = "",
                 NewPassword = "",
-                ConfirmPassword = ""
+                ConfirmPassword = "",
+                
             };
             return View(UserDetails);
         }
 
+        private async Task<bool> CheckSubscriptionStatus()
+        {
+            var sellerId = GetCurrentUserId();
 
+            var subscription = await _context.Subscription.FirstOrDefaultAsync(s => s.SellerId == sellerId);
+
+            return subscription != null && subscription.status;
+        }
+        private string GetCurrentUserId()
+        {
+            return _userManager.GetUserId(User);
+        }
         [HttpPost]
         public async Task<IActionResult> Edit(UpdateViewModel model, [FromServices] IWebHostEnvironment host)
         {
@@ -96,7 +117,6 @@ namespace SmallBusiness.Areas.Admin.Controllers
 
                 if (model.ProfileImage != null)
                 {
-                    // Process and save the uploaded image
                     string uniqueFileName = ProcessUploadedFile(model.ProfileImage, host);
                     user.Image = uniqueFileName;
                 }

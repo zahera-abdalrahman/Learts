@@ -3,6 +3,31 @@
 @{
     ViewData["Title"] = "Index";
 }
+<style>
+    .message-container {
+        position: relative;
+        max-width: 300px; /* Adjust according to your layout */
+        overflow: hidden;
+    }
+
+    .message {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        .message.expanded {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: unset;
+        }
+
+    .show-more-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+</style>
 <div class="pagetitle">
     <nav>
         <ol class="breadcrumb">
@@ -22,7 +47,9 @@
                         <thead>
                             <tr>
                                 <th>
+
                                     @Html.DisplayNameFor(model => model.ReviewMessage)
+
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.ReviewDate)
@@ -33,7 +60,7 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Product)
                                 </th>
-                               
+
                                 <th></th>
                             </tr>
                         </thead>
@@ -41,8 +68,14 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
+                                   
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.ReviewMessage)
+                                        <div class="message-container">
+                                            <p class="message">
+                                                @Html.DisplayFor(modelItem => item.ReviewMessage)
+                                            </p>
+                                            <button class="show-more-btn text-primary">Show More</button>
+                                        </div>
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.ReviewDate)
@@ -108,10 +141,24 @@
         });
     }
 </script>
+<script>
+    $(document).ready(function () {
+        $('.message-container').each(function () {
+            var $message = $(this).find('.message');
+            var words = $message.text().trim().split(/\s+/).length;
+            if (words <= 3) {
+                $(this).find('.show-more-btn').hide();
+            }
+        });
 
-
-
-
-
-
-
+        $('.show-more-btn').click(function () {
+            var $message = $(this).prev('.message');
+            $message.toggleClass('expanded');
+            if ($message.hasClass('expanded')) {
+                $(this).text('Show Less');
+            } else {
+                $(this).text('Show More');
+            }
+        });
+    });
+</script>

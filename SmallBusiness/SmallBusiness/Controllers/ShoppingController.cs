@@ -30,7 +30,7 @@ namespace SmallBusiness.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Cart(int ProductId, string change)
+        public async Task<IActionResult> Cart(int ProductId, string change, int quantity)
         {
             User user = await _userManager.GetUserAsync(User);
 
@@ -80,7 +80,7 @@ namespace SmallBusiness.Controllers
                     {
                         CartId = cart.CartId,
                         ProductId = ProductId,
-                        Quantity = 1
+                        Quantity = quantity // Use the provided quantity parameter
                     };
 
                     _context.CartItems.Add(cartItem);
@@ -90,7 +90,7 @@ namespace SmallBusiness.Controllers
             {
                 if (change == "add")
                 {
-                    cartItem.Quantity++;
+                    cartItem.Quantity += quantity; // Add the provided quantity
                 }
                 else if (change == "remove")
                 {
@@ -203,7 +203,7 @@ namespace SmallBusiness.Controllers
             {
                 OrderDate = DateTime.Now,
                 TotalPrice = cart.TotalPrice,
-                Status = "Pending",
+                Status = "pending",
                 CartId = cart.CartId,
                 UserId = user.Id
             };
@@ -251,7 +251,7 @@ namespace SmallBusiness.Controllers
 
 
             await _context.SaveChangesAsync();
-            //await SendOrderConfirmationEmail(order, user);
+            await SendOrderConfirmationEmail(order, user);
             TempData["SellerConfirmation"] = true;
 
             return RedirectToAction("Index", "Home");
@@ -274,7 +274,7 @@ namespace SmallBusiness.Controllers
             bodyBuilder.TextBody = $"Dear {user.FirstName} {user.LastName},\n\n"
                              + "Thank you for choosing us!\n"
                              + $"Your order (Order ID: {order.OrderId}) has been successfully placed.\n"
-                             + $"Order Total: {order.TotalPrice}JD\n"
+                             + $"Order Total: {order.TotalPrice}$\n"
                              + "We appreciate your business and look forward to serving you again!\n\n"
                              + "Best regards, Learta Team\n";
             message.Body = bodyBuilder.ToMessageBody();

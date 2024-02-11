@@ -26,11 +26,19 @@ namespace SmallBusiness.Controllers
 
         }
 
-
+      
 
         [Authorize(Roles = "Seller")] 
-        public IActionResult MyProfile()
+        public async Task<IActionResult> MyProfileAsync()
         {
+
+            var isSubscriptionActive = await CheckSubscriptionStatus();
+
+            if (!isSubscriptionActive)
+            {
+                TempData["Message"] = "Please renew your subscription to access product listing.";
+                return RedirectToAction("Index", "Home"); // Redirect to a page for renewing subscription
+            }
             var userId = GetCurrentUserId();
 
             var profile = _context.Profile.FirstOrDefault(p => p.SellerId == userId);
@@ -110,7 +118,7 @@ namespace SmallBusiness.Controllers
 
         }
 
-        public IActionResult EditProfile()
+        public async Task<IActionResult> EditProfileAsync()
         {
             var userId = GetCurrentUserId();
 
@@ -189,6 +197,13 @@ namespace SmallBusiness.Controllers
         }
 
         #endregion
+        private async Task<bool> CheckSubscriptionStatus()
+        {
+            var sellerId = GetCurrentUserId();
 
+            var subscription = await _context.Subscription.FirstOrDefaultAsync(s => s.SellerId == sellerId);
+
+            return subscription != null && subscription.status;
+        }
     }
 }

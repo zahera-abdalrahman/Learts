@@ -12,7 +12,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     @foreach (var favorite in ViewBag.Fav)
                     {
                         <tr>
@@ -23,7 +23,14 @@
                             </td>
                             <td class="name"> <a href="@Url.Action("productDetails", "Product", new { id = favorite.Product.ProductId })">@favorite.Product.ProductName</a></td>
                             <td class="price"><span>£@favorite.Product.ProductPrice.ToString("0.00")</span></td>
-                            <td class="add-to-cart"><a data-product-id="@favorite.Product.ProductId" data-change="add" class="btn btn-light btn-hover-dark addToCartButton"><i class="fas fa-shopping-cart mr-2"></i>Add to Cart</a></td>
+                            <td class="add-to-cart">
+                               @* <a data-product-id="@favorite.Product.ProductId" data-change="add" class="btn btn-light btn-hover-dark addToCartButton"><i class="fas fa-shopping-cart mr-2"></i>Add to Cart</a>*@
+
+                                <a data-product-id="@favorite.Product.ProductId" data-change="add" class="btn btn-light btn-hover-dark addToCartButton" data-hint="Add to Cart">
+                                    <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
+                                    <input type="number" class="quantity-input" value="1" min="1" hidden />
+                                </a>
+                            </td>
                             <td class="remove">
                                 <a data-product-id="@favorite.Product.ProductId" class="btn removeFavoriteButton">×</a>
                             </td>
@@ -46,36 +53,45 @@
 <!-- Wishlist Section End -->
 <script>
     $(document).ready(function () {
-        $("#addToCartButton").click(function () {
+        // Attach click event to the "Add to Cart" button
+        $(".addToCartButton").click(function () {
             var productId = $(this).data("product-id");
             var change = $(this).data("change");
+            var quantity = $(this).find(".quantity-input").val(); // Get the selected quantity
 
             $.ajax({
                 type: "POST",
                 url: "/Shopping/Cart",
-                data: { productId: productId, change: change },
+                data: { productId: productId, change: change, quantity: quantity },
                 success: function (result) {
+                    // Check if the response contains a redirect to the login page
                     if (result.toLowerCase().includes("login")) {
+                        // Redirect the user to the login page
                         window.location.href = "/Account/Login";
                     } else {
+                        // Update the offcanvas cart with the returned HTML
                         $("#offcanvas-cart .body").html($(result).find(".body").html());
 
+                        // Display the offcanvas cart if it was hidden
                         $("#offcanvas-cart").addClass("show");
                     }
                 },
                 error: function (error) {
                     if (error.status === 401) {
+                        // Unauthorized - Redirect to the login page
                         window.location.href = "/Account/Login";
                     } else {
                         console.log("Error fetching partial view:", error);
+                        // Handle other errors as needed
                     }
                 }
             });
         });
 
+
         $(".offcanvas-close").click(function () {
             $("#offcanvas-cart").removeClass("show");
-            location.reload(true); 
+            location.reload(true);
         });
 
 
@@ -87,7 +103,7 @@
 
         $(".removeFavoriteButton").click(function () {
             var productId = $(this).data("product-id");
-            var rowToRemove = $(this).closest("tr"); 
+            var rowToRemove = $(this).closest("tr");
 
             $.ajax({
                 type: "POST",

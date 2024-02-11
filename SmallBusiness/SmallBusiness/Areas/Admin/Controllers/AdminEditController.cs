@@ -7,8 +7,8 @@ using SmallBusiness.ViewModels;
 
 namespace SmallBusiness.Areas.Seller.Controllers
 {
-    [Authorize(Roles = "Seller")]
-    [Area("Seller")]
+    [Authorize(Roles = "Admin")]
+    [Area("Admin")]
     public class AdminEditController : Controller
     {
 

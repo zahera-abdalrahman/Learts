@@ -38,5 +38,7 @@ namespace SmallBusiness.ViewModels
 
         [Display(Name = "Profile Image")]
         public IFormFile ProfileImage { get; set; }
+
+
     }
 }

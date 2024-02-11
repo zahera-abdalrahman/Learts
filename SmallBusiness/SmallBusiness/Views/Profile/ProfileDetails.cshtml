@@ -120,7 +120,7 @@
                             }
 
 
-                            <a href="product-details.html" class="image">
+                            <a asp-controller="Product" asp-action="productDetails" asp-route-productId="@product.ProductId" class="image">
                                 <img src="~/CategoryImg/@product.ImageUrl" alt="Product Image">
                                 <img class="image-hover " src="~/CategoryImg/@product.ImageUrl" alt="Product Image">
                             </a>
@@ -137,7 +137,10 @@
                                 <a href="#" class="product-button hintT-top quickViewButton" data-hint="Quick View" data-product-id="@product.ProductId">
                                     <i class="fas fa-search"></i>
                                 </a>
-                                <a data-product-id="@product.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                <a data-product-id="@product.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <input type="number" class="quantity-input" value="1" min="1" hidden />
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -248,17 +251,19 @@
 }
 
 
+<!--Add to cart-->
 <script>
     $(document).ready(function () {
         // Attach click event to the "Add to Cart" button
         $(".addToCartButton").click(function () {
             var productId = $(this).data("product-id");
             var change = $(this).data("change");
+            var quantity = $(this).find(".quantity-input").val(); // Get the selected quantity
 
             $.ajax({
                 type: "POST",
                 url: "/Shopping/Cart",
-                data: { productId: productId, change: change },
+                data: { productId: productId, change: change, quantity: quantity },
                 success: function (result) {
                     // Check if the response contains a redirect to the login page
                     if (result.toLowerCase().includes("login")) {
@@ -293,7 +298,6 @@
     });
 
 </script>
-
 <script>
     $(document).ready(function () {
         $('.product-button.hintT-top.quickViewButton').on('click', function (e) {

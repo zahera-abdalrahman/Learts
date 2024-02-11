@@ -8,7 +8,7 @@
     ViewData["Title"] = "Home Page";
 }
 <style>
-    .circle{
+    .circle {
         width: 48px;
         height: 48px;
         margin: 0 5px;
@@ -17,12 +17,11 @@
         border-radius: 50%;
         background-color: #333;
     }
-    
-    .icon{
+
+    .icon {
         font-size: 16px;
         line-height: 48px;
     }
-    
 </style>
 
 
@@ -37,7 +36,7 @@
                 title: 'Order Confirmation Email Sent!',
                 text: 'An email containing the details of your order has been sent to you.',
                 showConfirmButton: false,
-                timer: 3000 
+                timer: 3000
             });
         }
     });
@@ -75,14 +74,12 @@
                 <div class="link"><a asp-action="ProductSale" asp-controller="Product">shop now</a></div>
             </div>
         </div>
-      
+
     </div>
     <div class="home1-slider-prev swiper-button-prev"><i class="ti-angle-left"></i></div>
     <div class="home1-slider-next swiper-button-next"><i class="ti-angle-right"></i></div>
 </div>
 <!-- Slider main container End -->
-
-
 <!-- Category Banner Section Start -->
 <div class="section section-fluid learts-pt-30">
     <div class="container">
@@ -118,14 +115,13 @@
     </div>
 </div>
 <!-- Category Banner Section End -->
-
 <!-- Product Section Start -->
 <div class="section section-padding border-bottom">
     <div class="container">
         <div class="section-title2 text-center">
             <h3 class="sub-title">Just for you</h3>
         </div>
-      
+
         <!-- Product Tab Start -->
         <div class="row">
             <div class="col-12">
@@ -171,7 +167,10 @@
                                                     <a href="#" class="product-button hintT-top quickViewButton" data-hint="Quick View" data-product-id="@newProduct.ProductId">
                                                         <i class="fas fa-search"></i>
                                                     </a>
-                                                    <a data-product-id="@newProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                                    <a data-product-id="@newProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart">
+                                                        <i class="fas fa-shopping-cart"></i>
+                                                        <input type="number" class="quantity-input" value="1" min="1" hidden />
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -188,8 +187,8 @@
                     <div class="tab-pane fade" id="tab-sale-items">
                         <!-- Products Start -->
                         <div class="products row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1">
-                             @if (ViewBag.categoryList != null)
-            {
+                            @if (ViewBag.categoryList != null)
+                            {
                                 @foreach (var discountedProduct in ViewBag.DiscountedProducts)
                                 {
                                     <div class="col">
@@ -216,7 +215,10 @@
                                                     <a href="#" class="product-button hintT-top quickViewButton" data-hint="Quick View" data-product-id="@discountedProduct.ProductId">
                                                         <i class="fas fa-search"></i>
                                                     </a>
-                                                    <a data-product-id="@discountedProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                                    <a data-product-id="@discountedProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart">
+                                                        <i class="fas fa-shopping-cart"></i>
+                                                        <input type="number" class="quantity-input" value="1" min="1" hidden />
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -233,38 +235,41 @@
                     <div class="tab-pane fade" id="tab-best-sellers">
                         <!-- Products Start -->
                         <div class="products row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 row-cols-1">
-                             @if (ViewBag.categoryList != null)
-            {
-                            @foreach (var rateProduct in ViewBag.MostRatedProducts)
+                            @if (ViewBag.categoryList != null)
                             {
-                                <div class="col">
-                                    <div class="product">
-                                        <div class="product-thumb">
-                                            <span class="product-badges">
-                                                <span class="hot">hot</span>
-                                            </span>
+                                @foreach (var rateProduct in ViewBag.MostRatedProducts)
+                                {
+                                    <div class="col">
+                                        <div class="product">
+                                            <div class="product-thumb">
+                                                <span class="product-badges">
+                                                    <span class="hot">hot</span>
+                                                </span>
                                                 <a asp-controller="Product" asp-action="productDetails" asp-route-productId="@rateProduct.ProductId" class="image">
-                                                <img src="~/CategoryImg/@rateProduct.ImageUrl" alt="Product Image">
-                                                <img class="image-hover " src="~/CategoryImg/@rateProduct.ImageUrl" alt="Product Image">
-                                            </a>
-                                            <button type="button" class="add-to-wishlist " data-product-id="@rateProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
-                                                <i class="@(IsProductInUserFavorites(ViewBag.Fav, rateProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, rateProduct.ProductId, currentUserId)"></i>
-                                            </button>
-                                        </div>
-                                        <div class="product-info">
-                                            <h6 class="title"><a href="product-details.html">@rateProduct.ProductName</a></h6>
-                                            <span class="price">
-                                                $@rateProduct.ProductPrice
-                                            </span>
-                                            <div class="product-buttons">
+                                                    <img src="~/CategoryImg/@rateProduct.ImageUrl" alt="Product Image">
+                                                    <img class="image-hover " src="~/CategoryImg/@rateProduct.ImageUrl" alt="Product Image">
+                                                </a>
+                                                <button type="button" class="add-to-wishlist " data-product-id="@rateProduct.ProductId" onclick="toggleFavorite(this)" style="background:none;border:none">
+                                                    <i class="@(IsProductInUserFavorites(ViewBag.Fav, rateProduct.ProductId, currentUserId) ? "fas" : "far") fa-heart" data-fav="@IsProductInUserFavorites(ViewBag.Fav, rateProduct.ProductId, currentUserId)"></i>
+                                                </button>
+                                            </div>
+                                            <div class="product-info">
+                                                <h6 class="title"><a href="product-details.html">@rateProduct.ProductName</a></h6>
+                                                <span class="price">
+                                                    $@rateProduct.ProductPrice
+                                                </span>
+                                                <div class="product-buttons">
                                                     <a href="#" class="product-button hintT-top quickViewButton" data-hint="Quick View" data-product-id="@rateProduct.ProductId">
                                                         <i class="fas fa-search"></i>
                                                     </a>
-                                                <a data-product-id="@rateProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart"><i class="fas fa-shopping-cart"></i></a>
+                                                    <a data-product-id="@rateProduct.ProductId" data-change="add" class="product-button hintT-top addToCartButton" data-hint="Add to Cart">
+                                                        <i class="fas fa-shopping-cart"></i>
+                                                        <input type="number" class="quantity-input" value="1" min="1" hidden />
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
                                 }
                             }
@@ -278,14 +283,14 @@
                 </div>
             </div>
         </div>
-     
+
 
     </div>
 </div>
 <!-- Product Section End -->
+<!--Start Selling-->
 
-
-
+<!--End Selling-->
 <!-- Testimonial Section Start -->
 <div class="section section-padding">
     <div class="container">
@@ -333,8 +338,6 @@
     </div>
 </div>
 <!-- Testimonial Section End -->
-
-
 @if (TempData.ContainsKey("SweetAlertScript"))
 {
     <script>
@@ -377,7 +380,7 @@
 <!--Modal-->
 <div class="quickViewModal modal fade" id="quickViewModal">
 
-@Html.Partial("_ProductDetailsModal");
+    @Html.Partial("_ProductDetailsModal");
 
 </div>
 
@@ -418,25 +421,32 @@
         $(".addToCartButton").click(function () {
             var productId = $(this).data("product-id");
             var change = $(this).data("change");
+            var quantity = $(this).find(".quantity-input").val(); // Get the selected quantity
 
             $.ajax({
                 type: "POST",
                 url: "/Shopping/Cart",
-                data: { productId: productId, change: change },
+                data: { productId: productId, change: change, quantity: quantity },
                 success: function (result) {
+                    // Check if the response contains a redirect to the login page
                     if (result.toLowerCase().includes("login")) {
+                        // Redirect the user to the login page
                         window.location.href = "/Account/Login";
                     } else {
+                        // Update the offcanvas cart with the returned HTML
                         $("#offcanvas-cart .body").html($(result).find(".body").html());
 
+                        // Display the offcanvas cart if it was hidden
                         $("#offcanvas-cart").addClass("show");
                     }
                 },
                 error: function (error) {
                     if (error.status === 401) {
+                        // Unauthorized - Redirect to the login page
                         window.location.href = "/Account/Login";
                     } else {
                         console.log("Error fetching partial view:", error);
+                        // Handle other errors as needed
                     }
                 }
             });
@@ -444,33 +454,33 @@
 
         $(".offcanvas-close").click(function () {
             $("#offcanvas-cart").removeClass("show");
-            location.reload(true); 
+            location.reload(true);
         });
     });
 
 </script>
 
 <script>
-  $(document).ready(function () {
-    $('.product-button.hintT-top.quickViewButton').on('click', function (e) {
-        e.preventDefault();
-        var productId = $(this).data('product-id');
-        $.ajax({
-            url: '/Home/ProductDetails',
-            type: 'GET',
-            data: { productId: productId },
-            success: function (data) {
-                // Use .html() to insert the returned HTML into the modal
-                $('#quickViewModal .modal-content').html(data);
-                $('#quickViewModal').modal('show');
-            },
-            error: function (error) {
-                console.log("Error during AJAX request:", error);
-                // Handle the error, show an alert, or log the error as needed
-            }
+    $(document).ready(function () {
+        $('.product-button.hintT-top.quickViewButton').on('click', function (e) {
+            e.preventDefault();
+            var productId = $(this).data('product-id');
+            $.ajax({
+                url: '/Home/ProductDetails',
+                type: 'GET',
+                data: { productId: productId },
+                success: function (data) {
+                    // Use .html() to insert the returned HTML into the modal
+                    $('#quickViewModal .modal-content').html(data);
+                    $('#quickViewModal').modal('show');
+                },
+                error: function (error) {
+                    console.log("Error during AJAX request:", error);
+                    // Handle the error, show an alert, or log the error as needed
+                }
+            });
         });
     });
-});
 
 
 
@@ -484,7 +494,7 @@
         if (@sellerConfirmation.ToString().ToLower()) {
             Swal.fire({
                 icon: 'success',
-                title: 'The Admin will accept you soon',
+                title: 'Order Placed Successfully',
                 text: 'An email containing the details of your order has been sent to you.',
                 showConfirmButton: false,
                 timer: 3000 // Adjust the timer as needed
